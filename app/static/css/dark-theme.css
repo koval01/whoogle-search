@@ -216,3 +216,7 @@ path {
 .desktop-header, .mobile-header {
     background-color: var(--whoogle-dark-result-bg) !important;
 }
+
+.desktop-header a, .mobile-header a {
+    background-color: var(--whoogle-dark-result-bg);
+}
