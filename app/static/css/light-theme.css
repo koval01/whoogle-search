@@ -207,3 +207,7 @@ path {
 .desktop-header a, .mobile-header a {
     background-color: var(--whoogle-result-bg);
 }
+
+.desktop-header label, .mobile-header label {
+    background-color: var(--whoogle-result-bg);
+}
