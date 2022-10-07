@@ -179,13 +179,15 @@ footer {
 
     box-shadow: 0 0 12px #00000069;
     border-radius: 0 0 .8rem .8rem;
+
+    display: contents !important;
 }
 
 .autocomplete-items div {
     padding: 10px;
     cursor: pointer;
-    background: #fff;
-    backdrop-filter: blur(.18rem);
+    background-color: unset !important;
+    backdrop-filter: blur(.2rem);
 }
 
 details summary {
