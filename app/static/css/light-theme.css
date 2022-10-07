@@ -8,6 +8,8 @@ body {
 
 div {
     color: var(--whoogle-text) !important;
+    overflow: hidden;
+    overflow-x: scroll;
 }
 
 label {
