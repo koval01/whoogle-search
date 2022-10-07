@@ -1,6 +1,7 @@
 body {
     display: block !important;
     margin: auto !important;
+    min-height: 0 !important;
 }
 
 table {
@@ -23,6 +24,10 @@ textarea:focus, input:focus, select:focus {
 
 .f4J0H {
     color: #65a7f6 !important;
+}
+
+.sa1toc {
+    border-radius: 1rem;
 }
 
 .autocomplete {
