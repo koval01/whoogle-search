@@ -29,6 +29,9 @@ textarea:focus, input:focus, select:focus {
 
 .sa1toc {
     border-radius: 1rem;
+
+    box-shadow: 0 0 12px #0000009c !important;
+    border: unset !important;
 }
 
 .autocomplete {

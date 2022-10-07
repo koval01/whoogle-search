@@ -213,3 +213,7 @@ path {
 .desktop-header label, .mobile-header label {
     background-color: var(--whoogle-result-bg);
 }
+
+.sa1toc {
+    background: var(--whoogle-result-bg) !important;
+}
