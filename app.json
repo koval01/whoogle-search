@@ -1,8 +1,8 @@
 {
   "name": "Whoogle Search",
   "description": "A lightweight, privacy-oriented, containerized Google search proxy for desktop/mobile that removes Javascript, AMP links, tracking, and ads/sponsored content",
-  "repository": "https://github.com/benbusby/whoogle-search",
-  "logo": "https://raw.githubusercontent.com/benbusby/whoogle-search/master/app/static/img/favicon/ms-icon-150x150.png",
+  "repository": "https://github.com/koval01/whoogle-search",
+  "logo": "https://raw.githubusercontent.com/koval01/whoogle-search/master/app/static/img/favicon/ms-icon-150x150.png",
   "keywords": [
     "search",
     "metasearch",
@@ -106,17 +106,17 @@
         "required": false
     },
     "WHOOGLE_CONFIG_COUNTRY": {
-        "description": "[CONFIG] The country to use for restricting search results (use values from https://raw.githubusercontent.com/benbusby/whoogle-search/develop/app/static/settings/countries.json)",
+        "description": "[CONFIG] The country to use for restricting search results (use values from https://raw.githubusercontent.com/koval01/whoogle-search/develop/app/static/settings/countries.json)",
         "value": "",
         "required": false
     },
     "WHOOGLE_CONFIG_LANGUAGE": {
-        "description": "[CONFIG] The language to use for the interface (use values from https://raw.githubusercontent.com/benbusby/whoogle-search/develop/app/static/settings/languages.json)",
+        "description": "[CONFIG] The language to use for the interface (use values from https://raw.githubusercontent.com/koval01/whoogle-search/develop/app/static/settings/languages.json)",
         "value": "",
         "required": false
     },
     "WHOOGLE_CONFIG_SEARCH_LANGUAGE": {
-        "description": "[CONFIG] The language to use for search results (use values from https://raw.githubusercontent.com/benbusby/whoogle-search/develop/app/static/settings/languages.json)",
+        "description": "[CONFIG] The language to use for search results (use values from https://raw.githubusercontent.com/koval01/whoogle-search/develop/app/static/settings/languages.json)",
         "value": "",
         "required": false
     },

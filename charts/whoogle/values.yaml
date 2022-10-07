@@ -7,7 +7,7 @@ fullnameOverride: ""
 
 replicaCount: 1
 image:
-  repository: benbusby/whoogle-search
+  repository: koval01/whoogle-search
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -33,7 +33,7 @@ conf: {}
   # WHOOGLE_PROXY_TYPE: ""   # The type of the proxy server. Can be "socks5", "socks4", or "http".
   # WHOOGLE_PROXY_LOC: ""    # The location of the proxy server (host or ip).
   # EXPOSE_PORT: ""          # The port where Whoogle will be exposed. (default 5000)
-  # HTTPS_ONLY: ""           # Enforce HTTPS. (See https://github.com/benbusby/whoogle-search#https-enforcement)
+  # HTTPS_ONLY: ""           # Enforce HTTPS. (See https://github.com/koval01/whoogle-search#https-enforcement)
   # WHOOGLE_ALT_TW: ""       # The twitter.com alternative to use when site alternatives are enabled in the config.
   # WHOOGLE_ALT_YT: ""       # The youtube.com alternative to use when site alternatives are enabled in the config.
   # WHOOGLE_ALT_IG: ""       # The instagram.com alternative to use when site alternatives are enabled in the config.

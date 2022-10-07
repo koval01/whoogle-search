@@ -3,7 +3,7 @@ name: New theme
 about: Create a new theme for Whoogle
 title: "[THEME] <your theme name>"
 labels: theme
-assignees: benbusby
+assignees: koval01
 
 ---
 
