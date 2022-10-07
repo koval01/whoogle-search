@@ -624,4 +624,11 @@ class Filter:
         # replace next page object at the bottom of the page
         soup.find_all('table',
                       attrs={'class': "uZgmoc"})[0].replaceWith(next_pages)
+
+        # remove Google footer
+        soup.find(
+            'table',
+            attrs={'class': "bookcf"}
+        ).decompose()
+
         return soup
