@@ -155,6 +155,7 @@ class Filter:
         self.remove_block_titles()
         self.remove_block_url()
         self.collapse_sections()
+        self.remove_privacy_container(soup)
         self.update_css(soup)
         self.update_styling(soup)
         self.remove_block_tabs(soup)
@@ -201,6 +202,26 @@ class Filter:
         for result in selected:
             result.string.replace_with(result.string.replace(
                                        search_string, ''))
+
+    @staticmethod
+    def remove_privacy_container(soup) -> None:
+        """Removes google privacy/policy container in footer
+
+        Args:
+            soup: BeautifulSoup object with Google data
+
+        Returns:
+            None (The soup object is modified directly)
+        """
+        selector = soup.find(
+            'table',
+            attrs={'class': "bookcf"}
+        )
+
+        if not selector:
+            return
+
+        selector.decompose()
 
     def remove_ads(self) -> None:
         """Removes ads found in the list of search result divs
@@ -626,11 +647,5 @@ class Filter:
         # replace next page object at the bottom of the page
         soup.find_all('table',
                       attrs={'class': "uZgmoc"})[0].replaceWith(next_pages)
-
-        # remove Google footer
-        soup.find(
-            'table',
-            attrs={'class': "bookcf"}
-        ).decompose()
 
         return soup
