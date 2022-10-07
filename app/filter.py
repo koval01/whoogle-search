@@ -87,6 +87,7 @@ def clean_css(css: str, page_url: str) -> str:
 
     Args:
         css: The CSS string
+        page_url: The page url string
 
     Returns:
         str: The filtered CSS, with URLs proxied through Whoogle
@@ -563,7 +564,8 @@ class Filter:
                 link_desc.replace_with(new_desc)
                 break
 
-    def view_image(self, soup) -> BeautifulSoup:
+    @staticmethod
+    def view_image(soup) -> BeautifulSoup:
         """Replaces the soup with a new one that handles mobile results and
         adds the link of the image full res to the results.
 
