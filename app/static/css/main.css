@@ -166,11 +166,14 @@ footer {
     top: 100%;
     left: 0;
     right: 0;
+
+    box-shadow: 0 0 12px #00000069;
 }
 
 .autocomplete-items div {
     padding: 10px;
     cursor: pointer;
+    background: #fff;
 }
 
 details summary {
