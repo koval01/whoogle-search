@@ -3,6 +3,10 @@ body {
     margin: auto !important;
 }
 
+table {
+    border-radius: 3rem !important;
+}
+
 .vvjwJb {
     font-size: 16px !important;
 }
