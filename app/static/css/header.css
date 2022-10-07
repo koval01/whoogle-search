@@ -119,7 +119,7 @@ header {
 }
 
 a {
-    color: #1967D2;
+    color: #1967D2 !important;
     text-decoration: none;
     tap-highlight-color: rgba(0, 0, 0, .10);
 }
