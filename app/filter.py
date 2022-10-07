@@ -155,7 +155,7 @@ class Filter:
         self.remove_block_titles()
         self.remove_block_url()
         self.collapse_sections()
-        self.remove_privacy_container(soup)
+        self.remove_privacy(soup)
         self.update_css(soup)
         self.update_styling(soup)
         self.remove_block_tabs(soup)
@@ -204,7 +204,7 @@ class Filter:
                                        search_string, ''))
 
     @staticmethod
-    def remove_privacy_container(soup) -> None:
+    def remove_privacy(soup) -> None:
         """Removes google privacy/policy container in footer
 
         Args:
@@ -218,10 +218,8 @@ class Filter:
             attrs={'class': "bookcf"}
         )
 
-        if not selector:
-            return
-
-        selector.decompose()
+        if selector:
+            selector.decompose()
 
     def remove_ads(self) -> None:
         """Removes ads found in the list of search result divs
@@ -256,19 +254,17 @@ class Filter:
             _ = div.decompose() if len(block_divs) else None
 
     def remove_block_tabs(self, soup) -> None:
+        cls = GClasses.images_tbm_tab
+
         if self.main_divs:
-            for div in self.main_divs.find_all(
-                'div',
-                attrs={'class': f'{GClasses.main_tbm_tab}'}
-            ):
-                _ = div.decompose()
-        else:
-            # when in images tab
-            for div in soup.find_all(
-                'div',
-                attrs={'class': f'{GClasses.images_tbm_tab}'}
-            ):
-                _ = div.decompose()
+            soup = self.main_divs
+            cls = GClasses.main_tbm_tab
+
+        for div in soup.find_all(
+            'div',
+            attrs={'class': f'{cls}'}
+        ):
+            _ = div.decompose()
 
     def collapse_sections(self) -> None:
         """Collapses long result sections ("people also asked", "related
