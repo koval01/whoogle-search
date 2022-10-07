@@ -2,6 +2,16 @@ body {
     font-family: Avenir, Helvetica, Arial, sans-serif;
 }
 
+textarea, input, select, button {
+    padding: 0.2rem;
+    border: 0;
+    border-radius: 0.3rem;
+}
+
+textarea:focus, input:focus, select:focus {
+    outline: none !important;
+}
+
 .logo {
     width: 80%;
     display: block;
@@ -168,12 +178,14 @@ footer {
     right: 0;
 
     box-shadow: 0 0 12px #00000069;
+    border-radius: 0 0 .8rem .8rem;
 }
 
 .autocomplete-items div {
     padding: 10px;
     cursor: pointer;
     background: #fff;
+    backdrop-filter: blur(.18rem);
 }
 
 details summary {
