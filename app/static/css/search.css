@@ -1,7 +1,8 @@
 body {
     display: block !important;
     margin: auto !important;
-    min-height: 0 !important;
+    min-width: 0 !important;
+    overflow-x: hidden !important;
 }
 
 table {
