@@ -344,7 +344,7 @@
     },
     "lang_ru": {
         "search": "Поиск",
-        "config": "Настройка",
+        "config": "Настройки",
         "config-country": "Указать страну",
         "config-lang": "Язык интерфейса",
         "config-lang-search": "Язык поиска",
