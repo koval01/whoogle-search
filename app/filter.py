@@ -1,12 +1,15 @@
+import re
+import urllib.parse as urlparse
+from urllib.parse import parse_qs
+
 import cssutils
 from bs4 import BeautifulSoup
 from bs4.element import ResultSet, Tag
 from cryptography.fernet import Fernet
 from flask import render_template
-import urllib.parse as urlparse
-from urllib.parse import parse_qs
-import re
 
+from app.models.config import Config
+from app.models.endpoint import Endpoint
 from app.models.g_classes import GClasses
 from app.request import VALID_PARAMS, MAPS_URL
 from app.utils.misc import get_abs_url, read_config_bool
@@ -14,9 +17,6 @@ from app.utils.results import (
     BLANK_B64, GOOG_IMG, GOOG_STATIC, G_M_LOGO_URL, LOGO_URL, SITE_ALTS,
     has_ad_content, filter_link_args, append_anon_view, get_site_alt,
 )
-from app.models.endpoint import Endpoint
-from app.models.config import Config
-
 
 MAPS_ARGS = ['q', 'daddr']
 
@@ -151,14 +151,16 @@ class Filter:
 
     def clean(self, soup) -> BeautifulSoup:
         self.main_divs = soup.find('div', {'id': 'main'})
-        self.remove_ads()
-        self.remove_block_titles()
-        self.remove_block_url()
-        self.collapse_sections()
-        self.remove_privacy_container(soup)
-        self.update_css(soup)
-        self.update_styling(soup)
-        self.remove_block_tabs(soup)
+
+        if self.main_divs:
+            self.remove_ads()
+            self.remove_block_titles()
+            self.remove_block_url()
+            self.collapse_sections()
+            self.remove_privacy(soup)
+            self.update_css(soup)
+            self.update_styling(soup)
+            self.remove_block_tabs(soup)
 
         for img in [_ for _ in soup.find_all('img') if 'src' in _.attrs]:
             self.update_element_src(img, 'image/png')
@@ -196,32 +198,21 @@ class Filter:
         if not self.config.block or not soup.body:
             return
         search_string = ' '.join(['-site:' +
-                                 _ for _ in self.config.block.split(',')])
+                                  _ for _ in self.config.block.split(',')])
         selected = soup.body.findAll(text=re.compile(search_string))
 
         for result in selected:
-            result.string.replace_with(result.string.replace(
-                                       search_string, ''))
+            result.string.replace_with(
+                result.string.replace(search_string, ''))
 
     @staticmethod
-    def remove_privacy_container(soup) -> None:
-        """Removes google privacy/policy container in footer
-
-        Args:
-            soup: BeautifulSoup object with Google data
-
-        Returns:
-            None (The soup object is modified directly)
-        """
+    def remove_privacy(soup) -> None:
+        """Remove privacy container with google pages"""
         selector = soup.find(
             'table',
             attrs={'class': "bookcf"}
         )
-
-        if not selector:
-            return
-
-        selector.decompose()
+        selector.decompose() if selector else None
 
     def remove_ads(self) -> None:
         """Removes ads found in the list of search result divs
@@ -229,46 +220,45 @@ class Filter:
         Returns:
             None (The soup object is modified directly)
         """
-        if not self.main_divs:
-            return
-
         for div in [_ for _ in self.main_divs.find_all('div', recursive=True)]:
             div_ads = [_ for _ in div.find_all('span', recursive=True)
                        if has_ad_content(_.text)]
             _ = div.decompose() if len(div_ads) else None
 
     def remove_block_titles(self) -> None:
-        if not self.main_divs or not self.config.block_title:
+        if not self.config.block_title:
             return
+
         block_title = re.compile(self.block_title)
+
         for div in [_ for _ in self.main_divs.find_all('div', recursive=True)]:
             block_divs = [_ for _ in div.find_all('h3', recursive=True)
                           if block_title.search(_.text) is not None]
             _ = div.decompose() if len(block_divs) else None
 
     def remove_block_url(self) -> None:
-        if not self.main_divs or not self.config.block_url:
+        if not self.config.block_url:
             return
+
         block_url = re.compile(self.block_url)
+
         for div in [_ for _ in self.main_divs.find_all('div', recursive=True)]:
             block_divs = [_ for _ in div.find_all('a', recursive=True)
                           if block_url.search(_.attrs['href']) is not None]
             _ = div.decompose() if len(block_divs) else None
 
     def remove_block_tabs(self, soup) -> None:
+        cls = GClasses.images_tbm_tab
+
         if self.main_divs:
-            for div in self.main_divs.find_all(
+            soup = self.main_divs
+            cls = GClasses.main_tbm_tab
+
+        for div in soup.find_all(
                 'div',
-                attrs={'class': f'{GClasses.main_tbm_tab}'}
-            ):
-                _ = div.decompose()
-        else:
-            # when in images tab
-            for div in soup.find_all(
-                'div',
-                attrs={'class': f'{GClasses.images_tbm_tab}'}
-            ):
-                _ = div.decompose()
+                attrs={'class': f'{cls}'}
+        ):
+            div.decompose()
 
     def collapse_sections(self) -> None:
         """Collapses long result sections ("people also asked", "related
@@ -299,7 +289,7 @@ class Filter:
             result_children = pull_child_divs(result)
             if minimal_mode:
                 if any(f">{x}</span" in str(s) for s in result_children
-                   for x in minimal_mode_sections):
+                       for x in minimal_mode_sections):
                     result.decompose()
                     continue
                 for s in result_children:
@@ -325,7 +315,7 @@ class Filter:
                     label = content[0]
                     if len(content) > 1:
                         subtitle = '<span> (' + \
-                            ''.join(content[1:]) + ')</span>'
+                                   ''.join(content[1:]) + ')</span>'
                     elem.decompose()
                     break
 
@@ -385,10 +375,10 @@ class Filter:
             return
 
         element[attr] = f'{self.root_url}/{Endpoint.element}?url=' + (
-            self.encrypt_path(
-                src,
-                is_element=True
-            ) + '&type=' + urlparse.quote(mime)
+                self.encrypt_path(
+                    src,
+                    is_element=True
+                ) + '&type=' + urlparse.quote(mime)
         )
 
     def update_css(self, soup) -> None:
@@ -406,7 +396,7 @@ class Filter:
         # TODO: Convert remote stylesheets to style tags and proxy all
         # remote requests
         # for link in soup.find_all('link', attrs={'rel': 'stylesheet'}):
-            # print(link)
+        # print(link)
 
     def update_styling(self, soup) -> None:
         # Update CSS classes for result divs
@@ -476,7 +466,7 @@ class Filter:
         if any(url in link_netloc for url in unsupported_g_pages):
             # FIXME: The "Shopping" tab requires further filtering (see #136)
             # Temporarily removing all links to that tab for now.
-            
+
             # Replaces the /url google unsupported link to the direct url
             link['href'] = link_netloc
             parent = link.parent
@@ -560,8 +550,8 @@ class Filter:
                 link['href'] = href
 
         if self.config.new_tab and (
-            link["href"].startswith("http")
-            or link["href"].startswith("imgres?")
+                link["href"].startswith("http")
+                or link["href"].startswith("imgres?")
         ):
             link["target"] = "_blank"
 

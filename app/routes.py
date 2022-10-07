@@ -10,26 +10,25 @@ from datetime import datetime, timedelta
 from functools import wraps
 
 import waitress
+from bs4 import BeautifulSoup as bsoup
+from cryptography.exceptions import InvalidSignature
+from cryptography.fernet import Fernet, InvalidToken
+from flask import jsonify, make_response, request, redirect, render_template, \
+    send_file, session, url_for, g
+from requests import exceptions
+
 from app import app
+from app.filter import Filter
 from app.models.config import Config
 from app.models.endpoint import Endpoint
 from app.request import Request, TorError
 from app.utils.bangs import resolve_bang
-from app.utils.misc import get_proxy_host_url
-from app.filter import Filter
 from app.utils.misc import read_config_bool, get_client_ip, get_request_url, \
     check_for_update
-from app.utils.results import add_ip_card, bold_search_terms,\
+from app.utils.results import add_ip_card, bold_search_terms, \
     add_currency_card, check_currency, get_tabs_content
 from app.utils.search import Search, needs_https, has_captcha
 from app.utils.session import generate_user_key, valid_user_session
-from bs4 import BeautifulSoup as bsoup
-from flask import jsonify, make_response, request, redirect, render_template, \
-    send_file, session, url_for, g
-from requests import exceptions
-from requests.models import PreparedRequest
-from cryptography.fernet import Fernet, InvalidToken
-from cryptography.exceptions import InvalidSignature
 
 # Load DDG bang json files only on init
 bang_json = json.load(open(app.config['BANG_FILE'])) or {}

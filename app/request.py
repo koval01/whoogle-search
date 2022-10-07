@@ -1,16 +1,18 @@
-from app.models.config import Config
-from app.utils.misc import read_config_bool
-from datetime import datetime
-from defusedxml import ElementTree as ET
-import random
-import requests
-from requests import Response, ConnectionError
-import urllib.parse as urlparse
 import os
+import random
+import urllib.parse as urlparse
+from datetime import datetime
+
+import requests
+from defusedxml import ElementTree as ET
+from requests import Response, ConnectionError
 from stem import Signal, SocketError
 from stem.connection import AuthenticationFailure
-from stem.control import Controller
 from stem.connection import authenticate_cookie, authenticate_password
+from stem.control import Controller
+
+from app.models.config import Config
+from app.utils.misc import read_config_bool
 
 MAPS_URL = 'https://maps.google.com/maps'
 AUTOCOMPLETE_URL = ('https://suggestqueries.google.com/'
@@ -131,7 +133,7 @@ def gen_query(query, args, config) -> str:
         )) if lang else ''
     else:
         param_dict['lr'] = (
-            '&lr=' + config.lang_search
+                '&lr=' + config.lang_search
         ) if config.lang_search else ''
 
     # 'nfpr' defines the exclusion of results from an auto-corrected query
@@ -144,10 +146,10 @@ def gen_query(query, args, config) -> str:
         param_dict['chips'] = '&chips=' + args.get('chips')
 
     param_dict['gl'] = (
-        '&gl=' + config.country
+            '&gl=' + config.country
     ) if config.country else ''
     param_dict['hl'] = (
-        '&hl=' + config.lang_interface.replace('lang_', '')
+            '&hl=' + config.lang_interface.replace('lang_', '')
     ) if config.lang_interface else ''
     param_dict['safe'] = '&safe=' + ('active' if config.safe else 'off')
 
@@ -210,7 +212,7 @@ class Request:
                 auth_str = proxy_user + ':' + proxy_pass
             self.proxies = {
                 'https': proxy_type + '://' +
-                ((auth_str + '@') if auth_str else '') + proxy_path,
+                         ((auth_str + '@') if auth_str else '') + proxy_path,
             }
 
             # Need to ensure both HTTP and HTTPS are in the proxy dict,
@@ -271,7 +273,7 @@ class Request:
             attempt: The number of attempts made for the request
                 (used for cycling through Tor identities, if enabled)
             force_mobile: Optional flag to enable a mobile user agent
-                (used for fetching full size images in search results)
+                (used for fetching full size  in search results)
 
         Returns:
             Response: The Response object returned by the requests call
@@ -289,8 +291,8 @@ class Request:
         # Adding the Accept-Language to the Header if possible
         if self.lang_interface:
             headers.update({'Accept-Language':
-                            self.lang_interface.replace('lang_', '')
-                            + ';q=1.0'})
+                                self.lang_interface.replace('lang_', '')
+                                + ';q=1.0'})
 
         # view is suppressed correctly
         now = datetime.now()
