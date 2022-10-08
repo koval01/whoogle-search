@@ -1,7 +1,7 @@
 from cryptography.fernet import Fernet
 from flask import current_app as app
 
-REQUIRED_SESSION_VALUES = ['uuid', 'config', 'key']
+REQUIRED_SESSION_VALUES = ["uuid", "config", "key"]
 
 
 def generate_user_key() -> bytes:

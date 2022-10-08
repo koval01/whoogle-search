@@ -2,7 +2,7 @@ import json
 import requests
 import urllib.parse as urlparse
 
-DDG_BANGS = 'https://duckduckgo.com/bang.v255.js'
+DDG_BANGS = "https://duckduckgo.com/bang.v255.js"
 
 
 def gen_bangs_json(bangs_file: str) -> None:
@@ -29,18 +29,18 @@ def gen_bangs_json(bangs_file: str) -> None:
     bangs_data = {}
 
     for row in data:
-        bang_command = '!' + row['t']
+        bang_command = "!" + row["t"]
         bangs_data[bang_command] = {
-            'url': row['u'].replace('{{{s}}}', '{}'),
-            'suggestion': bang_command + ' (' + row['s'] + ')'
+            "url": row["u"].replace("{{{s}}}", "{}"),
+            "suggestion": bang_command + " (" + row["s"] + ")"
         }
 
-    json.dump(bangs_data, open(bangs_file, 'w'))
-    print('* Finished creating ddg bangs json')
+    json.dump(bangs_data, open(bangs_file, "w"))
+    print("* Finished creating ddg bangs json")
 
 
 def resolve_bang(query: str, bangs_dict: dict) -> str:
-    """Transform's a user's query to a bang search, if an operator is found
+    """Transform"s a user"s query to a bang search, if an operator is found
 
     Args:
         query: The search query
@@ -50,15 +50,15 @@ def resolve_bang(query: str, bangs_dict: dict) -> str:
 
     Returns:
         str: A formatted redirect for a bang search, or an empty str if there
-             wasn't a match or didn't contain a bang operator
+             wasn"t a match or didn"t contain a bang operator
 
     """
 
     #if ! not in query simply return (speed up processing)
-    if '!' not in query:
-        return ''
+    if "!" not in query:
+        return ""
 
-    split_query = query.strip().split(' ')
+    split_query = query.strip().split(" ")
 
     # look for operator in query if one is found, list operator should be of
     # length 1, operator should not be case-sensitive here to remove it later
@@ -75,16 +75,16 @@ def resolve_bang(query: str, bangs_dict: dict) -> str:
         split_query.remove(operator)
 
         # rebuild the query string
-        bang_query = ' '.join(split_query).strip()
+        bang_query = " ".join(split_query).strip()
 
         # Check if operator is a key in bangs and get bang if exists
         bang = bangs_dict.get(operator.lower(), None)
         if bang:
-            bang_url = bang['url']
+            bang_url = bang["url"]
 
             if bang_query:
-                return bang_url.replace('{}', bang_query, 1)
+                return bang_url.replace("{}", bang_query, 1)
             else:
                 parsed_url = urlparse.urlparse(bang_url)
-                return f'{parsed_url.scheme}://{parsed_url.netloc}'
-    return ''
+                return f"{parsed_url.scheme}://{parsed_url.netloc}"
+    return ""

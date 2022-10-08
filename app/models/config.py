@@ -13,23 +13,23 @@ import brotli
 class Config:
     def __init__(self, **kwargs):
         app_config = current_app.config
-        self.url = os.getenv('WHOOGLE_CONFIG_URL', '')
-        self.lang_search = os.getenv('WHOOGLE_CONFIG_SEARCH_LANGUAGE', '')
-        self.lang_interface = os.getenv('WHOOGLE_CONFIG_LANGUAGE', '')
+        self.url = os.getenv("WHOOGLE_CONFIG_URL", "")
+        self.lang_search = os.getenv("WHOOGLE_CONFIG_SEARCH_LANGUAGE", "")
+        self.lang_interface = os.getenv("WHOOGLE_CONFIG_LANGUAGE", "")
         self.style = os.getenv(
-            'WHOOGLE_CONFIG_STYLE',
-            open(os.path.join(app_config['STATIC_FOLDER'],
-                              'css/variables.css')).read())
-        self.block = os.getenv('WHOOGLE_CONFIG_BLOCK', '')
-        self.block_title = os.getenv('WHOOGLE_CONFIG_BLOCK_TITLE', '')
-        self.block_url = os.getenv('WHOOGLE_CONFIG_BLOCK_URL', '')
-        self.country = os.getenv('WHOOGLE_CONFIG_COUNTRY', '')
-        self.theme = os.getenv('WHOOGLE_CONFIG_THEME', 'system')
-        self.safe = read_config_bool('WHOOGLE_CONFIG_SAFE')
-        self.dark = read_config_bool('WHOOGLE_CONFIG_DARK')  # deprecated
-        self.alts = read_config_bool('WHOOGLE_CONFIG_ALTS')
-        self.nojs = read_config_bool('WHOOGLE_CONFIG_NOJS')
-        self.tor = read_config_bool('WHOOGLE_CONFIG_TOR')
+            "WHOOGLE_CONFIG_STYLE",
+            open(os.path.join(app_config["STATIC_FOLDER"],
+                              "css/variables.css")).read())
+        self.block = os.getenv("WHOOGLE_CONFIG_BLOCK", "")
+        self.block_title = os.getenv("WHOOGLE_CONFIG_BLOCK_TITLE", "")
+        self.block_url = os.getenv("WHOOGLE_CONFIG_BLOCK_URL", "")
+        self.country = os.getenv("WHOOGLE_CONFIG_COUNTRY", "")
+        self.theme = os.getenv("WHOOGLE_CONFIG_THEME", "system")
+        self.safe = read_config_bool("WHOOGLE_CONFIG_SAFE")
+        self.dark = read_config_bool("WHOOGLE_CONFIG_DARK")  # deprecated
+        self.alts = read_config_bool("WHOOGLE_CONFIG_ALTS")
+        self.nojs = read_config_bool("WHOOGLE_CONFIG_NOJS")
+        self.tor = read_config_bool("WHOOGLE_CONFIG_TOR')
         self.near = os.getenv('WHOOGLE_CONFIG_NEAR', '')
         self.new_tab = read_config_bool('WHOOGLE_CONFIG_NEW_TAB')
         self.view_image = read_config_bool('WHOOGLE_CONFIG_VIEW_IMAGE')

@@ -14,15 +14,15 @@ from stem.control import Controller
 from app.models.config import Config
 from app.utils.misc import read_config_bool
 
-MAPS_URL = 'https://maps.google.com/maps'
-AUTOCOMPLETE_URL = ('https://suggestqueries.google.com/'
-                    'complete/search?client=toolbar&')
+MAPS_URL = "https://maps.google.com/maps"
+AUTOCOMPLETE_URL = ("https://suggestqueries.google.com/"
+                    "complete/search?client=toolbar&")
 
-MOBILE_UA = '{}/5.0 (Android 0; Mobile; rv:54.0) Gecko/54.0 {}/59.0'
-DESKTOP_UA = '{}/5.0 (X11; {} x86_64; rv:75.0) Gecko/20100101 {}/75.0'
+MOBILE_UA = "{}/5.0 (Android 0; Mobile; rv:54.0) Gecko/54.0 {}/59.0"
+DESKTOP_UA = "{}/5.0 (X11; {} x86_64; rv:75.0) Gecko/20100101 {}/75.0"
 
 # Valid query params
-VALID_PARAMS = ['tbs', 'tbm', 'start', 'near', 'source', 'nfpr']
+VALID_PARAMS = ["tbs", "tbm", "start", "near", "source", "nfpr"]
 
 
 class TorError(Exception):
@@ -42,11 +42,11 @@ class TorError(Exception):
 
 
 def send_tor_signal(signal: Signal) -> bool:
-    use_pass = read_config_bool('WHOOGLE_TOR_USE_PASS')
+    use_pass = read_config_bool("WHOOGLE_TOR_USE_PASS")
 
-    confloc = './misc/tor/control.conf'
+    confloc = "./misc/tor/control.conf"
     # Check that the custom location of conf is real.
-    temp = os.getenv('WHOOGLE_TOR_CONF', '')
+    temp = os.getenv("WHOOGLE_TOR_CONF", "")
     if os.path.isfile(temp):
         confloc = temp
 
@@ -58,25 +58,25 @@ def send_tor_signal(signal: Signal) -> bool:
                     # Scan for the last line of the file.
                     for line in conf:
                         pass
-                    secret = line.strip('\n')
+                    secret = line.strip("\n")
                 authenticate_password(c, password=secret)
             else:
-                cookie_path = '/var/lib/tor/control_auth_cookie'
+                cookie_path = "/var/lib/tor/control_auth_cookie"
                 authenticate_cookie(c, cookie_path=cookie_path)
             c.signal(signal)
-            os.environ['TOR_AVAILABLE'] = '1'
+            os.environ["TOR_AVAILABLE"] = "1"
             return True
     except (SocketError, AuthenticationFailure,
             ConnectionRefusedError, ConnectionError):
         # TODO: Handle Tor authentication (password and cookie)
-        os.environ['TOR_AVAILABLE'] = '0'
+        os.environ["TOR_AVAILABLE"] = "0"
 
     return False
 
 
 def gen_user_agent(is_mobile) -> str:
-    firefox = random.choice(['Choir', 'Squier', 'Higher', 'Wire']) + 'fox'
-    linux = random.choice(['Win', 'Sin', 'Gin', 'Fin', 'Kin']) + 'ux'
+    firefox = random.choice(["Choir", "Squier", "Higher", "Wire"]) + "fox"
+    linux = random.choice(["Win", "Sin", "Gin", "Fin", "Kin"]) + "ux"
 
     if is_mobile:
         return MOBILE_UA.format("Mozilla", firefox)
@@ -85,81 +85,81 @@ def gen_user_agent(is_mobile) -> str:
 
 
 def gen_query(query, args, config) -> str:
-    param_dict = {key: '' for key in VALID_PARAMS}
+    param_dict = {key: "" for key in VALID_PARAMS}
 
     # Use :past(hour/day/week/month/year) if available
     # example search "new restaurants :past month"
-    lang = ''
-    if ':past' in query and 'tbs' not in args:
-        time_range = str.strip(query.split(':past', 1)[-1])
-        param_dict['tbs'] = '&tbs=' + ('qdr:' + str.lower(time_range[0]))
-    elif 'tbs' in args:
-        result_tbs = args.get('tbs')
-        param_dict['tbs'] = '&tbs=' + result_tbs
+    lang = ""
+    if ":past" in query and "tbs" not in args:
+        time_range = str.strip(query.split(":past", 1)[-1])
+        param_dict["tbs"] = "&tbs=" + ("qdr:" + str.lower(time_range[0]))
+    elif "tbs" in args:
+        result_tbs = args.get("tbs")
+        param_dict["tbs"] = "&tbs=" + result_tbs
 
-        # Occasionally the 'tbs' param provided by google also contains a
-        # field for 'lr', but formatted strangely. This is a rough solution
+        # Occasionally the "tbs" param provided by google also contains a
+        # field for "lr", but formatted strangely. This is a rough solution
         # for this.
         #
         # Example:
         # &tbs=qdr:h,lr:lang_1pl
-        # -- the lr param needs to be extracted and remove the leading '1'
-        result_params = [_ for _ in result_tbs.split(',') if 'lr:' in _]
+        # -- the lr param needs to be extracted and remove the leading "1"
+        result_params = [_ for _ in result_tbs.split(",") if "lr:" in _]
         if len(result_params) > 0:
             result_param = result_params[0]
-            lang = result_param[result_param.find('lr:') + 3:len(result_param)]
+            lang = result_param[result_param.find("lr:") + 3:len(result_param)]
 
     # Ensure search query is parsable
     query = urlparse.quote(query)
 
     # Pass along type of results (news, images, books, etc)
-    if 'tbm' in args:
-        param_dict['tbm'] = '&tbm=' + args.get('tbm')
+    if "tbm" in args:
+        param_dict["tbm"] = "&tbm=" + args.get("tbm")
 
     # Get results page start value (10 per page, ie page 2 start val = 20)
-    if 'start' in args:
-        param_dict['start'] = '&start=' + args.get('start')
+    if "start" in args:
+        param_dict["start"] = "&start=" + args.get("start")
 
     # Search for results near a particular city, if available
     if config.near:
-        param_dict['near'] = '&near=' + urlparse.quote(config.near)
+        param_dict["near"] = "&near=" + urlparse.quote(config.near)
 
-    # Set language for results (lr) if source isn't set, otherwise use the
+    # Set language for results (lr) if source isn"t set, otherwise use the
     # result language param provided in the results
-    if 'source' in args:
-        param_dict['source'] = '&source=' + args.get('source')
-        param_dict['lr'] = ('&lr=' + ''.join(
+    if "source" in args:
+        param_dict["source"] = "&source=" + args.get("source")
+        param_dict["lr"] = ("&lr=" + "".join(
             [_ for _ in lang if not _.isdigit()]
-        )) if lang else ''
+        )) if lang else ""
     else:
-        param_dict['lr'] = (
-                '&lr=' + config.lang_search
-        ) if config.lang_search else ''
+        param_dict["lr"] = (
+                "&lr=" + config.lang_search
+        ) if config.lang_search else ""
 
-    # 'nfpr' defines the exclusion of results from an auto-corrected query
-    if 'nfpr' in args:
-        param_dict['nfpr'] = '&nfpr=' + args.get('nfpr')
+    # "nfpr" defines the exclusion of results from an auto-corrected query
+    if "nfpr" in args:
+        param_dict["nfpr"] = "&nfpr=" + args.get("nfpr")
 
-    # 'chips' is used in image tabs to pass the optional 'filter' to add to the
+    # "chips" is used in image tabs to pass the optional "filter" to add to the
     # given search term
-    if 'chips' in args:
-        param_dict['chips'] = '&chips=' + args.get('chips')
+    if "chips" in args:
+        param_dict["chips"] = "&chips=" + args.get("chips")
 
-    param_dict['gl'] = (
-            '&gl=' + config.country
-    ) if config.country else ''
-    param_dict['hl'] = (
-            '&hl=' + config.lang_interface.replace('lang_', '')
-    ) if config.lang_interface else ''
-    param_dict['safe'] = '&safe=' + ('active' if config.safe else 'off')
+    param_dict["gl"] = (
+            "&gl=" + config.country
+    ) if config.country else ""
+    param_dict["hl"] = (
+            "&hl=" + config.lang_interface.replace("lang_", "")
+    ) if config.lang_interface else ""
+    param_dict["safe"] = "&safe=" + ("active" if config.safe else "off")
 
     # Block all sites specified in the user config
     unquoted_query = urlparse.unquote(query)
-    for blocked_site in config.block.replace(' ', '').split(','):
+    for blocked_site in config.block.replace(" ", "").split(","):
         if not blocked_site:
             continue
-        block = (' -site:' + blocked_site)
-        query += block if block not in unquoted_query else ''
+        block = (" -site:" + blocked_site)
+        query += block if block not in unquoted_query else ""
 
     for val in param_dict.values():
         if not val:
@@ -174,58 +174,58 @@ class Request:
     search suggestions, and loading of external content (images, audio, etc).
 
     Attributes:
-        normal_ua: the user's current user agent
+        normal_ua: the user"s current user agent
         root_path: the root path of the whoogle instance
-        config: the user's current whoogle configuration
+        config: the user"s current whoogle configuration
     """
 
     def __init__(self, normal_ua, root_path, config: Config):
-        self.search_url = 'https://www.google.com/search?gbv=1&num=' + str(
-            os.getenv('WHOOGLE_RESULTS_PER_PAGE', 10)) + '&q='
+        self.search_url = "https://www.google.com/search?gbv=1&num=" + str(
+            os.getenv("WHOOGLE_RESULTS_PER_PAGE", 10)) + "&q="
         # Send heartbeat to Tor, used in determining if the user can or cannot
         # enable Tor for future requests
         send_tor_signal(Signal.HEARTBEAT)
 
         self.language = (
-            config.lang_search if config.lang_search else ''
+            config.lang_search if config.lang_search else ""
         )
 
         # For setting Accept-language Header
-        self.lang_interface = ''
+        self.lang_interface = ""
         if config.accept_language:
             self.lang_interface = config.lang_interface
 
-        self.mobile = bool(normal_ua) and ('Android' in normal_ua
-                                           or 'iPhone' in normal_ua)
+        self.mobile = bool(normal_ua) and ("Android" in normal_ua
+                                           or "iPhone" in normal_ua)
         self.modified_user_agent = gen_user_agent(self.mobile)
         if not self.mobile:
             self.modified_user_agent_mobile = gen_user_agent(True)
 
         # Set up proxy, if previously configured
-        proxy_path = os.environ.get('WHOOGLE_PROXY_LOC', '')
+        proxy_path = os.environ.get("WHOOGLE_PROXY_LOC", "")
         if proxy_path:
-            proxy_type = os.environ.get('WHOOGLE_PROXY_TYPE', '')
-            proxy_user = os.environ.get('WHOOGLE_PROXY_USER', '')
-            proxy_pass = os.environ.get('WHOOGLE_PROXY_PASS', '')
-            auth_str = ''
+            proxy_type = os.environ.get("WHOOGLE_PROXY_TYPE", "")
+            proxy_user = os.environ.get("WHOOGLE_PROXY_USER", "")
+            proxy_pass = os.environ.get("WHOOGLE_PROXY_PASS", "")
+            auth_str = ""
             if proxy_user:
-                auth_str = proxy_user + ':' + proxy_pass
+                auth_str = proxy_user + ":" + proxy_pass
             self.proxies = {
-                'https': proxy_type + '://' +
-                         ((auth_str + '@') if auth_str else '') + proxy_path,
+                "https": proxy_type + "://" +
+                         ((auth_str + "@") if auth_str else "") + proxy_path,
             }
 
             # Need to ensure both HTTP and HTTPS are in the proxy dict,
             # regardless of underlying protocol
-            if proxy_type == 'https':
-                self.proxies['http'] = self.proxies['https'].replace(
-                    'https', 'http')
+            if proxy_type == "https":
+                self.proxies["http"] = self.proxies["https"].replace(
+                    "https", "http")
             else:
-                self.proxies['http'] = self.proxies['https']
+                self.proxies["http"] = self.proxies["https"]
         else:
             self.proxies = {
-                'http': 'socks5://127.0.0.1:9050',
-                'https': 'socks5://127.0.0.1:9050'
+                "http": "socks5://127.0.0.1:9050",
+                "https": "socks5://127.0.0.1:9050"
             } if config.tor else {}
         self.tor = config.tor
         self.tor_valid = False
@@ -235,7 +235,7 @@ class Request:
         return getattr(self, name)
 
     def autocomplete(self, query) -> list:
-        """Sends a query to Google's search suggestion service
+        """Sends a query to Google"s search suggestion service
 
         Args:
             query: The in-progress query to send
@@ -246,7 +246,7 @@ class Request:
         """
         ac_query = dict(q=query)
         if self.language:
-            ac_query['hl'] = self.language
+            ac_query["hl"] = self.language
 
         response = self.send(base_url=AUTOCOMPLETE_URL,
                              query=urlparse.urlencode(ac_query)).text
@@ -256,13 +256,13 @@ class Request:
 
         try:
             root = ET.fromstring(response)
-            return [_.attrib['data'] for _ in
-                    root.findall('.//suggestion/[@data]')]
+            return [_.attrib["data"] for _ in
+                    root.findall(".//suggestion/[@data]")]
         except ET.ParseError:
             # Malformed XML response
             return []
 
-    def send(self, base_url='', query='', attempt=0,
+    def send(self, base_url="", query="", attempt=0,
              force_mobile=False) -> Response:
         """Sends an outbound request to a URL. Optionally sends the request
         using Tor, if enabled by the user.
@@ -285,19 +285,19 @@ class Request:
             modified_user_agent = self.modified_user_agent
 
         headers = {
-            'User-Agent': modified_user_agent
+            "User-Agent": modified_user_agent
         }
 
         # Adding the Accept-Language to the Header if possible
         if self.lang_interface:
-            headers.update({'Accept-Language':
-                                self.lang_interface.replace('lang_', '')
-                                + ';q=1.0'})
+            headers.update({"Accept-Language":
+                                self.lang_interface.replace("lang_", "")
+                                + ";q=1.0"})
 
         # view is suppressed correctly
         now = datetime.now()
         cookies = {
-            'CONSENT': 'YES+cb.{:d}{:02d}{:02d}-17-p0.de+F+678'.format(
+            "CONSENT": "YES+cb.{:d}{:02d}{:02d}-17-p0.de+F+678".format(
                 now.year, now.month, now.day
             )
         }
@@ -313,9 +313,9 @@ class Request:
         # Make sure that the tor connection is valid, if enabled
         if self.tor:
             try:
-                tor_check = requests.get('https://check.torproject.org/',
+                tor_check = requests.get("https://check.torproject.org/",
                                          proxies=self.proxies, headers=headers)
-                self.tor_valid = 'Congratulations' in tor_check.text
+                self.tor_valid = "Congratulations" in tor_check.text
 
                 if not self.tor_valid:
                     raise TorError(
@@ -334,7 +334,7 @@ class Request:
             cookies=cookies)
 
         # Retry query with new identity if using Tor (max 10 attempts)
-        if 'form id="captcha-form"' in response.text and self.tor:
+        if "form id=\"captcha-form\"" in response.text and self.tor:
             attempt += 1
             if attempt > 10:
                 raise TorError("Tor query failed -- max attempts exceeded 10")
