@@ -1,11 +1,11 @@
 ![Whoogle Search](docs/banner.png)
 
-[![Latest Release](https://img.shields.io/github/v/release/koval01/whoogle-search)](https://github.com/koval01/shoogle/releases)
+[![Latest Release](https://img.shields.io/github/v/release/koval01/whoogle-search-kdev)](https://github.com/koval01/shoogle/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![tests](https://github.com/koval01/whoogle-search/actions/workflows/tests.yml/badge.svg)](https://github.com/koval01/whoogle-search/actions/workflows/tests.yml)
-[![buildx](https://github.com/koval01/whoogle-search/actions/workflows/buildx.yml/badge.svg)](https://github.com/koval01/whoogle-search/actions/workflows/buildx.yml)
+[![tests](https://github.com/koval01/whoogle-search-kdev/actions/workflows/tests.yml/badge.svg)](https://github.com/koval01/whoogle-search-kdev/actions/workflows/tests.yml)
+[![buildx](https://github.com/koval01/whoogle-search-kdev/actions/workflows/buildx.yml/badge.svg)](https://github.com/koval01/whoogle-search-kdev/actions/workflows/buildx.yml)
 [![codebeat badge](https://codebeat.co/badges/e96cada2-fb6f-4528-8285-7d72abd74e8d)](https://codebeat.co/projects/github-com-koval01-shoogle-master)
-[![Docker Pulls](https://img.shields.io/docker/pulls/koval01/whoogle-search)](https://hub.docker.com/r/koval01/whoogle-search)
+[![Docker Pulls](https://img.shields.io/docker/pulls/koval01/whoogle-search-kdev)](https://hub.docker.com/r/koval01/whoogle-search-kdev)
 
 Get Google search results, but without any ads, javascript, AMP links, cookies, or IP address tracking. Easily deployable in one click as a Docker app, and customizable with a single config file. Quick and simple to implement as a primary search engine replacement on both desktop and mobile.
 
@@ -36,8 +36,8 @@ Contents
 9. [Public Instances](#public-instances)
 10. [Screenshots](#screenshots)
 11. Mirrors (read-only)
-    1. [GitLab](https://gitlab.com/koval01/whoogle-search)
-    2. [Gogs](https://gogs.koval01.com/koval01/whoogle-search)
+    1. [GitLab](https://gitlab.com/koval01/whoogle-search-kdev)
+    2. [Gogs](https://gogs.koval01.com/koval01/whoogle-search-kdev)
 
 ## Features
 - No ads or sponsored content
@@ -51,7 +51,7 @@ Contents
 - Autocomplete/search suggestions
 - POST request search and suggestion queries (when possible)
 - View images at full res without site redirect (currently mobile only)
-- Light/Dark/System theme modes (with support for [custom CSS theming](https://github.com/koval01/whoogle-search/wiki/User-Contributed-CSS-Themes))
+- Light/Dark/System theme modes (with support for [custom CSS theming](https://github.com/koval01/whoogle-search-kdev/wiki/User-Contributed-CSS-Themes))
 - Randomly generated User Agent
 - Easy to install/deploy
 - DDG-style bang (i.e. `!<tag> <query>`) searches
@@ -79,19 +79,19 @@ If using Heroku Quick Deploy, **you can skip this section**.
 There are a few different ways to begin using the app, depending on your preferences:
 
 ### A) [Heroku Quick Deploy](https://heroku.com/about)
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/koval01/whoogle-search/tree/main)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/koval01/whoogle-search-kdev/tree/main)
 
 Provides:
 - Free deployment of app
 - Free HTTPS url (https://\<your app name\>.herokuapp.com)
-- Downtime after periods of inactivity \([solution](https://github.com/koval01/whoogle-search#prevent-downtime-heroku-only)\)
+- Downtime after periods of inactivity \([solution](https://github.com/koval01/whoogle-search-kdev#prevent-downtime-heroku-only)\)
 
 Notes:
 - Requires a (free) Heroku account
 - Sometimes has issues with auto-redirecting to `https`. Make sure to navigate to the `https` version of your app before adding as a default search engine.
 
 ### B) [Repl.it](https://repl.it)
-[![Run on Repl.it](https://repl.it/badge/github/koval01/whoogle-search)](https://repl.it/github/koval01/whoogle-search)
+[![Run on Repl.it](https://repl.it/badge/github/koval01/whoogle-search-kdev)](https://repl.it/github/koval01/whoogle-search-kdev)
 
 *Note: Requires a (free) Replit account*
 
@@ -111,7 +111,7 @@ You will need a **PAID** [Fly.io](https://fly.io) account to deploy Whoogle.
 
 ```bash
 flyctl auth login
-flyctl launch --image koval01/whoogle-search:latest
+flyctl launch --image koval01/whoogle-search-kdev:latest
 ```
 
 Your app is now available at `https://<app-name>.fly.dev`.
@@ -119,18 +119,18 @@ Your app is now available at `https://<app-name>.fly.dev`.
 ### D) [pipx](https://github.com/pipxproject/pipx#install-pipx)
 Persistent install:
 
-`pipx install git+https://github.com/koval01/whoogle-search.git`
+`pipx install git+https://github.com/koval01/whoogle-search-kdev.git`
 
 Sandboxed temporary instance:
 
-`pipx run --spec git+https://github.com/koval01/whoogle-search.git whoogle-search`
+`pipx run --spec git+https://github.com/koval01/whoogle-search-kdev.git whoogle-search-kdev`
 
 ### E) pip
-`pip install whoogle-search`
+`pip install whoogle-search-kdev`
 
 ```bash
-$ whoogle-search --help
-usage: whoogle-search [-h] [--port <port number>] [--host <ip address>] [--debug] [--https-only] [--userpass <username:password>]
+$ whoogle-search-kdev --help
+usage: whoogle-search-kdev [-h] [--port <port number>] [--host <ip address>] [--debug] [--https-only] [--userpass <username:password>]
                       [--proxyauth <username:password>] [--proxytype <socks4|socks5|http>] [--proxyloc <location:port>]
 
 Whoogle Search console runner
@@ -159,8 +159,8 @@ See the [available environment variables](#environment-variables) for additional
 Clone the repo and run the following commands to start the app in a local-only environment:
 
 ```bash
-git clone https://github.com/koval01/whoogle-search.git
-cd whoogle-search
+git clone https://github.com/koval01/whoogle-search-kdev.git
+cd whoogle-search-kdev
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -202,13 +202,13 @@ Description=Whoogle
 Type=simple
 User=<username>
 # If installed as a package, add:
-ExecStart=<python_install_dir>/python3 <whoogle_install_dir>/whoogle-search --host 127.0.0.1 --port 5000
+ExecStart=<python_install_dir>/python3 <whoogle_install_dir>/whoogle-search-kdev --host 127.0.0.1 --port 5000
 # For example:
-# ExecStart=/usr/bin/python3 /home/my_username/.local/bin/whoogle-search --host 127.0.0.1 --port 5000
+# ExecStart=/usr/bin/python3 /home/my_username/.local/bin/whoogle-search-kdev --host 127.0.0.1 --port 5000
 # Otherwise if running the app from source, add:
 ExecStart=<whoogle_repo_dir>/run
 # For example:
-# ExecStart=/var/www/whoogle-search/run
+# ExecStart=/var/www/whoogle-search-kdev/run
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=always
 RestartSec=3
@@ -279,48 +279,48 @@ There are two authentication methods, password and cookie. You will need to make
 
 Through Docker Hub:
 ```bash
-docker pull koval01/whoogle-search
-docker run --publish 5000:5000 --detach --name whoogle-search koval01/whoogle-search:latest
+docker pull koval01/whoogle-search-kdev
+docker run --publish 5000:5000 --detach --name whoogle-search-kdev koval01/whoogle-search-kdev:latest
 ```
 
 or with docker-compose:
 
 ```bash
-git clone https://github.com/koval01/whoogle-search.git
-cd whoogle-search
+git clone https://github.com/koval01/whoogle-search-kdev.git
+cd whoogle-search-kdev
 docker-compose up
 ```
 
 or by building yourself:
 
 ```bash
-git clone https://github.com/koval01/whoogle-search.git
-cd whoogle-search
-docker build --tag whoogle-search:1.0 .
-docker run --publish 5000:5000 --detach --name whoogle-search whoogle-search:1.0
+git clone https://github.com/koval01/whoogle-search-kdev.git
+cd whoogle-search-kdev
+docker build --tag whoogle-search-kdev:1.0 .
+docker run --publish 5000:5000 --detach --name whoogle-search-kdev whoogle-search-kdev:1.0
 ```
 
 Optionally, you can also enable some of the following environment variables to further customize your instance:
 
 ```bash
-docker run --publish 5000:5000 --detach --name whoogle-search \
+docker run --publish 5000:5000 --detach --name whoogle-search-kdev \
   -e WHOOGLE_USER=username \
   -e WHOOGLE_PASS=password \
   -e WHOOGLE_PROXY_USER=username \
   -e WHOOGLE_PROXY_PASS=password \
   -e WHOOGLE_PROXY_TYPE=socks5 \
   -e WHOOGLE_PROXY_LOC=ip \
-  whoogle-search:1.0
+  whoogle-search-kdev:1.0
 ```
 
-And kill with: `docker rm --force whoogle-search`
+And kill with: `docker rm --force whoogle-search-kdev`
 
 #### Using [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
 ```bash
 heroku login
 heroku container:login
-git clone https://github.com/koval01/whoogle-search.git
-cd whoogle-search
+git clone https://github.com/koval01/whoogle-search-kdev.git
+cd whoogle-search-kdev
 heroku create
 heroku container:push web
 heroku container:release web
@@ -367,7 +367,7 @@ There are a few optional environment variables available for customizing a Whoog
 | WHOOGLE_PROXY_TYPE   | The type of the proxy server. Can be "socks5", "socks4", or "http".                       |
 | WHOOGLE_PROXY_LOC    | The location of the proxy server (host or ip).                                            |
 | EXPOSE_PORT          | The port where Whoogle will be exposed.                                                   |
-| HTTPS_ONLY           | Enforce HTTPS. (See [here](https://github.com/koval01/whoogle-search#https-enforcement)) |
+| HTTPS_ONLY           | Enforce HTTPS. (See [here](https://github.com/koval01/whoogle-search-kdev#https-enforcement)) |
 | WHOOGLE_ALT_TW       | The twitter.com alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
 | WHOOGLE_ALT_YT       | The youtube.com alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
 | WHOOGLE_ALT_IG       | The instagram.com alternative to use when site alternatives are enabled in the config. Set to "" to disable. |
@@ -476,7 +476,7 @@ Note: You should have your own domain name and [an https certificate](https://le
 - Heroku: Ensure that the `Root URL` configuration on the home page begins with `https://` and not `http://`
 - Docker build: Add `--build-arg use_https=1` to your run command
 - Docker image: Set the environment variable HTTPS_ONLY=1
-- Pip/Pipx: Add the `--https-only` flag to the end of the `whoogle-search` command
+- Pip/Pipx: Add the `--https-only` flag to the end of the `whoogle-search-kdev` command
 - Default `run` script: Modify the script locally to include the `--https-only` flag at the end of the python run command
 
 ### Using with Firefox Containers
@@ -540,7 +540,7 @@ Under the hood, Whoogle is a basic Flask app with the following structure:
     - Key-value JSON files for establishing valid configuration values
 
 
-If you're new to the project, the easiest way to get started would be to try fixing [an open bug report](https://github.com/koval01/whoogle-search/issues?q=is%3Aissue+is%3Aopen+label%3Abug). If there aren't any open, or if the open ones are too stale, try taking on a [feature request](https://github.com/koval01/whoogle-search/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement). Generally speaking, if you can write something that has any potential of breaking down in the future, you should write a test for it.
+If you're new to the project, the easiest way to get started would be to try fixing [an open bug report](https://github.com/koval01/whoogle-search-kdev/issues?q=is%3Aissue+is%3Aopen+label%3Abug). If there aren't any open, or if the open ones are too stale, try taking on a [feature request](https://github.com/koval01/whoogle-search-kdev/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement). Generally speaking, if you can write something that has any potential of breaking down in the future, you should write a test for it.
 
 The project follows the [PEP 8 Style Guide](https://www.python.org/dev/peps/pep-0008/), but is liable to change. Static typing should always be used when possible. Function documentation is greatly appreciated, and typically follows the below format:
 
@@ -561,7 +561,7 @@ def contains(x: list, y: int) -> bool:
 
 #### Translating
 
-Whoogle currently supports translations using [`translations.json`](https://github.com/koval01/whoogle-search/blob/main/app/static/settings/translations.json). Language values in this file need to match the "value" of the according language in [`languages.json`](https://github.com/koval01/whoogle-search/blob/main/app/static/settings/languages.json) (i.e. "lang_en" for English, "lang_es" for Spanish, etc). After you add a new set of translations to `translations.json`, open a PR with your changes and they will be merged in as soon as possible.
+Whoogle currently supports translations using [`translations.json`](https://github.com/koval01/whoogle-search-kdev/blob/main/app/static/settings/translations.json). Language values in this file need to match the "value" of the according language in [`languages.json`](https://github.com/koval01/whoogle-search-kdev/blob/main/app/static/settings/languages.json) (i.e. "lang_en" for English, "lang_es" for Spanish, etc). After you add a new set of translations to `translations.json`, open a PR with your changes and they will be merged in as soon as possible.
 
 ## FAQ
 **What's the difference between this and [Searx](https://github.com/asciimoo/searx)?**
