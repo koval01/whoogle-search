@@ -41,7 +41,7 @@ def get_proxy_host_url(r: Request, default: str, root=False) -> str:
     scheme = r.headers.get("X-Forwarded-Proto", "https")
     http_host = r.headers.get("X-Forwarded-Host")
     if http_host:
-        return f"{scheme}://{http_host}{r.full_path if not root else "/"}"
+        return f"{scheme}://{http_host}{r.full_path if not root else '/'}"
 
     return default
 
@@ -50,7 +50,7 @@ def check_for_update(version_url: str, current: str) -> int:
     # Check for the latest version of Whoogle
     try:
         update = bsoup(get(version_url).text, "html.parser")
-        latest = update.select_one("[class="Link--primary"]").string[1:]
+        latest = update.select_one("[class=\"Link--primary\"]").string[1:]
         current = int("".join(filter(str.isdigit, current)))
         latest = int("".join(filter(str.isdigit, latest)))
         has_update = "" if current >= latest else latest

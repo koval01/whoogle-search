@@ -10,8 +10,8 @@ from bs4 import BeautifulSoup as bsoup
 from cryptography.fernet import Fernet, InvalidToken
 from flask import g
 
-TOR_BANNER = "<hr><h1 style="text-align: center">You are using Tor</h1><hr>"
-CAPTCHA = "div class="g-recaptcha""
+TOR_BANNER = '<hr><h1 style="text-align: center">You are using Tor</h1><hr>'
+CAPTCHA = 'div class="g-recaptcha"'
 
 
 def needs_https(url: str) -> bool:
@@ -27,9 +27,9 @@ def needs_https(url: str) -> bool:
         bool: True/False representing the need to upgrade
 
     """
-    https_only = bool(os.getenv("HTTPS_ONLY", 0))
-    is_heroku = url.endswith(".herokuapp.com")
-    is_http = url.startswith("http://")
+    https_only = bool(os.getenv('HTTPS_ONLY', 0))
+    is_heroku = url.endswith('.herokuapp.com')
+    is_http = url.startswith('http://')
 
     return (is_heroku and is_http) or (https_only and is_http)
 
@@ -59,15 +59,15 @@ class Search:
     def __init__(self, request, config, session_key, cookies_disabled=False):
         method = request.method
         self.request = request
-        self.request_params = request.args if method == "GET" else request.form
-        self.user_agent = request.headers.get("User-Agent")
+        self.request_params = request.args if method == 'GET' else request.form
+        self.user_agent = request.headers.get('User-Agent')
         self.feeling_lucky = False
         self.config = config
         self.session_key = session_key
-        self.query = ""
+        self.query = ''
         self.cookies_disabled = cookies_disabled
         self.search_type = self.request_params.get(
-            "tbm") if "tbm" in self.request_params else ""
+            'tbm') if 'tbm' in self.request_params else ''
 
     def __getitem__(self, name) -> Any:
         return getattr(self, name)
@@ -91,10 +91,10 @@ class Search:
             str: A valid query string
 
         """
-        q = self.request_params.get("q")
+        q = self.request_params.get('q')
 
         if q is None or len(q) == 0:
-            return ""
+            return ''
         else:
             # Attempt to decrypt if this is an internal link
             try:
@@ -102,20 +102,20 @@ class Search:
             except InvalidToken:
                 pass
 
-        # Strip leading "! " for "feeling lucky" queries
-        self.feeling_lucky = q.startswith("! ")
+        # Strip leading '! ' for "feeling lucky" queries
+        self.feeling_lucky = q.startswith('! ')
         self.query = q[2:] if self.feeling_lucky else q
         return self.query
 
     def generate_response(self) -> str:
-        """Generates a response for the user"s query
+        """Generates a response for the user's query
 
         Returns:
             str: A string response to the search query, in the form of a URL
                  or string representation of HTML content.
 
         """
-        mobile = "Android" in self.user_agent or "iPhone" in self.user_agent
+        mobile = 'Android' in self.user_agent or 'iPhone' in self.user_agent
         # reconstruct url if X-Forwarded-Host header present
         root_url = get_proxy_host_url(
             self.request,
@@ -134,7 +134,7 @@ class Search:
 
         # force mobile search when view image is true and
         # the request is not already made by a mobile
-        view_image = ("tbm=isch" in full_query
+        view_image = ('tbm=isch' in full_query
                       and self.config.view_image
                       and not g.user_request.mobile)
 
@@ -142,7 +142,7 @@ class Search:
                                        force_mobile=view_image)
 
         # Produce cleanable html soup from response
-        html_soup = bsoup(get_body.text, "html.parser")
+        html_soup = bsoup(get_body.text, 'html.parser')
 
         # Replace current soup if view_image is active
         if view_image:
@@ -150,7 +150,7 @@ class Search:
 
         # Indicate whether or not a Tor connection is active
         if g.user_request.tor_valid:
-            html_soup.insert(0, bsoup(TOR_BANNER, "html.parser"))
+            html_soup.insert(0, bsoup(TOR_BANNER, 'html.parser'))
 
         if self.feeling_lucky:
             return get_first_link(html_soup)
@@ -158,21 +158,21 @@ class Search:
             formatted_results = content_filter.clean(html_soup)
 
             # Append user config to all search links, if available
-            param_str = "".join("&{}={}".format(k, v)
+            param_str = ''.join('&{}={}'.format(k, v)
                                 for k, v in
                                 self.request_params.to_dict(flat=True).items()
                                 if self.config.is_safe_key(k))
-            for link in formatted_results.find_all("a", href=True):
-                link["rel"] = "nofollow noopener noreferrer"
-                if "search?" not in link["href"] or link["href"].index(
-                        "search?") > 1:
+            for link in formatted_results.find_all('a', href=True):
+                link['rel'] = "nofollow noopener noreferrer"
+                if 'search?' not in link['href'] or link['href'].index(
+                        'search?') > 1:
                     continue
-                link["href"] += param_str
+                link['href'] += param_str
 
             return str(formatted_results)
 
     def check_kw_ip(self) -> re.Match:
-        """Checks for keywords related to "my ip" in the query
+        """Checks for keywords related to 'my ip' in the query
 
         Returns:
             bool

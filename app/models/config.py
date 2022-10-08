@@ -29,33 +29,33 @@ class Config:
         self.dark = read_config_bool("WHOOGLE_CONFIG_DARK")  # deprecated
         self.alts = read_config_bool("WHOOGLE_CONFIG_ALTS")
         self.nojs = read_config_bool("WHOOGLE_CONFIG_NOJS")
-        self.tor = read_config_bool("WHOOGLE_CONFIG_TOR')
-        self.near = os.getenv('WHOOGLE_CONFIG_NEAR', '')
-        self.new_tab = read_config_bool('WHOOGLE_CONFIG_NEW_TAB')
-        self.view_image = read_config_bool('WHOOGLE_CONFIG_VIEW_IMAGE')
-        self.get_only = read_config_bool('WHOOGLE_CONFIG_GET_ONLY')
-        self.anon_view = read_config_bool('WHOOGLE_CONFIG_ANON_VIEW')
-        self.preferences_encrypted = read_config_bool('WHOOGLE_CONFIG_PREFERENCES_ENCRYPTED')
-        self.preferences_key = os.getenv('WHOOGLE_CONFIG_PREFERENCES_KEY', '')
+        self.tor = read_config_bool("WHOOGLE_CONFIG_TOR")
+        self.near = os.getenv("WHOOGLE_CONFIG_NEAR", "")
+        self.new_tab = read_config_bool("WHOOGLE_CONFIG_NEW_TAB")
+        self.view_image = read_config_bool("WHOOGLE_CONFIG_VIEW_IMAGE")
+        self.get_only = read_config_bool("WHOOGLE_CONFIG_GET_ONLY")
+        self.anon_view = read_config_bool("WHOOGLE_CONFIG_ANON_VIEW")
+        self.preferences_encrypted = read_config_bool("WHOOGLE_CONFIG_PREFERENCES_ENCRYPTED")
+        self.preferences_key = os.getenv("WHOOGLE_CONFIG_PREFERENCES_KEY", "")
         
         self.accept_language = False
 
         self.safe_keys = [
-            'lang_search',
-            'lang_interface',
-            'country',
-            'theme',
-            'alts',
-            'new_tab',
-            'view_image',
-            'block',
-            'safe',
-            'nojs',
-            'anon_view',
-            'preferences_encrypted'
+            "lang_search",
+            "lang_interface",
+            "country",
+            "theme",
+            "alts",
+            "new_tab",
+            "view_image",
+            "block",
+            "safe",
+            "nojs",
+            "anon_view",
+            "preferences_encrypted"
         ]
 
-        # Skip setting custom config if there isn't one
+        # Skip setting custom config if there isn"t one
         if kwargs:
             mutable_attrs = self.get_mutable_attrs()
             for attr in mutable_attrs:
@@ -92,10 +92,10 @@ class Config:
         if self.preferences_encrypted:
             self.preferences_encrypted = bool(self.preferences_key)
         
-        # add a tag for visibility if preferences token startswith 'e' it means
-        # the token is encrypted, 'u' means the token is unencrypted and can be
+        # add a tag for visibility if preferences token startswith "e" it means
+        # the token is encrypted, "u" means the token is unencrypted and can be
         # used by other whoogle instances
-        encrypted_flag = "e" if self.preferences_encrypted else 'u'
+        encrypted_flag = "e" if self.preferences_encrypted else "u"
         preferences_digest = self._encode_preferences()
         return f"{encrypted_flag}{preferences_digest}"
 
@@ -121,12 +121,12 @@ class Config:
             str -- the localization language string
         """
         if (self.lang_interface and
-                self.lang_interface in current_app.config['TRANSLATIONS']):
+                self.lang_interface in current_app.config["TRANSLATIONS"]):
             return self.lang_interface
 
-        return 'lang_en'
+        return "lang_en"
 
-    def from_params(self, params) -> 'Config':
+    def from_params(self, params) -> "Config":
         """Modify user config with search parameters. This is primarily
         used for specifying configuration on a search-by-search basis on
         public instances.
@@ -137,8 +137,8 @@ class Config:
         Returns:
             Config -- a modified config object
         """
-        if 'preferences' in params:
-            params_new = self._decode_preferences(params['preferences'])
+        if "preferences" in params:
+            params_new = self._decode_preferences(params["preferences"])
             # if preferences leads to an empty dictionary it means preferences
             # parameter was not decrypted successfully
             if len(params_new):
@@ -149,7 +149,7 @@ class Config:
                 continue
             param_val = params.get(param_key)
 
-            if param_val == 'off':
+            if param_val == "off":
                 param_val = False
             elif isinstance(param_val, str):
                 if param_val.isdigit():
@@ -164,11 +164,11 @@ class Config:
         Returns:
             str -- a set of URL parameters
         """
-        param_str = ''
+        param_str = ""
         for safe_key in self.safe_keys:
             if not self[safe_key]:
                 continue
-            param_str = param_str + f'&{safe_key}={self[safe_key]}'
+            param_str = param_str + f"&{safe_key}={self[safe_key]}"
 
         return param_str
 
@@ -180,7 +180,7 @@ class Config:
     def _encode_preferences(self) -> str:
         encoded_preferences = brotli.compress(pickle.dumps(self.get_attrs()))
         if self.preferences_encrypted:
-            if self.preferences_key != '':
+            if self.preferences_key != "":
                 key = self._get_fernet_key(self.preferences_key)
                 encoded_preferences = Fernet(key).encrypt(encoded_preferences)
                 encoded_preferences = brotli.compress(encoded_preferences)
@@ -190,7 +190,7 @@ class Config:
     def _decode_preferences(self, preferences: str) -> dict:
         mode = preferences[0]
         preferences = preferences[1:]
-        if mode == 'e': # preferences are encrypted
+        if mode == "e": # preferences are encrypted
             try:
                 key = self._get_fernet_key(self.preferences_key)
 
@@ -201,7 +201,7 @@ class Config:
                 config = pickle.loads(brotli.decompress(config))
             except Exception:
                 config = {}
-        elif mode == 'u': # preferences are not encrypted
+        elif mode == "u": # preferences are not encrypted
             config = pickle.loads(
                 brotli.decompress(urlsafe_b64decode(preferences.encode()))
             )
