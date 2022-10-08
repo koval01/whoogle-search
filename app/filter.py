@@ -159,6 +159,7 @@ class Filter:
         self.update_css(soup)
         self.update_styling(soup)
         self.remove_block_tabs(soup)
+        self.update_results_parent(soup)
 
         for img in [_ for _ in soup.find_all('img') if 'src' in _.attrs]:
             self.update_element_src(img, 'image/png')
@@ -204,29 +205,26 @@ class Filter:
                                        search_string, ''))
 
     @staticmethod
+    def update_results_parent(soup) -> None:
+        for el in soup.find_all(
+            'div',
+            attrs={'class': GClasses.result_class_a}
+        ):
+            el.parent['class'] = "parent-result-class"
+
+    @staticmethod
     def remove_privacy(soup) -> None:
-        """Removes google privacy/policy container in footer
-
-        Args:
-            soup: BeautifulSoup object with Google data
-
-        Returns:
-            None (The soup object is modified directly)
-        """
+        """Removes google privacy/policy container in footer"""
         selector = soup.find(
             'table',
-            attrs={'class': "bookcf"}
+            attrs={'class': 'bookcf'}
         )
 
         if selector:
             selector.decompose()
 
     def remove_ads(self) -> None:
-        """Removes ads found in the list of search result divs
-
-        Returns:
-            None (The soup object is modified directly)
-        """
+        """Removes ads found in the list of search result divs"""
         if not self.main_divs:
             return
 

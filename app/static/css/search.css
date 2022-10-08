@@ -3,6 +3,7 @@ body {
   margin: auto !important;
   min-width: 0 !important;
   overflow-x: hidden !important;
+  padding: 0 5% !important;
 }
 
 table {
@@ -31,6 +32,10 @@ textarea:focus, input:focus, select:focus {
   border-radius: 1rem;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.6117647059) !important;
   border: unset !important;
+}
+
+.parent-result-class {
+  padding: 0.2rem 1rem;
 }
 
 .autocomplete {
