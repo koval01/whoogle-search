@@ -129,7 +129,7 @@ input {
   border-bottom: 1px solid var(--whoogle-element-bg);
 }
 .autocomplete-items div:hover {
-  background-color: var(--whoogle-element-bg);
+  background-color: var(--whoogle-element-bg) !important;
   color: var(--whoogle-contrast-text) !important;
 }
 

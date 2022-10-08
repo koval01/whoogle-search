@@ -154,7 +154,7 @@ select {
   border-bottom: 1px solid var(--whoogle-dark-element-bg);
 }
 .autocomplete-items div:hover {
-  background-color: var(--whoogle-dark-element-bg);
+  background-color: var(--whoogle-dark-element-bg) !important;
   color: var(--whoogle-dark-contrast-text) !important;
 }
 
