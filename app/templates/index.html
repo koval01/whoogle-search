@@ -23,6 +23,8 @@
     <script type="text/javascript" src="{{ cb_url('controller.min.js') }}"></script>
     <link rel="search" href="opensearch.xml" type="application/opensearchdescription+xml" title="Whoogle Search">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ cb_url('logo.min.css') }}">
     {% if config.theme %}
         {% if config.theme == 'system' %}
@@ -67,7 +69,7 @@
         <div class="search-fields">
             <div class="autocomplete">
                 {% if config.preferences %}
-                    <input type="hidden" name="preferences" value="{{ config.preferences }}" />
+                    <input type="hidden" name="preferences" value="{{ config.preferences }}"/>
                 {% endif %}
                 <input
                         type="text"
@@ -99,8 +101,7 @@
                                             {% if (
                                                 config.country != '' and config.country in country.value
                                             ) or (
-                                                config.country == '' and country.value == '')
-                                            %}
+                                                config.country == '' and country.value == '') %}
                                             selected
                                             {% endif %}>
                                         {{ country.name }}
@@ -153,11 +154,13 @@
                         <div class="config-div config-div-block">
                             <label for="config-block-url">{{ translation['config-block-url'] }}: </label>
                             <input type="text" name="block_url" id="config-block"
-                                   placeholder="{{ translation['config-block-url-help'] }}" value="{{ config.block_url }}">
+                                   placeholder="{{ translation['config-block-url-help'] }}"
+                                   value="{{ config.block_url }}">
                         </div>
                         <div class="config-div config-div-anon-view">
                             <label for="config-anon-view">{{ translation['config-anon-view'] }}: </label>
-                            <input type="checkbox" name="anon_view" id="config-anon-view" {{ 'checked' if config.anon_view else '' }}>
+                            <input type="checkbox" name="anon_view"
+                                   id="config-anon-view" {{ 'checked' if config.anon_view else '' }}>
                         </div>
                         <div class="config-div config-div-nojs">
                             <label for="config-nojs">{{ translation['config-nojs'] }}: </label>
@@ -202,9 +205,13 @@
                             <div><span class="info-text"> — {{ translation['config-images-help'] }}</span></div>
                         </div>
                         <div class="config-div config-div-tor">
-                            <label for="config-tor">{{ translation['config-tor'] }}: {{ '' if tor_available else 'Unavailable' }}</label>
+                            <label for="config-tor">
+                                {{ translation['config-tor'] }}: {{ '' if tor_available else 'Unavailable' }}
+                            </label>
                             <input type="checkbox" name="tor"
-                                   id="config-tor" {{ '' if tor_available else 'hidden' }} {{ 'checked' if config.tor else '' }}>
+                                   id="config-tor"
+                                    {{ '' if tor_available else 'hidden' }}
+                                    {{ 'checked' if config.tor else '' }}>
                         </div>
                         <div class="config-div config-div-get-only">
                             <label for="config-get-only">{{ translation['config-get-only'] }}: </label>
@@ -239,10 +246,12 @@
                         <div class="config-div config-div-pref-url">
                             <label for="config-pref-encryption">{{ translation['config-pref-encryption'] }}: </label>
                             <input type="checkbox" name="preferences_encrypted"
-                                   id="config-pref-encryption" {{ 'checked' if config.preferences_encrypted and config.preferences_key else '' }}>
+                                   id="config-pref-encryption"
+                                    {{ 'checked' if config.preferences_encrypted and config.preferences_key else '' }}>
                             <div><span class="info-text"> — {{ translation['config-pref-help'] }}</span></div>
                             <label for="config-pref-url">{{ translation['config-pref-url'] }}: </label>
-                            <input type="text" name="pref-url" id="config-pref-url" value="{{ config.url }}?preferences={{ config.preferences }}">
+                            <input type="text" name="pref-url" id="config-pref-url"
+                                   value="{{ config.url }}?preferences={{ config.preferences }}">
                         </div>
                     </div>
                     <div class="config-div config-buttons">
@@ -256,5 +265,9 @@
     {% endif %}
 </div>
 {% include 'footer.html' %}
+<!-- JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+        crossorigin="anonymous"></script>
 </body>
 </html>
