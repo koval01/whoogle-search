@@ -16,13 +16,13 @@ jobs:
       uses: actions/checkout@v2
     - name: build and test (docker)
       run: |
-        docker build --tag whoogle-search:test .
-        docker run --publish 5000:5000 --detach --name whoogle-search-nocompose whoogle-search:test
+        docker build --tag whoogle-search-kdev:test .
+        docker run --publish 5000:5000 --detach --name whoogle-search-kdev-nocompose whoogle-search-kdev:test
         sleep 15
-        docker exec whoogle-search-nocompose curl -f http://localhost:5000/healthz || exit 1
+        docker exec whoogle-search-kdev-nocompose curl -f http://localhost:5000/healthz || exit 1
     - name: build and test (docker-compose)
       run: |
-        docker rm -f whoogle-search-nocompose
-        WHOOGLE_IMAGE="whoogle-search:test" docker-compose up --detach
+        docker rm -f whoogle-search-kdev-nocompose
+        WHOOGLE_IMAGE="whoogle-search-kdev:test" docker-compose up --detach
         sleep 15
-        docker exec whoogle-search curl -f http://localhost:5000/healthz || exit 1
+        docker exec whoogle-search-kdev curl -f http://localhost:5000/healthz || exit 1

@@ -5,12 +5,12 @@ type: application
 version: 0.1.0
 appVersion: 0.7.5
 
-icon: https://github.com/koval01/whoogle-search/raw/main/app/static/img/favicon/favicon-96x96.png
+icon: https://github.com/koval01/whoogle-search-kdev/raw/main/app/static/img/favicon/favicon-96x96.png
 
 sources:
-  - https://github.com/koval01/whoogle-search
-  - https://gitlab.com/koval01/whoogle-search
-  - https://gogs.koval01.com/koval01/whoogle-search
+  - https://github.com/koval01/whoogle-search-kdev
+  - https://gitlab.com/koval01/whoogle-search-kdev
+  - https://gogs.koval01.com/koval01/whoogle-search-kdev
 
 keywords:
   - whoogle

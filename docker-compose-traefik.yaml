@@ -23,15 +23,15 @@ services:
       - "./letsencrypt:/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
-  whoogle-search:
+  whoogle-search-kdev:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.whoami.rule=Host(`change.host.name`)"
       - "traefik.http.routers.whoami.entrypoints=websecure"
       - "traefik.http.routers.whoami.tls.certresolver=myresolver"
-      - "traefik.http.services.whoogle-search.loadbalancer.server.port=5000"
-    image: ${WHOOGLE_IMAGE:-koval01/whoogle-search}
-    container_name: whoogle-search
+      - "traefik.http.services.whoogle-search-kdev.loadbalancer.server.port=5000"
+    image: ${WHOOGLE_IMAGE:-koval01/whoogle-search-kdev}
+    container_name: whoogle-search-kdev
     restart: unless-stopped
     pids_limit: 50
     mem_limit: 256mb

@@ -11,9 +11,9 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build the container image
       run: |
-        docker build --tag whoogle-search:test .
+        docker build --tag whoogle-search-kdev:test .
     - name: Initiate grype scan
       run: |
         curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b .
         chmod +x ./grype
-        ./grype whoogle-search:test --only-fixed
+        ./grype whoogle-search-kdev:test --only-fixed

@@ -4,7 +4,7 @@
 # 
 # You can set this up to run every night when you aren't using the
 # instance with a cronjob. For example:
-# 0 3 * * * /home/pi/whoogle-search/config/heroku-regen.sh <app_name>
+# 0 3 * * * /home/pi/whoogle-search-kdev/config/heroku-regen.sh <app_name>
 
 HEROKU_CLI_SITE="https://devcenter.heroku.com/articles/heroku-cli"
 

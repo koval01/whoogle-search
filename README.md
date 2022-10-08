@@ -1,9 +1,9 @@
 ![Whoogle Search](docs/banner.png)
 
-[![Latest Release](https://img.shields.io/github/v/release/koval01/whoogle-search)](https://github.com/koval01/whoogle-search/releases)
+[![Latest Release](https://img.shields.io/github/v/release/koval01/whoogle-search-kdev)](https://github.com/koval01/whoogle-search-kdev/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![tests](https://github.com/koval01/whoogle-search/actions/workflows/tests.yml/badge.svg)](https://github.com/koval01/whoogle-search/actions/workflows/tests.yml)
-[![buildx](https://github.com/koval01/whoogle-search/actions/workflows/buildx.yml/badge.svg)](https://github.com/koval01/whoogle-search/actions/workflows/buildx.yml)
+[![tests](https://github.com/koval01/whoogle-search-kdev/actions/workflows/tests.yml/badge.svg)](https://github.com/koval01/whoogle-search-kdev/actions/workflows/tests.yml)
+[![buildx](https://github.com/koval01/whoogle-search-kdev/actions/workflows/buildx.yml/badge.svg)](https://github.com/koval01/whoogle-search/actions/workflows/buildx.yml)
 [![codebeat badge](https://codebeat.co/badges/e96cada2-fb6f-4528-8285-7d72abd74e8d)](https://codebeat.co/projects/github-com-koval01-whoogle-search-master)
 [![Docker Pulls](https://img.shields.io/docker/pulls/koval01/whoogle-search)](https://hub.docker.com/r/koval01/whoogle-search)
 

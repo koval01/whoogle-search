@@ -3,9 +3,9 @@
 version: "2.4"
 
 services:
-  whoogle-search:
-    image: ${WHOOGLE_IMAGE:-koval01/whoogle-search}
-    container_name: whoogle-search
+  whoogle-search-kdev:
+    image: ${WHOOGLE_IMAGE:-koval01/whoogle-search-kdev}
+    container_name: whoogle-search-kdev
     restart: unless-stopped
     pids_limit: 50
     mem_limit: 256mb
