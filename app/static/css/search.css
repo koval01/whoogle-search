@@ -34,6 +34,14 @@ textarea:focus, input:focus, select:focus {
   border: unset !important;
 }
 
+.Xdlr0d {
+  padding: 0 !important;
+}
+
+.parent-img-swiper-class {
+  padding: 0.6rem 1.5rem;
+}
+
 .parent-result-class {
   padding: 0.2rem 1rem;
 }
