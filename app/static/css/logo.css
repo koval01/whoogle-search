@@ -1,18 +1,16 @@
 .cls-1 {
-    fill: transparent;
+  fill: transparent;
 }
 
-svg {
-    height: inherit;
-}
-
-a {
-    height: inherit;
+svg, a {
+  height: inherit;
 }
 
 @media (max-width: 1000px) {
-    svg {
-        margin-top: .3em;
-        height: 70%;
-    }
+  svg {
+    margin-top: 0.3em;
+    height: 70%;
+  }
 }
+
+/*# sourceMappingURL=logo.css.map */
