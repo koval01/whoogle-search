@@ -112,6 +112,8 @@ header {
 .desktop-header-logo {
   min-height: 1.65em;
   height: 85%;
+  bottom: 0.2rem;
+  position: relative;
 }
 
 .header-autocomplete {
