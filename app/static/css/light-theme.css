@@ -19,6 +19,10 @@ li a {
   color: var(--whoogle-result-url) !important;
 }
 
+a {
+  color: #1b73e8 !important;
+}
+
 .anon-view {
   color: var(--whoogle-text) !important;
   text-decoration: underline;
@@ -31,6 +35,7 @@ li a {
 textarea, select {
   background: var(--whoogle-page-bg) !important;
   color: var(--whoogle-text) !important;
+  box-shadow: 0 0 3px;
 }
 
 #search-bar {
@@ -194,6 +199,10 @@ path {
 
 #config-load, #config-submit, #config-save {
   box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+}
+
+.config-buttons {
+  border-top: 2px solid #e0e0e0;
 }
 
 /*# sourceMappingURL=light-theme.css.map */

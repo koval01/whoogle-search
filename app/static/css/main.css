@@ -112,6 +112,8 @@ button::-moz-focus-inner {
   outline: none;
   font-size: 15px;
   border-radius: 10px 10px 0 0;
+  border-bottom: 1px solid;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3294117647);
 }
 .collapsible:after {
   content: "+";
@@ -131,6 +133,8 @@ button::-moz-focus-inner {
   overflow: hidden;
   transition: max-height 0.2s ease-out;
   border-radius: 0 0 10px 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2117647059);
+  margin-bottom: 16px !important;
 }
 
 .open {
@@ -158,7 +162,7 @@ footer {
   resize: none;
   overflow-y: scroll;
   width: 100%;
-  height: 100px;
+  height: 160px;
 }
 
 #config-load, #config-submit, #config-save {
@@ -216,6 +220,17 @@ details summary {
   #search-bar {
     font-size: 20px;
   }
+}
+.tooltip {
+  display: contents;
+}
+
+input[type=text] {
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+  padding: 0.35rem;
+}
+input[type=text]#search-bar {
+  box-shadow: unset !important;
 }
 
 /*# sourceMappingURL=main.css.map */

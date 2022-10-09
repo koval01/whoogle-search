@@ -19,6 +19,10 @@ li a {
   color: var(--whoogle-dark-result-url) !important;
 }
 
+a {
+  color: #8ab4f7 !important;
+}
+
 .anon-view {
   color: var(--whoogle-dark-text) !important;
   text-decoration: underline;
@@ -28,9 +32,10 @@ li a {
   background-color: var(--whoogle-dark-page-bg);
 }
 
-textarea {
+textarea, select, input {
   background: var(--whoogle-dark-page-bg) !important;
   color: var(--whoogle-dark-text) !important;
+  box-shadow: unset !important;
 }
 
 #search-bar {
@@ -213,6 +218,10 @@ path {
 
 .desktop-header a, .mobile-header a, .desktop-header label, .mobile-header label {
   background-color: var(--whoogle-dark-result-bg);
+}
+
+.config-buttons {
+  border-top: 2px solid #555;
 }
 
 /*# sourceMappingURL=dark-theme.css.map */
