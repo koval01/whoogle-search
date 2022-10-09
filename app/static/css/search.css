@@ -38,6 +38,16 @@ textarea:focus, input:focus, select:focus {
   padding: 0 !important;
 }
 
+@media (min-width: 350px) {
+  .UykT9d {
+    max-width: 100px !important;
+  }
+}
+@media (min-width: 600px) {
+  .UykT9d {
+    max-width: 200px !important;
+  }
+}
 .parent-img-swiper-class {
   padding: 0.6rem 1.5rem;
 }

@@ -29,7 +29,7 @@
     <style>{{ config.style }}</style>
     <title>{{ clean_query(query) }} - Whoogle Search</title>
 </head>
-<body>
+<body class="container">
 {{ search_header|safe }}
 {% if is_translation %}
     <iframe
