@@ -4,6 +4,7 @@ header {
   line-height: 20px;
   color: #3C4043;
   word-wrap: break-word;
+  padding: 0 1rem !important;
 }
 
 .logo-link, .logo-letter {
@@ -129,9 +130,10 @@ a {
 
 .header-tab-div {
   border-radius: 0 0 8px 8px;
-  box-shadow: 0 2px 3px rgba(32, 33, 36, 0.18);
   overflow: hidden;
   margin-bottom: 10px;
+  filter: drop-shadow(0 1px 6px rgba(32, 33, 36, 0.18));
+  padding: 0 1rem !important;
 }
 
 .header-tab-div-2 {
@@ -148,9 +150,9 @@ a {
 
 .desktop-header {
   height: 39px;
-  display: box;
   display: flex;
   width: 100%;
+  border-radius: 0 0 8px 8px;
 }
 
 .header-tab {
@@ -207,7 +209,7 @@ a.header-tab-a:visited {
 }
 
 .header-tab-div-end {
-  border-left: 1px solid rgba(0, 0, 0, 0.12);
+  border: 0 !important;
 }
 
 .adv-search {
@@ -225,6 +227,8 @@ a.header-tab-a:visited {
   max-height: 0px;
   overflow: hidden;
   transition: max-height 0.25s linear;
+  padding: 0 1rem !important;
+  filter: drop-shadow(0 1px 6px rgba(32, 33, 36, 0.18));
 }
 
 .search-bar-input {

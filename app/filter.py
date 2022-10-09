@@ -162,8 +162,9 @@ class Filter:
         self.remove_block_tabs(soup)
 
         self.updater_parent(soup, [
-            {"selector": GClasses.result_class_a, "class": "parent-result-class"},
-            {"selector": GClasses.swiper_images, "class": "parent-img-swiper-class"}
+            {"selector": GClasses.result_class_a, "class": "result"},
+            {"selector": GClasses.swiper_images, "class": "img-swiper"},
+            {"selector": GClasses.additional_result, "class": "additional-result", "tag": "span"}
         ])
 
         for img in [_ for _ in soup.find_all('img') if 'src' in _.attrs]:
@@ -213,10 +214,10 @@ class Filter:
     def updater_parent(soup: BeautifulSoup, classes: List[dict]) -> None:
         for cl in classes:
             for el in soup.find_all(
-                    "div",
+                    cl["tag"] if "tag" in cl.keys() else "div",
                     attrs={"class": cl["selector"]}
             ):
-                el.parent["class"] = cl["class"]
+                el.parent["class"] = f'parent-{cl["class"]}-class'
 
     @staticmethod
     def remove_privacy(soup) -> None:

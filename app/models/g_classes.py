@@ -15,6 +15,7 @@ class GClasses:
     result_class_a = 'ZINbbc'
     result_class_b = 'luh4td'
     swiper_images = 'Xdlr0d'
+    additional_result = 'C7GS5b'
 
     result_classes = {
         result_class_a: ['Gx5Zad'],
