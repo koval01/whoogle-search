@@ -33,6 +33,10 @@ textarea {
   color: var(--whoogle-dark-text) !important;
 }
 
+#search-bar {
+  background: var(--whoogle-dark-page-bg);
+}
+
 a:visited h3 div {
   color: var(--whoogle-dark-result-visited) !important;
 }

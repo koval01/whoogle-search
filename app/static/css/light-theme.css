@@ -33,6 +33,10 @@ textarea, select {
   color: var(--whoogle-text) !important;
 }
 
+#search-bar {
+  background: var(--whoogle-page-bg);
+}
+
 .ZINbbc {
   overflow: hidden;
   background-color: var(--whoogle-result-bg) !important;
@@ -117,10 +121,6 @@ input {
   color: var(--whoogle-contrast-text);
 }
 
-.link {
-  color: var(--whoogle-element-bg);
-}
-
 .link-color {
   color: var(--whoogle-result-url) !important;
 }
@@ -190,6 +190,10 @@ path {
 
 .sa1toc {
   background: var(--whoogle-result-bg) !important;
+}
+
+#config-load, #config-submit, #config-save {
+  box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
 }
 
 /*# sourceMappingURL=light-theme.css.map */
