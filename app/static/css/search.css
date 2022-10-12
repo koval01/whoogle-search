@@ -28,6 +28,11 @@ textarea:focus, input:focus, select:focus {
   color: #65a7f6 !important;
 }
 
+.TwVfHd {
+  border-radius: 0.6rem !important;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+}
+
 .sa1toc {
   border-radius: 1rem;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.6117647059) !important;
@@ -39,7 +44,7 @@ textarea:focus, input:focus, select:focus {
 }
 
 .X6ZCif {
-  padding: 0 1rem;
+  padding: 0.5rem 1rem !important;
 }
 
 @media (min-width: 350px) {
