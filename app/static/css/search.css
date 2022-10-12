@@ -60,6 +60,10 @@ textarea:focus, input:focus, select:focus {
   padding: 0.2rem 1rem;
 }
 
+.parent-images-ct-class {
+  padding: 0 1rem !important;
+}
+
 .autocomplete {
   position: relative;
   display: inline-block;

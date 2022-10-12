@@ -164,7 +164,8 @@ class Filter:
         self.updater_parent(soup, [
             {"selector": GClasses.result_class_a, "class": "result"},
             {"selector": GClasses.swiper_images, "class": "img-swiper"},
-            {"selector": GClasses.additional_result, "class": "additional-result", "tag": "span"}
+            {"selector": GClasses.additional_result, "class": "additional-result", "tag": "span"},
+            {"selector": GClasses.result_class_images, "class": "images-ct", "tag": "table"}
         ])
 
         for img in [_ for _ in soup.find_all('img') if 'src' in _.attrs]:

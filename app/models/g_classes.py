@@ -14,6 +14,7 @@ class GClasses:
     footer = 'TuS8Ad'
     result_class_a = 'ZINbbc'
     result_class_b = 'luh4td'
+    result_class_images = 'GpQGbf'
     swiper_images = 'Xdlr0d'
     additional_result = 'C7GS5b'
 
