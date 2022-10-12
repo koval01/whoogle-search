@@ -1,0 +1,13 @@
+{
+    "configurations": [
+      {
+        "name": "Run development server",
+        "type": "python",
+        "arguments": [
+          "-um app",
+          "--debug"
+        ],
+        "workingDir": "$PROJECT_DIR$",
+      }
+    ]
+}
