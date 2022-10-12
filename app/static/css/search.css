@@ -70,6 +70,17 @@ textarea:focus, input:focus, select:focus {
   padding: 0 1rem !important;
 }
 
+.parent-suggest-ct-class {
+  background: #fff;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+  border-radius: 0.5rem;
+  margin: 0 1rem 0.8rem;
+}
+
+.parent-search-settings-class {
+  padding: 0.45rem 1rem 0 !important;
+}
+
 .autocomplete {
   position: relative;
   display: inline-block;

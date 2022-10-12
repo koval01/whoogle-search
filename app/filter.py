@@ -162,10 +162,18 @@ class Filter:
         self.remove_block_tabs(soup)
 
         self.updater_parent(soup, [
-            {"selector": GClasses.result_class_a, "class": "result"},
-            {"selector": GClasses.swiper_images, "class": "img-swiper"},
-            {"selector": GClasses.additional_result, "class": "additional-result", "tag": "span"},
-            {"selector": GClasses.result_class_images, "class": "images-ct", "tag": "table"}
+            {"selector": GClasses.result_class_a,
+             "class": "result"},
+            {"selector": GClasses.result_class_a,
+             "class": "search-settings", "s_id": "st-card"},
+            {"selector": GClasses.swiper_images,
+             "class": "img-swiper"},
+            {"selector": GClasses.additional_result,
+             "class": "additional-result", "tag": "span"},
+            {"selector": GClasses.result_class_images,
+             "class": "images-ct", "tag": "table"},
+            {"selector": GClasses.sugges_search,
+             "class": "suggest-ct", "s_id": "scc"}
         ])
 
         for img in [_ for _ in soup.find_all('img') if 'src' in _.attrs]:
@@ -214,9 +222,11 @@ class Filter:
     @staticmethod
     def updater_parent(soup: BeautifulSoup, classes: List[dict]) -> None:
         for cl in classes:
+            if "s_id" not in cl.keys():
+                cl["s_id"] = ""
             for el in soup.find_all(
                     cl["tag"] if "tag" in cl.keys() else "div",
-                    attrs={"class": cl["selector"]}
+                    attrs={"class": cl["selector"], "id": cl["s_id"]}
             ):
                 el.parent["class"] = f'parent-{cl["class"]}-class'
 
