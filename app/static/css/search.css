@@ -30,6 +30,7 @@ textarea:focus, input:focus, select:focus {
 
 .TwVfHd {
   border-radius: 0.6rem !important;
+  font-size: 0.95rem !important;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
 }
 
