@@ -94,8 +94,7 @@ button::-moz-focus-inner
   text-align: left
   outline: none
   font-size: 15px
-  border-radius: 10px 10px 0 0
-  border-bottom: 1px solid
+  border-radius: 10px
   box-shadow: 0 0 10px #00000054
 
   &:after
@@ -107,9 +106,11 @@ button::-moz-focus-inner
 .active:after
   content: "\2212"
 
+.active
+  border-radius: 10px 10px 0 0 !important
+
 .content
   padding: 0 18px
-  padding-bottom: .2rem !important
   max-height: 0
   overflow: hidden
   transition: max-height 0.2s ease-out
@@ -138,7 +139,7 @@ footer
   resize: none
   overflow-y: scroll
   width: 100%
-  height: 160px
+  height: 110px
 
 #config-load, #config-submit, #config-save
   padding: .35rem
@@ -177,6 +178,8 @@ footer
     cursor: pointer
     background-color: unset !important
     backdrop-filter: blur(0.12rem)
+    border-bottom: 0
+    border-top: 0
 
 details summary
   padding: 10px
