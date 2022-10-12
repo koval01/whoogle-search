@@ -67,6 +67,10 @@ textarea, select {
   background-color: var(--whoogle-divider) !important;
 }
 
+.oyqqef {
+  background-color: rgba(255, 255, 255, 0.6) !important;
+}
+
 a:visited h3 div {
   color: var(--whoogle-result-visited) !important;
 }
