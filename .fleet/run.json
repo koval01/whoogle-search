@@ -8,6 +8,16 @@
           "--debug"
         ],
         "workingDir": "$PROJECT_DIR$",
+        "allowParallelRun": false
+      },
+      {
+        "name": "Run tests",
+        "type": "command",
+        "program": "/bin/zsh",
+        "args": [
+          "run", "tests"
+        ],
+        "workingDir": "$PROJECT_DIR$"
       }
     ]
 }
