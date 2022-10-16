@@ -172,8 +172,14 @@ send_tor_signal(Signal.HEARTBEAT)
 
 from app import routes  # noqa
 
+try:
+    FLASK_ENV = os.getenv("FLASK_ENV")
+except NameError:
+    FLASK_ENV = ""
+
 # Disable logging from imported modules
 logging.config.dictConfig({
     "version": 1,
-    "disable_existing_loggers": True,
+    "disable_existing_loggers": False,
+    "level": "DEBUG" if (FLASK_ENV == "development") else None
 })
