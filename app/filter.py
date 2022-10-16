@@ -173,7 +173,9 @@ class Filter:
             {"selector": GClasses.result_class_images,
              "class": "images-ct", "tag": "table"},
             {"selector": GClasses.sugges_search,
-             "class": "suggest-ct", "s_id": "scc"}
+             "class": "suggest-ct", "s_id": "scc"},
+            {"selector": GClasses.next_page_button,
+             "class": "next-page-button"},
         ])
 
         for img in [_ for _ in soup.find_all('img') if 'src' in _.attrs]:
@@ -228,7 +230,11 @@ class Filter:
                     cl["tag"] if "tag" in cl.keys() else "div",
                     attrs={"class": cl["selector"], "id": cl["s_id"]}
             ):
-                el.parent["class"] = f'parent-{cl["class"]}-class'
+                try:
+                    el.parent["class"]
+                except KeyError:
+                    el.parent["class"] = []
+                el.parent["class"].append(f'p-{cl["class"]}')
 
     @staticmethod
     def remove_privacy(soup) -> None:

@@ -58,27 +58,31 @@ textarea:focus, input:focus, select:focus {
     max-width: 200px !important;
   }
 }
-.parent-img-swiper-class {
+.p-img-swiper {
   padding: 0.6rem 1.5rem;
 }
 
-.parent-result-class {
-  padding: 0.2rem 1rem;
+.p-result {
+  padding: 0.5rem 1rem 0;
 }
 
-.parent-images-ct-class {
+.p-images-ct {
   padding: 0 1rem !important;
 }
 
-.parent-suggest-ct-class {
+.p-suggest-ct {
   background: #fff;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
   border-radius: 0.5rem;
   margin: 0 1rem 0.8rem;
 }
 
-.parent-search-settings-class {
-  padding: 0.45rem 1rem 0 !important;
+.p-search-settings {
+  padding: 0.4rem 1rem 0.9rem !important;
+}
+
+.p-result > div.p-next-page-button {
+  border-radius: 0.8rem !important;
 }
 
 .autocomplete {
@@ -138,6 +142,48 @@ details summary span {
   details summary {
     margin-bottom: 10px !important;
   }
+}
+@media (max-width: 575px) {
+  .p-result {
+    padding: 0 !important;
+  }
+  .p-result > .ZINbbc {
+    border-radius: 0 !important;
+  }
+  .header-tab-div {
+    padding: 0 !important;
+  }
+  body {
+    padding: 0 !important;
+  }
+}
+#EOlPnc {
+  margin: 0 !important;
+}
+
+footer {
+  padding: 0 1rem;
+}
+
+.header-tab::-webkit-scrollbar, .RnNGze::-webkit-scrollbar {
+  display: none;
+}
+
+.header-tab, .RnNGze {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.x54gtf {
+  height: 0.2rem;
+}
+
+.EtOod > *:last-child {
+  border-radius: 0 !important;
+}
+
+.xpd {
+  box-shadow: 0 0 0.95rem #0d0d0d !important;
 }
 
 /*# sourceMappingURL=search.css.map */

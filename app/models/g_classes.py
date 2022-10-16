@@ -18,6 +18,7 @@ class GClasses:
     swiper_images = 'Xdlr0d'
     additional_result = 'C7GS5b'
     sugges_search = 'BmP5tf'
+    next_page_button = 'lyLwlc'
 
     result_classes = {
         result_class_a: ['Gx5Zad'],

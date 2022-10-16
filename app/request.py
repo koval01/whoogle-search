@@ -84,6 +84,22 @@ def gen_user_agent(is_mobile) -> str:
     return DESKTOP_UA.format("Mozilla", linux, firefox)
 
 
+def mobile_mode_enabled() -> bool:
+    try:
+        var = os.getenv("MOBILE_MODE_ENABLED")
+        if not var:
+            return False
+    except NameError:
+        return False
+
+    try:
+        var = int(var)
+    except ValueError:
+        return False
+
+    return bool(var)
+
+
 def gen_query(query, args, config) -> str:
     param_dict = {key: "" for key in VALID_PARAMS}
 
@@ -197,6 +213,7 @@ class Request:
 
         self.mobile = bool(normal_ua) and ("Android" in normal_ua
                                            or "iPhone" in normal_ua)
+        self.mobile = mobile_mode_enabled()
         self.modified_user_agent = gen_user_agent(self.mobile)
         if not self.mobile:
             self.modified_user_agent_mobile = gen_user_agent(True)

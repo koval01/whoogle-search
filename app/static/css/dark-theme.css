@@ -28,8 +28,8 @@ a {
   text-decoration: underline;
 }
 
-.parent-additional-result-class {
-  background-color: var(--whoogle-dark-page-bg);
+.p-additional-result {
+  background-color: #1c1c1c;
 }
 
 textarea, select, input {
@@ -226,6 +226,22 @@ path {
 
 .config-buttons {
   border-top: 2px solid #555;
+}
+
+#adv-search-label {
+  filter: invert(68%) sepia(14%) saturate(1233%) hue-rotate(180deg) brightness(100%) contrast(94%);
+}
+
+.xpd, .result-config, .search-div, .p-search-settings > #st-card, .header-tab {
+  border: 1px solid #303030 !important;
+}
+
+.iIWm4b {
+  border-bottom: 1px solid #303030;
+}
+
+.pkphOe > div:last-child > .iIWm4b {
+  border-bottom: 0 !important;
 }
 
 /*# sourceMappingURL=dark-theme.css.map */

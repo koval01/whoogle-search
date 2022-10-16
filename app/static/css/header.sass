@@ -29,7 +29,7 @@ header
   text-align: center
   font: 22pt Futura, Arial, sans-serif
   padding: 10px 0 5px 0
-  height: 37px
+  height: 55px
   font-smoothing: antialiased
 
 .search-bar-desktop
@@ -117,7 +117,7 @@ a
   padding: 0 1rem !important
 
 .header-tab-div-2
-  border-top: 1px solid #dadce0
+  border-top: 0
   height: 39px
   overflow: hidden
 
@@ -148,7 +148,7 @@ a
     text-transform: uppercase
 
 span.header-tab-span
-  border-bottom: 2px solid #4285f4
+  border-bottom: 3px solid #4285f4
   color: #4285f4
   font-weight: bold
 
@@ -194,6 +194,20 @@ a.header-tab-a:visited
 #adv-search-toggle
   display: none
 
+#adv-search-label
+  background-image: url(../img/setting.svg)
+  background-repeat: no-repeat
+  background-size: contain
+  background-position: center
+  background-color: rgba(0, 0, 0, 0) !important
+  filter: invert(68%) sepia(14%) saturate(1233%) hue-rotate(180deg) brightness(100%) contrast(94%)
+  width: 1.6rem
+  flex: none
+  margin-right: .6rem
+
+  > font
+    display: none !important
+
 .result-collapsible
   max-height: 0px
   overflow: hidden
@@ -218,4 +232,4 @@ a.header-tab-a:visited
 
 @media (max-width: 801px)
   .header-tab-div
-    margin-bottom: 10px !important
+    margin-bottom: .8rem !important

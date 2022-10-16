@@ -28,7 +28,7 @@ a {
   text-decoration: underline;
 }
 
-.parent-additional-result-class {
+.p-additional-result {
   background-color: var(--whoogle-page-bg);
 }
 
@@ -207,6 +207,14 @@ path {
 
 .config-buttons {
   border-top: 2px solid #e0e0e0;
+}
+
+#adv-search-label {
+  filter: invert(35%) sepia(91%) saturate(1143%) hue-rotate(194deg) brightness(89%) contrast(105%);
+}
+
+.xpd, .result-config, .search-div, .p-search-settings > #st-card, .header-tab {
+  border: 1px solid #dedede !important;
 }
 
 /*# sourceMappingURL=light-theme.css.map */

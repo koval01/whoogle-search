@@ -71,6 +71,15 @@ const saveConfig = event => {
     configForm.submit();
 };
 
+const hideConfig = () => {
+    let selector_config = document.getElementById("config-collapsible");
+    let content_config = document.getElementById("config-content");
+
+    selector_config.classList.remove("active");
+    content_config.classList.remove("open");
+    content_config.style.maxHeight = "";
+};
+
 document.addEventListener("DOMContentLoaded", function() {
     setTimeout(function() {
         document.getElementById("main").style.display = "block";
@@ -85,4 +94,8 @@ document.addEventListener("DOMContentLoaded", function() {
     // Focusing on the search input field requires a delay for elements to finish
     // loading (seemingly only on FF)
     setTimeout(function() { document.getElementById("search-bar").focus(); }, 250);
+
+    document.getElementById("search-bar").onfocus = (_) => {
+        hideConfig();
+    };
 });
