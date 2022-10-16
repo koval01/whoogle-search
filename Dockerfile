@@ -12,7 +12,7 @@ COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --prefix /install --no-warn-script-location --no-cache-dir -r requirements.txt
 
-FROM python:3.11.0rc2
+FROM python:3.11-rc-alpine
 
 RUN apk add --update --no-cache tor curl openrc libstdc++
 # libcurl4-openssl-dev
