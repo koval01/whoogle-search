@@ -64,6 +64,7 @@ textarea:focus, input:focus, select:focus {
 
 .p-result {
   padding: 0.5rem 1rem 0;
+  transition: height 0.8s;
 }
 
 .p-images-ct {
@@ -144,12 +145,6 @@ details summary span {
   }
 }
 @media (max-width: 575px) {
-  .p-result {
-    padding: 0 !important;
-  }
-  .p-result > .ZINbbc {
-    border-radius: 0 !important;
-  }
   .header-tab-div {
     padding: 0 !important;
   }
