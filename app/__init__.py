@@ -68,6 +68,7 @@ app.config["DEFAULT_CONFIG"] = os.path.join(
     app.config["CONFIG_PATH"],
     "config.json")
 app.config["CONFIG_DISABLE"] = read_config_bool("WHOOGLE_CONFIG_DISABLE")
+app.config["CONFIG_SAVE_ALLOW"] = read_config_bool("WHOOGLE_CONFIG_SAVE_ALLOW")
 app.config["SESSION_FILE_DIR"] = os.path.join(
     app.config["CONFIG_PATH"],
     "session")

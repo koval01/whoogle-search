@@ -258,7 +258,9 @@
                     <div class="config-div config-buttons">
                         <input type="submit" id="config-load" value="{{ translation['load'] }}">&nbsp;
                         <input type="submit" id="config-submit" value="{{ translation['apply'] }}">&nbsp;
-                        <input type="submit" id="config-save" value="{{ translation['save-as'] }}">
+                        {% if config_save_allow %}
+                            <input type="submit" id="config-save" value="{{ translation['save-as'] }}">
+                        {% endif %}
                     </div>
                 </form>
             </div>

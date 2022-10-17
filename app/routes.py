@@ -33,14 +33,14 @@ from app.utils.search import Search, needs_https, has_captcha
 from app.utils.session import generate_user_key, valid_user_session
 
 # Load DDG bang json files only on init
-bang_json = json.load(open(app.config["BANG_FILE"])) or {}
+bang_json = json.load(open(app.config.get("BANG_FILE"))) or {}
 
 ac_var = "WHOOGLE_AUTOCOMPLETE"
 autocomplete_enabled = os.getenv(ac_var, "1")
 
 
 def get_search_name(tbm):
-    for tab in app.config["HEADER_TABS"].values():
+    for tab in app.config.get("HEADER_TABS").values():
         if tab["tbm"] == tbm:
             return tab["name"]
 
@@ -76,14 +76,14 @@ def session_required(f):
 
         # Clear out old sessions
         invalid_sessions = []
-        for user_session in os.listdir(app.config["SESSION_FILE_DIR"]):
+        for user_session in os.listdir(app.config.get("SESSION_FILE_DIR")):
             file_path = os.path.join(
-                app.config["SESSION_FILE_DIR"],
+                app.config.get("SESSION_FILE_DIR"),
                 user_session)
 
             try:
                 # Ignore files that are larger than the max session file size
-                if os.path.getsize(file_path) > app.config["MAX_SESSION_SIZE"]:
+                if os.path.getsize(file_path) > app.config.get("MAX_SESSION_SIZE"):
                     continue
 
                 with open(file_path, "rb") as session_file:
@@ -117,18 +117,18 @@ def before_request_func():
 
     # Check for latest version if needed
     now = datetime.now()
-    if now - timedelta(hours=24) > app.config["LAST_UPDATE_CHECK"]:
+    if now - timedelta(hours=24) > app.config.get("LAST_UPDATE_CHECK"):
         app.config["LAST_UPDATE_CHECK"] = now
         app.config["HAS_UPDATE"] = check_for_update(
-            app.config["RELEASES_URL"],
-            app.config["VERSION_NUMBER"])
+            app.config.get("RELEASES_URL"),
+            app.config.get("VERSION_NUMBER"))
 
     g.request_params = (
         request.args if request.method == "GET" else request.form
     )
 
-    default_config = json.load(open(app.config["DEFAULT_CONFIG"])) \
-        if os.path.exists(app.config["DEFAULT_CONFIG"]) else {}
+    default_config = json.load(open(app.config.get("DEFAULT_CONFIG"))) \
+        if os.path.exists(app.config.get("DEFAULT_CONFIG")) else {}
 
     # Generate session values for user if unavailable
     if (not valid_user_session(session)):
@@ -150,9 +150,9 @@ def before_request_func():
     g.app_location = g.user_config.url
 
     # Attempt to reload bangs json if not generated yet
-    if not bang_json and os.path.getsize(app.config["BANG_FILE"]) > 4:
+    if not bang_json and os.path.getsize(app.config.get("BANG_FILE")) > 4:
         try:
-            bang_json = json.load(open(app.config["BANG_FILE"]))
+            bang_json = json.load(open(app.config.get("BANG_FILE")))
         except json.decoder.JSONDecodeError:
             # Ignore decoding error, can occur if file is still
             # being written
@@ -165,7 +165,7 @@ def after_request_func(resp):
     resp.headers["X-Frame-Options"] = "DENY"
 
     if os.getenv("WHOOGLE_CSP", False):
-        resp.headers["Content-Security-Policy"] = app.config["CSP"]
+        resp.headers["Content-Security-Policy"] = app.config.get("CSP")
         if os.environ.get("HTTPS_ONLY", False):
             resp.headers["Content-Security-Policy"] += \
                 "upgrade-insecure-requests"
@@ -198,23 +198,24 @@ def index():
     g.user_config = g.user_config.from_params(g.request_params)
 
     return render_template("index.html",
-                           has_update=app.config["HAS_UPDATE"],
-                           languages=app.config["LANGUAGES"],
-                           countries=app.config["COUNTRIES"],
-                           themes=app.config["THEMES"],
+                           has_update=app.config.get("HAS_UPDATE"),
+                           languages=app.config.get("LANGUAGES"),
+                           countries=app.config.get("COUNTRIES"),
+                           themes=app.config.get("THEMES"),
                            autocomplete_enabled=autocomplete_enabled,
-                           translation=app.config["TRANSLATIONS"][
+                           translation=app.config.get("TRANSLATIONS")[
                                g.user_config.get_localization_lang()
                            ],
                            logo=render_template(
                                "logo.html",
                                dark=g.user_config.dark),
                            config_disabled=(
-                                   app.config["CONFIG_DISABLE"] or
+                                   app.config.get("CONFIG_DISABLE") or
                                    not valid_user_session(session)),
+                           config_save_allow=app.config.get("CONFIG_SAVE_ALLOW"),
                            config=g.user_config,
                            tor_available=int(os.environ.get("TOR_AVAILABLE")),
-                           version_number=app.config["VERSION_NUMBER"])
+                           version_number=app.config.get("VERSION_NUMBER"))
 
 
 @app.route(f"/{Endpoint.opensearch}", methods=["GET"])
@@ -314,7 +315,7 @@ def search():
     # If the user is attempting to translate a string, determine the correct
     # string for formatting the lingva.ml url
     localization_lang = g.user_config.get_localization_lang()
-    translation = app.config["TRANSLATIONS"][localization_lang]
+    translation = app.config.get("TRANSLATIONS")[localization_lang]
     translate_to = localization_lang.replace("lang_", "")
 
     # Return 503 if temporarily blocked by captcha
@@ -336,7 +337,7 @@ def search():
         response = add_ip_card(html_soup, get_client_ip(request))
 
     # Update tabs content
-    tabs = get_tabs_content(app.config["HEADER_TABS"],
+    tabs = get_tabs_content(app.config.get("HEADER_TABS"),
                             search_util.full_query,
                             search_util.search_type,
                             g.user_config.preferences,
@@ -353,13 +354,13 @@ def search():
 
     return render_template(
         "display.html",
-        has_update=app.config["HAS_UPDATE"],
+        has_update=app.config.get("HAS_UPDATE"),
         query=urlparse.unquote(query),
         search_type=search_util.search_type,
         search_name=get_search_name(search_util.search_type),
         config=g.user_config,
         autocomplete_enabled=autocomplete_enabled,
-        lingva_url=app.config["TRANSLATE_URL"],
+        lingva_url=app.config.get("TRANSLATE_URL"),
         translation=translation,
         translate_to=translate_to,
         translate_str=query.replace(
@@ -371,14 +372,14 @@ def search():
             _ in query.lower() for _ in [translation["translate"], "translate"]
         ) and not search_util.search_type,  # Standard search queries only
         response=response,
-        version_number=app.config["VERSION_NUMBER"],
+        version_number=app.config.get("VERSION_NUMBER"),
         search_header=render_template(
             "header.html",
             home_url=home_url,
             config=g.user_config,
             translation=translation,
-            languages=app.config["LANGUAGES"],
-            countries=app.config["COUNTRIES"],
+            languages=app.config.get("LANGUAGES"),
+            countries=app.config.get("COUNTRIES"),
             logo=render_template("logo.html", dark=g.user_config.dark),
             query=urlparse.unquote(query),
             search_type=search_util.search_type,
@@ -391,22 +392,28 @@ def search():
 @auth_required
 def config():
     config_disabled = (
-            app.config["CONFIG_DISABLE"] or
+            app.config.get("CONFIG_DISABLE") or
             not valid_user_session(session))
+    saving_allow = app.config.get("CONFIG_SAVE_ALLOW")
     if request.method == "GET":
-        return json.dumps(g.user_config.__dict__)
-    elif request.method == "PUT" and not config_disabled:
+        if config_disabled:
+            return jsonify({"access": False}), 403
+        return jsonify(g.user_config.__dict__)
+    elif request.method == "PUT" and saving_allow:
         if "name" in request.args:
             config_pkl = os.path.join(
-                app.config["CONFIG_PATH"],
+                app.config.get("CONFIG_PATH"),
                 request.args.get("name"))
             session["config"] = (pickle.load(open(config_pkl, "rb"))
                                  if os.path.exists(config_pkl)
                                  else session["config"])
-            return json.dumps(session["config"])
+            return jsonify(session["config"])
         else:
-            return json.dumps({})
+            return jsonify({"error": True}), 503
     elif not config_disabled:
+        if not saving_allow:
+            return redirect(url_for(".index"))
+
         config_data = request.form.to_dict()
         if "url" not in config_data or not config_data["url"]:
             config_data["url"] = g.user_config.url
@@ -416,7 +423,7 @@ def config():
             pickle.dump(
                 config_data,
                 open(os.path.join(
-                    app.config["CONFIG_PATH"],
+                    app.config.get("CONFIG_PATH"),
                     request.args.get("name")), "wb"))
 
         session["config"] = config_data
@@ -524,7 +531,7 @@ def window():
     return render_template(
         "display.html",
         response=results,
-        translation=app.config["TRANSLATIONS"][
+        translation=app.config.get("TRANSLATIONS")[
             g.user_config.get_localization_lang()
         ]
     )

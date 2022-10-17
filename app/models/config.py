@@ -1,13 +1,13 @@
-from inspect import Attribute
-from app.utils.misc import read_config_bool
-from flask import current_app
-import os
-import re
-from base64 import urlsafe_b64encode, urlsafe_b64decode
-import pickle
-from cryptography.fernet import Fernet
 import hashlib
+import os
+import pickle
+from base64 import urlsafe_b64encode, urlsafe_b64decode
+
 import brotli
+from cryptography.fernet import Fernet
+from flask import current_app
+
+from app.utils.misc import read_config_bool
 
 
 class Config:
@@ -37,7 +37,7 @@ class Config:
         self.anon_view = read_config_bool("WHOOGLE_CONFIG_ANON_VIEW")
         self.preferences_encrypted = read_config_bool("WHOOGLE_CONFIG_PREFERENCES_ENCRYPTED")
         self.preferences_key = os.getenv("WHOOGLE_CONFIG_PREFERENCES_KEY", "")
-        
+
         self.accept_language = False
 
         self.safe_keys = [
@@ -91,7 +91,7 @@ class Config:
         # if encryption key is not set will uncheck preferences encryption
         if self.preferences_encrypted:
             self.preferences_encrypted = bool(self.preferences_key)
-        
+
         # add a tag for visibility if preferences token startswith "e" it means
         # the token is encrypted, "u" means the token is unencrypted and can be
         # used by other whoogle instances
@@ -142,7 +142,7 @@ class Config:
             # if preferences leads to an empty dictionary it means preferences
             # parameter was not decrypted successfully
             if len(params_new):
-                params = params_new 
+                params = params_new
 
         for param_key in params.keys():
             if not self.is_safe_key(param_key):
@@ -190,7 +190,7 @@ class Config:
     def _decode_preferences(self, preferences: str) -> dict:
         mode = preferences[0]
         preferences = preferences[1:]
-        if mode == "e": # preferences are encrypted
+        if mode == "e":  # preferences are encrypted
             try:
                 key = self._get_fernet_key(self.preferences_key)
 
@@ -201,10 +201,10 @@ class Config:
                 config = pickle.loads(brotli.decompress(config))
             except Exception:
                 config = {}
-        elif mode == "u": # preferences are not encrypted
+        elif mode == "u":  # preferences are not encrypted
             config = pickle.loads(
                 brotli.decompress(urlsafe_b64decode(preferences.encode()))
             )
-        else: # preferences are incorrectly formatted
+        else:  # preferences are incorrectly formatted
             config = {}
         return config

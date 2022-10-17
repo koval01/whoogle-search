@@ -67,7 +67,9 @@ ENV CONFIG_VOLUME=$config_dir \
     WHOOGLE_ALT_IMG=$imgur_alt \
     WHOOGLE_ALT_WIKI=$wikipedia_alt \
     WHOOGLE_ALT_IMDB=$imdb_alt \
-    WHOOGLE_ALT_QUORA=$quora_alt
+    WHOOGLE_ALT_QUORA=$quora_alt \
+    CONFIG_DISABLE=""
+    WHOOGLE_CONFIG_SAVE_ALLOW=""
 
 WORKDIR /whoogle
 
