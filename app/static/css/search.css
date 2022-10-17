@@ -144,6 +144,11 @@ details summary span {
     margin-bottom: 10px !important;
   }
 }
+@media (max-width: 991px) {
+  .container {
+    padding: 0 !important;
+  }
+}
 @media (max-width: 575px) {
   .header-tab-div {
     padding: 0 !important;
