@@ -319,16 +319,16 @@ def search():
     translate_to = localization_lang.replace("lang_", "")
 
     # Return 503 if temporarily blocked by captcha
-    if has_captcha(str(response)):
-        return render_template(
-            "error.html",
-            blocked=True,
-            error_message=translation["ratelimit"],
-            translation=translation,
-            farside="https://farside.link",
-            config=g.user_config,
-            query=urlparse.unquote(query),
-            params=g.user_config.to_params()), 503
+    # if has_captcha(str(response)):
+    #     return render_template(
+    #         "error.html",
+    #         blocked=True,
+    #         error_message=translation["ratelimit"],
+    #         translation=translation,
+    #         farside="https://farside.link",
+    #         config=g.user_config,
+    #         query=urlparse.unquote(query),
+    #         params=g.user_config.to_params()), 503
     response = bold_search_terms(response, query)
 
     # Feature to display IP address
@@ -355,6 +355,7 @@ def search():
     return render_template(
         "display.html",
         has_update=app.config.get("HAS_UPDATE"),
+        has_captcha=has_captcha(str(response)),
         query=urlparse.unquote(query),
         search_type=search_util.search_type,
         search_name=get_search_name(search_util.search_type),
@@ -411,15 +412,12 @@ def config():
         else:
             return jsonify({"error": True}), 503
     elif not config_disabled:
-        if not saving_allow:
-            return redirect(url_for(".index"))
-
         config_data = request.form.to_dict()
         if "url" not in config_data or not config_data["url"]:
             config_data["url"] = g.user_config.url
 
         # Save config by name to allow a user to easily load later
-        if "name" in request.args:
+        if "name" in request.args and saving_allow:
             pickle.dump(
                 config_data,
                 open(os.path.join(

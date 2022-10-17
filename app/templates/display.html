@@ -39,7 +39,11 @@
             src="{{ lingva_url }}/auto/{{ translate_to }}/{{ translate_str }}">
     </iframe>
 {% endif %}
-{{ response|safe }}
+{% if has_captcha %}
+    {% include 'captcha.html' %}
+{% else %}
+    {{ response|safe }}
+{% endif %}
 </body>
 {% include 'footer.html' %}
 {% if autocomplete_enabled == '1' %}
