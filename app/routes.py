@@ -2,10 +2,12 @@ import argparse
 import base64
 import io
 import json
+import logging
 import os
 import pickle
 import urllib.parse as urlparse
 import uuid
+import multiprocessing
 from datetime import datetime, timedelta
 from functools import wraps
 
@@ -594,12 +596,15 @@ def run_app() -> None:
     if args.https_only:
         os.environ["HTTPS_ONLY"] = "1"
 
+    threads = multiprocessing.cpu_count() * 2 + 1
+    logging.info(f"Threads count: {threads}")
+
     if args.debug:
         app.run(host=args.host, port=args.port, debug=args.debug)
     elif args.unix_socket:
-        waitress.serve(app, unix_socket=args.unix_socket)
+        waitress.serve(app, unix_socket=args.unix_socket, threads=threads)
     else:
         waitress.serve(
-            app,
+            app, threads=threads,
             listen="{}:{}".format(args.host, args.port),
             url_prefix=os.environ.get("WHOOGLE_URL_PREFIX", ""))
