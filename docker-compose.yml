@@ -8,7 +8,7 @@ services:
     container_name: whoogle-search-kdev
     restart: unless-stopped
     pids_limit: 50
-    mem_limit: 384mb
+    mem_limit: 256mb
     memswap_limit: 256mb
     # user debian-tor from tor package
     user: whoogle
