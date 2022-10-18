@@ -397,8 +397,6 @@ def config():
             not valid_user_session(session))
     saving_allow = app.config.get("CONFIG_SAVE_ALLOW")
     if request.method == "GET":
-        if config_disabled:
-            return jsonify({"access": False}), 403
         return jsonify(g.user_config.__dict__)
     elif request.method == "PUT" and saving_allow:
         if "name" in request.args:

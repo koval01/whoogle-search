@@ -43,7 +43,7 @@ services:
       #- WHOOGLE_ALT_WIKI=farside.link/wikiless
       #- WHOOGLE_ALT_IMDB=farside.link/libremdb
       #- WHOOGLE_ALT_QUORA=farside.link/quetre
-      - WHOOGLE_CONFIG_SAVE_ALLOW=""
+      #- WHOOGLE_CONFIG_SAVE_ALLOW=""
     #env_file: # Alternatively, load variables from whoogle.env
       #- whoogle.env
     ports:

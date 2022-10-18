@@ -46,7 +46,7 @@ services:
       - /config/:size=10M,uid=927,gid=927,mode=1700
       - /var/lib/tor/:size=15M,uid=927,gid=927,mode=1700
       - /run/tor/:size=1M,uid=927,gid=927,mode=1700
-    environment:
+    #environment:
       # Uncomment to configure environment variables
       #
       # Basic auth configuration, uncomment to enable
@@ -70,8 +70,8 @@ services:
       # - WHOOGLE_ALT_WIKI=farside.link/wikiless
       # - WHOOGLE_ALT_IMDB=farside.link/libremdb
       # - WHOOGLE_ALT_QUORA=farside.link/quetre
-      - WHOOGLE_CONFIG_DISABLE=""
-      - WHOOGLE_CONFIG_SAVE_ALLOW=""
+      # - WHOOGLE_CONFIG_DISABLE=""
+      # - WHOOGLE_CONFIG_SAVE_ALLOW=""
       # - WHOOGLE_CONFIG_SEARCH_LANGUAGE=lang_en
       # - WHOOGLE_CONFIG_GET_ONLY=1
       # - WHOOGLE_CONFIG_COUNTRY=FR
