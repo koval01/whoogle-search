@@ -96,7 +96,7 @@ input {
 }
 
 .home-search {
-  border-color: var(--whoogle-element-bg) !important;
+  border: unset !important;
 }
 
 .search-container {
@@ -209,7 +209,10 @@ path {
 }
 
 .config-buttons {
-  border-top: 2px solid #e0e0e0;
+  border-top: 1px solid #eeeeee;
+  box-shadow: 0 0 0.35rem rgba(0, 0, 0, 0.1411764706);
+  margin: 0.5rem;
+  border-radius: 0.5rem;
 }
 
 #adv-search-label {
