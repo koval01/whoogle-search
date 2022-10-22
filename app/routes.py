@@ -16,8 +16,9 @@ from bs4 import BeautifulSoup as bsoup
 from cryptography.exceptions import InvalidSignature
 from cryptography.fernet import Fernet, InvalidToken
 from flask import jsonify, make_response, request, redirect, render_template, \
-    send_file, session, url_for, g
-from requests import exceptions
+    send_file, session, url_for, g, Response, abort
+from requests import exceptions, get as http_get
+import requests
 
 from app import app
 from app.filter import Filter
@@ -531,6 +532,71 @@ def window():
             g.user_config.get_localization_lang()
         ]
     )
+
+
+def proxy_pattern(resp: requests.Response, content: bytes = b"", only_resp: bool = True) -> Response:
+    excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection']
+    use_headers = ['cache-control', 'content-type', 'etag']
+    headers = [
+        (name, value) for (name, value) in resp.raw.headers.items()
+        if name.lower() not in excluded_headers and
+           name.lower() in use_headers
+    ]
+    content = resp.content if only_resp else content
+    return Response(content, resp.status_code, headers)
+
+
+@app.route(f"/{Endpoint.currency_history}", methods=["GET"])
+def currency_history():
+    params = {
+        "start_date": g.request_params.get('start_date'),
+        "end_date": g.request_params.get('end_date'),
+        "symbols": g.request_params.get('symbols'),
+        "base": g.request_params.get('base')
+    }
+    for key in params.items():
+        if not key[1]:
+            return abort(400)
+
+    resp = http_get("https://api.exchangerate.host/timeseries", params=params)
+    json_body = resp.json()
+    if not json_body["success"]:
+        return abort(503)
+    del json_body["motd"]
+    return proxy_pattern(resp, str.encode(json.dumps(json_body)), only_resp=False)
+
+
+@app.route(f"/{Endpoint.gfont}", methods=["GET"])
+def g_font():
+    replace_urls = lambda body: str.encode(body.replace(
+        "https://fonts.gstatic.com/s/",
+        f"{request.base_url}?font_data="
+    ))
+    if g.request_params.get("css_get"):
+        params = {
+            "family": g.request_params.get("family"), "display": g.request_params.get("display")
+        }
+        if not params["family"] or not params["display"]:
+            return abort(400)
+        resp = http_get("https://fonts.googleapis.com/css2", params=params)
+        content = replace_urls(resp.text) if resp.status_code == 200 else None
+    else:
+        font_data = g.request_params.get('font_data')
+        if not font_data:
+            return abort(400)
+        resp = http_get(f"https://fonts.gstatic.com/s/{font_data}")
+        content = resp.content
+
+    return proxy_pattern(resp, content, only_resp=False)
+
+
+@app.route(f"/{Endpoint.cdnjs}", methods=["GET"])
+def cdnjs_proxy():
+    lib_path = g.request_params.get('lib_path')
+    if not lib_path:
+        return abort(400)
+
+    return proxy_pattern(http_get(f"https://cdnjs.cloudflare.com/{lib_path}"))
 
 
 def run_app() -> None:

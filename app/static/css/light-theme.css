@@ -139,11 +139,14 @@ input {
 }
 .autocomplete-items div {
   background-color: var(--whoogle-page-bg);
-  border: 3px solid var(--whoogle-element-bg);
+  border: 1px solid var(--whoogle-element-bg);
 }
 .autocomplete-items div:hover {
   background-color: var(--whoogle-element-bg) !important;
   color: var(--whoogle-contrast-text) !important;
+}
+.autocomplete-items div:last-child {
+  border-bottom: 1px solid var(--whoogle-border-color);
 }
 
 .autocomplete-active {
@@ -214,7 +217,7 @@ path {
 }
 
 .xpd, .result-config, .search-div, .p-search-settings > #st-card, .header-tab {
-  border: 1px solid #dedede !important;
+  border: 1px solid var(--whoogle-border-color) !important;
 }
 
 /*# sourceMappingURL=light-theme.css.map */

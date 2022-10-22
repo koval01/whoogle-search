@@ -1,6 +1,6 @@
 @charset "UTF-8";
 body {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Raleway", sans-serif !important;
 }
 
 textarea, input, select, button {
@@ -30,7 +30,7 @@ textarea:focus, input:focus, select:focus {
 
 .home-search {
   background: transparent !important;
-  border: 3px solid;
+  border: 1px solid;
 }
 
 .search-container {
@@ -236,6 +236,11 @@ input[type=text] {
 }
 input[type=text]#search-bar {
   box-shadow: unset !important;
+}
+
+#search-form {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3098039216);
+  border-radius: 10px;
 }
 
 /*# sourceMappingURL=main.css.map */

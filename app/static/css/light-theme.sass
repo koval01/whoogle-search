@@ -114,11 +114,14 @@ input
 
   div
     background-color: var(--whoogle-page-bg)
-    border: 3px solid var(--whoogle-element-bg)
+    border: 1px solid var(--whoogle-element-bg)
 
     &:hover
       background-color: var(--whoogle-element-bg) !important
       color: var(--whoogle-contrast-text) !important
+
+    &:last-child
+      border-bottom: 1px solid var(--whoogle-border-color)
 
 .autocomplete-active
   background-color: var(--whoogle-element-bg) !important
@@ -173,4 +176,4 @@ path
   filter: invert(35%) sepia(91%) saturate(1143%) hue-rotate(194deg) brightness(89%) contrast(105%)
 
 .xpd, .result-config, .search-div, .p-search-settings > #st-card, .header-tab
-  border: 1px solid #dedede !important
+  border: 1px solid var(--whoogle-border-color) !important

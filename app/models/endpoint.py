@@ -13,6 +13,9 @@ class Endpoint(Enum):
     imgres = "imgres"
     element = "element"
     window = "window"
+    gfont = "gfont"
+    cdnjs = "cdnjs"
+    currency_history = "currency_history"
 
     def __str__(self):
         return self.value

@@ -1,3 +1,18 @@
+const ajax = (url, callback, data, x) => {
+	try {
+		x = new(this.XMLHttpRequest || ActiveXObject)('MSXML2.XMLHTTP.3.0');
+		x.open(data ? 'POST' : 'GET', url, 1);
+		x.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+		x.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		x.onreadystatechange = function () {
+			x.readyState > 3 && callback && callback(JSON.parse(x.responseText), x);
+		};
+		x.send(data)
+	} catch (e) {
+		console.error(e);
+	}
+};
+
 const checkForTracking = () => {
     const mainDiv = document.getElementById("main");
     const searchBar = document.getElementById("search-bar");

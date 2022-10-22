@@ -102,7 +102,7 @@ const updateAutocompleteList = () => {
 
     currentFocus = -1;
     autocompleteList = document.createElement("div");
-    autocompleteList.setAttribute("id", this.id + "-autocomplete-list");
+    autocompleteList.setAttribute("id", Date.now() + "-autocomplete-list");
     autocompleteList.setAttribute("class", "autocomplete-items");
     searchInput.parentNode.appendChild(autocompleteList);
 

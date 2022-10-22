@@ -348,6 +348,17 @@ def add_currency_card(soup: BeautifulSoup,
     conversion_factor = (conversion_details["currencyValue1"] /
                          conversion_details["currencyValue2"])
 
+    # Creating chart box
+    chart_box = soup.new_tag("div")
+    chart_box["class"] = "currency_chart_box"
+
+    # Create chart
+    currency_chart = soup.new_tag("canvas")
+    currency_chart["id"] = "currency_chart_display"
+    currency_chart["style"] = "display:none"
+
+    chart_box.append(currency_chart)
+
     # Creating a new div for the input boxes
     conversion_box = soup.new_tag("div")
     conversion_box["class"] = "conversion_box"
@@ -385,6 +396,7 @@ def add_currency_card(soup: BeautifulSoup,
     conversion_box.append(br)
     conversion_box.append(input_box2)
     conversion_box.append(label_box2)
+    conversion_box.append(chart_box)
 
     element1.insert_before(conversion_box)
     return soup

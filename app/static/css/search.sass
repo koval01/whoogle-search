@@ -164,6 +164,18 @@ footer
 #main
   padding: 0 !important
 
-@media (min-width: 576px)
+@media (max-width: 576px)
   .container, .container-sm
     max-width: 630px !important
+
+@media (min-width: 576px)
+  .container, .container-sm
+    max-width: 600px !important
+
+.currency_chart_box
+  display: inline-flex
+  width: 100%
+
+#currency_chart_display
+  max-height: 40vh !important
+  min-height: 18vh !important
