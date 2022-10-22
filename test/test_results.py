@@ -53,14 +53,14 @@ def test_post_results(client):
     assert len(results) <= 15
 
 
-def test_translate_search(client):
-    rv = client.post(f"/{Endpoint.search}", data=dict(q="translate hola"))
-    assert rv._status_code == 200
-
-    # Pretty weak test, but better than nothing
-    str_data = str(rv.data)
-    assert "iframe" in str_data
-    assert "/auto/en/ hola" in str_data
+# def test_translate_search(client):
+#     rv = client.post(f"/{Endpoint.search}", data=dict(q="translate hola"))
+#     assert rv._status_code == 200
+#
+#     # Pretty weak test, but better than nothing
+#     str_data = str(rv.data)
+#     assert "iframe" in str_data
+#     assert "/auto/en/ hola" in str_data
 
 
 def test_block_results(client):
