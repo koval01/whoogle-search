@@ -38,6 +38,7 @@ waitress = "==2.1.2"
 wcwidth = "==0.1.9"
 werkzeug = "==0.16.0"
 python-dotenv = "==0.16.0"
+py = "*"
 
 [dev-packages]
 
