@@ -1,6 +1,6 @@
 ![Whoogle Search](docs/banner.png)
 
-[![Latest Release](https://img.shields.io/github/v/release/koval01/whoogle-search-kdev)](https://github.com/koval01/shoogle/releases)
+[![Latest Release](https://img.shields.io/github/v/release/koval01/whoogle-search-kdev)](https://github.com/koval01/whoogle-search-kdev/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![tests](https://github.com/koval01/whoogle-search-kdev/actions/workflows/tests.yml/badge.svg)](https://github.com/koval01/whoogle-search-kdev/actions/workflows/tests.yml)
 [![buildx](https://github.com/koval01/whoogle-search-kdev/actions/workflows/buildx.yml/badge.svg)](https://github.com/koval01/whoogle-search-kdev/actions/workflows/buildx.yml)
