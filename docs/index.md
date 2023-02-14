@@ -1,4 +1,4 @@
-![Whoogle Search](docs/banner.png)
+![Whoogle Search](https://raw.githubusercontent.com/koval01/whoogle-search-kdev/main/docs/banner.png)
 
 [![Latest Release](https://img.shields.io/github/v/release/koval01/whoogle-search-kdev)](https://github.com/koval01/whoogle-search-kdev/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -616,7 +616,7 @@ A lot of the app currently piggybacks on Google's existing support for fetching 
 
 ## Screenshots
 #### Desktop
-![Whoogle Desktop](docs/screenshot_desktop.png)
+![Whoogle Desktop](https://raw.githubusercontent.com/koval01/whoogle-search-kdev/main/docs/screenshot_desktop.png)
 
 #### Mobile
-![Whoogle Mobile](docs/screenshot_mobile.png)
+![Whoogle Mobile](https://raw.githubusercontent.com/koval01/whoogle-search-kdev/main/docs/screenshot_mobile.png)
