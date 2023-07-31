@@ -21,7 +21,8 @@ textarea:focus, input:focus, select:focus {
 }
 
 .idg8be {
-  margin: 1px 0px 1px -7px !important;
+  margin: 1px 0 1px -7px !important;
+  padding: 0 !important;
 }
 
 .vvjwJb {
@@ -221,4 +222,4 @@ footer {
   margin-top: 1em;
 }
 
-/*# sourceMappingURL=search.css.map */
+
