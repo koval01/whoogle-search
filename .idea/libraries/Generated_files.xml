@@ -1,0 +1,66 @@
+<component name="libraryTable">
+  <library name="Generated files" type="javaScript">
+    <properties>
+      <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/app/static/build/controller.2f4fb16d.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/controller.991d1116.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/controller.c1cc3662.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/controller.min.1b060e94.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/controller.min.5377937a.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/controller.min.8d4d872c.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/header.363d8363.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/header.43211710.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/header.45c26479.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/header.b90bcf4f.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/header.min.2dba316b.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/header.min.ed986b8b.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/header.min.ffe47287.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/keyboard.07d4e97b.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/keyboard.559f1598.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/keyboard.c6234151.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/keyboard.min.434dbc16.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/keyboard.min.bbbcb7df.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/keyboard.min.dfab2982.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/utils.7dff7f78.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/utils.baa29af8.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/utils.min.979a461a.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/utils.min.f278ae7e.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/js/controller.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/js/header.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/js/keyboard.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/js/utils.min.js" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/app/static/build/controller.2f4fb16d.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/controller.991d1116.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/controller.c1cc3662.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/controller.min.1b060e94.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/controller.min.5377937a.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/controller.min.8d4d872c.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/header.363d8363.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/header.43211710.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/header.45c26479.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/header.b90bcf4f.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/header.min.2dba316b.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/header.min.ed986b8b.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/header.min.ffe47287.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/keyboard.07d4e97b.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/keyboard.559f1598.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/keyboard.c6234151.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/keyboard.min.434dbc16.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/keyboard.min.bbbcb7df.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/keyboard.min.dfab2982.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/utils.7dff7f78.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/utils.baa29af8.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/utils.min.979a461a.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/utils.min.f278ae7e.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/js/controller.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/js/header.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/js/keyboard.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/js/utils.min.js" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
