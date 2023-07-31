@@ -191,5 +191,5 @@ except NameError:
 logging.config.dictConfig({
     "version": 1,
     "disable_existing_loggers": False,
-    "level": "DEBUG" if (FLASK_ENV == "development") else None
+    "level": "DEBUG" if (FLASK_ENV == "development") else "WARNING"
 })
