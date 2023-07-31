@@ -108,10 +108,11 @@ def session_required(f):
                     if isinstance(data, dict) and "valid" in data:
                         continue
                     invalid_sessions.append(file_path)
-            except Exception:
+            except Exception as e:
                 # Broad exception handling here due to how instances installed
                 # with pip seem to have issues storing unrelated files in the
                 # same directory as sessions
+                logging.debug(e)
                 pass
 
         for invalid_session in invalid_sessions:
@@ -357,7 +358,7 @@ def search():
         html_soup = bsoup(str(response), "html.parser")
         if search_util.widget == 'ip':
             response = add_ip_card(html_soup, get_client_ip(request))
-        elif search_util.widget == 'calculator' and not 'nojs' in request.args:
+        elif search_util.widget == 'calculator' and not ('nojs' in request.args):
             response = add_calculator_card(html_soup)
 
     # Update tabs content
@@ -561,15 +562,23 @@ def window():
     )
 
 
+def __remove_source_map(body: bytes) -> bytes:
+    try:
+        return body.decode().replace("# sourceMappingURL=", " map ").encode()
+    except Exception as e:
+        logging.debug(e)
+        return body
+
+
 def proxy_pattern(resp: requests.Response, content: bytes = b"", only_resp: bool = True) -> Response:
     excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection']
     use_headers = ['cache-control', 'content-type', 'etag']
     headers = [
         (name, value) for (name, value) in resp.raw.headers.items()
-        if name.lower() not in excluded_headers and
-           name.lower() in use_headers
+        if name.lower() not in excluded_headers and name.lower() in use_headers
     ]
     content = resp.content if only_resp else content
+    content = __remove_source_map(content)
     return Response(content, resp.status_code, headers)
 
 
