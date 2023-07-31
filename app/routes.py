@@ -465,8 +465,6 @@ def imgres():
 
 
 @app.route(f"/{Endpoint.element}")
-@session_required
-@auth_required
 def element():
     element_url = src_url = request.args.get("url")
     if element_url.startswith("gAAAAA"):
