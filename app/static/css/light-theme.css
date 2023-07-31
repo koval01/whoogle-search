@@ -178,7 +178,7 @@ path {
 .search-bar-desktop {
   background-color: var(--whoogle-result-bg) !important;
   color: var(--whoogle-text);
-  border-bottom: 0px;
+  border-bottom: 0;
 }
 
 .ip-text-div, .update_available, .cb_label {

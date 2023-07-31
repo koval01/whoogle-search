@@ -38,7 +38,6 @@ ARG use_https=''
 ARG whoogle_port=5000
 ARG twitter_alt='farside.link/nitter'
 ARG youtube_alt='farside.link/invidious'
-ARG instagram_alt='farside.link/bibliogram/u'
 ARG reddit_alt='farside.link/libreddit'
 ARG medium_alt='farside.link/scribe'
 ARG translate_alt='farside.link/lingva'
@@ -62,7 +61,6 @@ ENV CONFIG_VOLUME=$config_dir \
     EXPOSE_PORT=$whoogle_port \
     WHOOGLE_ALT_TW=$twitter_alt \
     WHOOGLE_ALT_YT=$youtube_alt \
-    WHOOGLE_ALT_IG=$instagram_alt \
     WHOOGLE_ALT_RD=$reddit_alt \
     WHOOGLE_ALT_MD=$medium_alt \
     WHOOGLE_ALT_TL=$translate_alt \
@@ -79,8 +77,7 @@ COPY --from=builder /install /usr/local
 COPY misc/tor/torrc /etc/tor/torrc
 COPY misc/tor/start-tor.sh misc/tor/start-tor.sh
 COPY app/ app/
-COPY run .
-#COPY whoogle.env .
+COPY run whoogle.env* ./
 
 # Create user/group to run as
 RUN adduser -D -g $DOCKER_USERID -u $DOCKER_USERID $DOCKER_USER

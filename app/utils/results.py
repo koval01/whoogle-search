@@ -1,16 +1,16 @@
 from app.models.config import Config
 from app.models.endpoint import Endpoint
+from app.utils.misc import list_to_dict
 from bs4 import BeautifulSoup, NavigableString
 import copy
 from flask import current_app
-import html
 import os
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
 import re
 
 SKIP_ARGS = ["ref_src", "utm"]
-SKIP_PREFIX = ["//www.", "//mobile.", "//m."]
+SKIP_PREFIX = ['//www.', '//mobile.', '//m.', 'www.', 'mobile.', 'm.']
 GOOG_STATIC = "www.gstatic.com"
 G_M_LOGO_URL = "https://www.gstatic.com/m/images/icons/googleg.gif"
 GOOG_IMG = "/images/branding/searchlogo/1x/googlelogo"
@@ -25,13 +25,12 @@ BLACKLIST = [
     "Reklama", "Реклама", "Anunț", "광고", "annons", "Annonse", "Iklan",
     "広告", "Augl.", "Mainos", "Advertentie", "إعلان", "Գովազդ", "विज्ञापन",
     "Reklam", "آگهی", "Reklāma", "Reklaam", "Διαφήμιση", "מודעה", "Hirdetés",
-    "Anúncio", "Quảng cáo", "โฆษณา"
+    "Anúncio", "Quảng cáo", "โฆษณา", 'sponsored', 'patrocinado', 'gesponsert'
 ]
 
 SITE_ALTS = {
     "twitter.com": os.getenv("WHOOGLE_ALT_TW", "farside.link/nitter"),
     "youtube.com": os.getenv("WHOOGLE_ALT_YT", "farside.link/invidious"),
-    "instagram.com": os.getenv("WHOOGLE_ALT_IG", "farside.link/bibliogram/u"),
     "reddit.com": os.getenv("WHOOGLE_ALT_RD", "farside.link/libreddit"),
     **dict.fromkeys([
         "medium.com",
@@ -42,6 +41,28 @@ SITE_ALTS = {
     "imdb.com": os.getenv("WHOOGLE_ALT_IMDB", "farside.link/libremdb"),
     "quora.com": os.getenv("WHOOGLE_ALT_QUORA", "farside.link/quetre")
 }
+
+# Include custom site redirects from WHOOGLE_REDIRECTS
+SITE_ALTS.update(list_to_dict(re.split(',|:', os.getenv('WHOOGLE_REDIRECTS', ''))))
+
+
+def contains_cjko(s: str) -> bool:
+    """This function check whether or not a string contains Chinese, Japanese,
+    or Korean characters. It employs regex and uses the u escape sequence to
+    match any character in a set of Unicode ranges.
+    Args:
+        s (str): string to be checked
+    Returns:
+        bool: True if the input s contains the characters and False otherwise
+    """
+    unicode_ranges = ('\u4e00-\u9fff' # Chinese characters
+                      '\u3040-\u309f' # Japanese hiragana
+                      '\u30a0-\u30ff' # Japanese katakana
+                      '\u4e00-\u9faf' # Japanese kanji
+                      '\uac00-\ud7af' # Korean hangul syllables
+                      '\u1100-\u11ff' # Korean hangul jamo
+                      )
+    return bool(re.search(fr'[{unicode_ranges}]', s))
 
 
 def bold_search_terms(response: str, query: str) -> BeautifulSoup:
@@ -63,20 +84,29 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
         if len(element) == len(target_word):
             return
 
-        if not re.match('.*[a-zA-Z0-9].*', target_word) or (
+        # Ensure target word is escaped for regex
+        target_word = re.escape(target_word)
+
+        # Check if the word contains Chinese, Japanese, or Korean characters
+        if contains_cjko(target_word):
+            reg_pattern = fr'((?![{{}}<>-]){target_word}(?![{{}}<>-]))'
+        else:
+            reg_pattern = fr'\b((?![{{}}<>-]){target_word}(?![{{}}<>-]))\b'
+
+        if re.match('.*[@_!#$%^&*()<>?/\|}{~:].*', target_word) or (
                 element.parent and element.parent.name == "style"):
             return
 
         element.replace_with(BeautifulSoup(
-            re.sub(fr'\b((?![{{}}<>-]){target_word}(?![{{}}<>-]))\b',
+            re.sub(reg_pattern,
                    r"<b>\1</b>",
-                   html.escape(element),
+                   element,
                    flags=re.I), "html.parser")
         )
 
     # Split all words out of query, grouping the ones wrapped in quotes
     for word in re.split(r'\s+(?=[^"]*(?:"[^"]*"[^"]*)*$)', query):
-        word = re.sub(r'[^A-Za-z0-9 ]+', "", word)
+        word = re.sub(r'[@_!#$%^&*()<>?/\|}{~:]+', '', word)
         target = response.find_all(
             text=re.compile(r"" + re.escape(word), re.I))
         for nav_str in target:
@@ -131,20 +161,33 @@ def get_site_alt(link: str) -> str:
     # Need to replace full hostname with alternative to encapsulate
     # subdomains as well
     parsed_link = urlparse.urlparse(link)
-    hostname = parsed_link.hostname
+
+    # Extract subdomain separately from the domain+tld. The subdomain
+    # is used for wikiless translations.
+    split_host = parsed_link.netloc.split('.')
+    subdomain = split_host[0] if len(split_host) > 2 else ''
+    hostname = '.'.join(split_host[-2:])
+
+    # The full scheme + hostname is used when comparing against the list of
+    # available alternative services, due to how Medium links are constructed.
+    # (i.e. for medium.com: "https://something.medium.com" should match,
+    # "https://medium.com/..." should match, but "philomedium.com" should not)
+    hostcomp = f'{parsed_link.scheme}://{hostname}'
 
     for site_key in SITE_ALTS.keys():
-        if not hostname or site_key not in hostname or not SITE_ALTS[site_key]:
+        site_alt = f'{parsed_link.scheme}://{site_key}'
+        if not hostname or site_alt not in hostcomp or not SITE_ALTS[site_key]:
             continue
 
         # Wikipedia -> Wikiless replacements require the subdomain (if it's
         # a 2-char language code) to be passed as a URL param to Wikiless
         # in order to preserve the language setting.
         params = ""
-        if "wikipedia" in hostname:
-            subdomain = hostname.split(".")[0]
-            if len(subdomain) == 2:
-                params = f"?lang={subdomain}"
+        if 'wikipedia' in hostname and len(subdomain) == 2:
+            hostname = f'{subdomain}.{hostname}'
+            params = f'?lang={subdomain}'
+        elif 'medium' in hostname and len(subdomain) > 0:
+            hostname = f'{subdomain}.{hostname}'
 
         parsed_alt = urlparse.urlparse(SITE_ALTS[site_key])
         link = link.replace(hostname, SITE_ALTS[site_key]) + params
@@ -157,7 +200,10 @@ def get_site_alt(link: str) -> str:
             link = "//".join(link.split("//")[1:])
 
         for prefix in SKIP_PREFIX:
-            link = link.replace(prefix, "//")
+            if parsed_alt.scheme:
+                link = link.replace(prefix, '')
+            else:
+                link = link.replace(prefix, '//')
         break
 
     return link
@@ -234,43 +280,6 @@ def append_anon_view(result: BeautifulSoup, config: Config) -> None:
     av_link.string = f'{translation["anon-view"]}'
     av_link["class"] = "anon-view"
     result.append(av_link)
-
-
-def add_ip_card(html_soup: BeautifulSoup, ip: str) -> BeautifulSoup:
-    """Adds the client's IP address to the search results
-        if query contains keywords
-
-    Args:
-        html_soup: The parsed search result containing the keywords
-        ip: ip address of the client
-
-    Returns:
-        BeautifulSoup
-
-    """
-    main_div = html_soup.select_one("#main")
-    if main_div:
-        # HTML IP card tag
-        ip_tag = html_soup.new_tag("div")
-        ip_tag["class"] = "ZINbbc xpd O9g5cc uUPGi"
-
-        # For IP Address html tag
-        ip_address = html_soup.new_tag("div")
-        ip_address["class"] = "kCrYT ip-address-div"
-        ip_address.string = ip
-
-        # Text below the IP address
-        ip_text = html_soup.new_tag("div")
-        ip_text.string = "Your public IP address"
-        ip_text["class"] = "kCrYT ip-text-div"
-
-        # Adding all the above html tags to the IP card
-        ip_tag.append(ip_address)
-        ip_tag.append(ip_text)
-
-        # Insert the element at the top of the result list
-        main_div.insert_before(ip_tag)
-    return html_soup
 
 
 def check_currency(response: str) -> dict:

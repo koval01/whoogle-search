@@ -1,21 +1,24 @@
 from app.filter import clean_query
 from app.request import send_tor_signal
-from app.utils.session import generate_user_key
+from app.utils.session import generate_key
 from app.utils.bangs import gen_bangs_json
 from app.utils.misc import gen_file_hash, read_config_bool
 from base64 import b64encode
+from bs4 import MarkupResemblesLocatorWarning
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
 from flask import Flask
 import json
 import logging.config
 import os
 from stem import Signal
 import threading
-from dotenv import load_dotenv
+import warnings
 
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app.utils.misc import read_config_bool
+from app.version import __version__
 
 app = Flask(__name__, static_folder=os.path.dirname(
     os.path.abspath(__file__)) + "/static")
@@ -27,16 +30,16 @@ dot_env_path = (
     "../whoogle.env"))
 
 # Load .env file if enabled
-if read_config_bool("WHOOGLE_DOTENV"):
+if os.path.exists(dot_env_path):
     load_dotenv(dot_env_path)
 
-app.default_key = generate_user_key()
+app.enc_key = generate_key()
 
 if read_config_bool("HTTPS_ONLY"):
     app.config["SESSION_COOKIE_NAME"] = "__Secure-session"
     app.config["SESSION_COOKIE_SECURE"] = True
 
-app.config["VERSION_NUMBER"] = "0.7.5"
+app.config["VERSION_NUMBER"] = __version__
 app.config["APP_ROOT"] = os.getenv(
     "APP_ROOT",
     os.path.dirname(os.path.abspath(__file__)))
@@ -52,6 +55,9 @@ app.config["LANGUAGES"] = json.load(open(
 app.config["COUNTRIES"] = json.load(open(
     os.path.join(app.config["STATIC_FOLDER"], "settings/countries.json"),
     encoding="utf-8"))
+app.config['TIME_PERIODS'] = json.load(open(
+    os.path.join(app.config['STATIC_FOLDER'], 'settings/time_periods.json'),
+    encoding='utf-8'))
 app.config["TRANSLATIONS"] = json.load(open(
     os.path.join(app.config["STATIC_FOLDER"], "settings/translations.json"),
     encoding="utf-8"))
@@ -170,6 +176,9 @@ app.jinja_env.globals.update(
 
 # Attempt to acquire tor identity, to determine if Tor config is available
 send_tor_signal(Signal.HEARTBEAT)
+
+# Suppress spurious warnings from BeautifulSoup
+warnings.simplefilter('ignore', MarkupResemblesLocatorWarning)
 
 from app import routes  # noqa
 

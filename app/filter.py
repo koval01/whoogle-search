@@ -121,6 +121,7 @@ class Filter:
             page_url="",
             query="",
             mobile=False) -> None:
+        self.soup = None
         self.config = config
         self.mobile = mobile
         self.user_key = user_key
@@ -151,14 +152,15 @@ class Filter:
         return Fernet(self.user_key).encrypt(path.encode()).decode()
 
     def clean(self, soup) -> BeautifulSoup:
-        self.main_divs = soup.find("div", {"id": "main"})
+        self.soup = soup
+        self.main_divs = self.soup.find('div', {'id': 'main'})
         self.remove_ads()
         self.remove_block_titles()
         self.remove_block_url()
         self.collapse_sections()
-        self.update_css(soup)
-        self.update_styling(soup)
-        self.remove_block_tabs(soup)
+        self.update_css()
+        self.update_styling()
+        self.remove_block_tabs()
 
         self.updater_parent(soup, [
             {"selector": GClasses.result_class_a,
@@ -182,37 +184,43 @@ class Filter:
             {"tag": "table", "cls": "bookcf"}
         ])
 
-        for img in [_ for _ in soup.find_all("img") if "src" in _.attrs]:
+        for img in [_ for _ in self.soup.find_all('img') if 'src' in _.attrs]:
             self.update_element_src(img, "image/png")
 
-        for audio in [_ for _ in soup.find_all("audio") if "src" in _.attrs]:
+        for audio in [_ for _ in self.soup.find_all('audio') if 'src' in _.attrs]:
             self.update_element_src(audio, "audio/mpeg")
 
-        for link in soup.find_all("a", href=True):
+        for link in self.soup.find_all('a', href=True):
             self.update_link(link)
 
-        input_form = soup.find("form")
+        if self.config.alts:
+            self.site_alt_swap()
+
+        input_form = self.soup.find('form')
         if input_form is not None:
             input_form["method"] = "GET" if self.config.get_only else "POST"
             # Use a relative URI for submissions
             input_form["action"] = "search"
 
         # Ensure no extra scripts passed through
-        for script in soup("script"):
+        for script in self.soup('script'):
             script.decompose()
 
         # Update default footer and header
-        footer = soup.find("footer")
+        footer = self.soup.find('footer')
         if footer:
             # Remove divs that have multiple links beyond just page navigation
             [_.decompose() for _ in footer.find_all("div", recursive=False)
              if len(_.find_all("a", href=True)) > 3]
+            for link in footer.find_all('a', href=True):
+                link['href'] = f'{link["href"]}&preferences={self.config.preferences}'
 
-        header = soup.find("header")
+        header = self.soup.find('header')
         if header:
             header.decompose()
-        self.remove_site_blocks(soup)
-        return soup
+
+        self.remove_site_blocks(self.soup)
+        return self.soup
 
     def remove_site_blocks(self, soup) -> None:
         if not self.config.block or not soup.body:
@@ -265,7 +273,7 @@ class Filter:
     def remove_block_titles(self) -> None:
         if not self.main_divs or not self.config.block_title:
             return
-        block_title = re.compile(self.block_title)
+        block_title = re.compile(self.config.block_title)
         for div in [_ for _ in self.main_divs.find_all("div", recursive=True)]:
             block_divs = [_ for _ in div.find_all("h3", recursive=True)
                           if block_title.search(_.text) is not None]
@@ -274,24 +282,26 @@ class Filter:
     def remove_block_url(self) -> None:
         if not self.main_divs or not self.config.block_url:
             return
-        block_url = re.compile(self.block_url)
+        block_url = re.compile(self.config.block_url)
         for div in [_ for _ in self.main_divs.find_all("div", recursive=True)]:
             block_divs = [_ for _ in div.find_all("a", recursive=True)
                           if block_url.search(_.attrs["href"]) is not None]
             _ = div.decompose() if len(block_divs) else None
 
-    def remove_block_tabs(self, soup) -> None:
-        cls = GClasses.images_tbm_tab
-
+    def remove_block_tabs(self) -> None:
         if self.main_divs:
-            soup = self.main_divs
-            cls = GClasses.main_tbm_tab
-
-        for div in soup.find_all(
-                "div",
-                attrs={"class": f"{cls}"}
-        ):
-            _ = div.decompose()
+            for div in self.main_divs.find_all(
+                    'div',
+                    attrs={'class': f'{GClasses.main_tbm_tab}'}
+            ):
+                _ = div.decompose()
+        else:
+            # when in images tab
+            for div in self.soup.find_all(
+                'div',
+                attrs={'class': f'{GClasses.images_tbm_tab}'}
+            ):
+                _ = div.decompose()
 
     def collapse_sections(self) -> None:
         """Collapses long result sections ("people also asked", "related
@@ -414,7 +424,7 @@ class Filter:
                 ) + "&type=" + urlparse.quote(mime)
         )
 
-    def update_css(self, soup) -> None:
+    def update_css(self) -> None:
         """Updates URLs used in inline styles to be proxied by Whoogle
         using the /element endpoint.
 
@@ -423,7 +433,7 @@ class Filter:
 
         """
         # Filter all <style> tags
-        for style in soup.find_all("style"):
+        for style in self.soup.find_all("style"):
             style.string = clean_css(style.string, self.page_url)
 
         # TODO: Convert remote stylesheets to style tags and proxy all
@@ -431,20 +441,20 @@ class Filter:
         # for link in soup.find_all("link", attrs={"rel": "stylesheet"}):
         # print(link)
 
-    def update_styling(self, soup) -> None:
+    def update_styling(self) -> None:
         # Update CSS classes for result divs
-        soup = GClasses.replace_css_classes(soup)
+        soup = GClasses.replace_css_classes(self.soup)
 
         # Remove unnecessary button(s)
-        for button in soup.find_all("button"):
+        for button in self.soup.find_all("button"):
             button.decompose()
 
         # Remove svg logos
-        for svg in soup.find_all("svg"):
+        for svg in self.soup.find_all("svg"):
             svg.decompose()
 
         # Update logo
-        logo = soup.find("a", {"class": "l"})
+        logo = self.soup.find("a", {"class": "l"})
         if logo and self.mobile:
             logo["style"] = ("display:flex; justify-content:center; "
                              "align-items:center; color:#685e79; "
@@ -452,14 +462,15 @@ class Filter:
 
         # Fix search bar length on mobile
         try:
-            search_bar = soup.find("header").find("form").find("div")
+            search_bar = self.soup.find("header").find("form").find("div")
             search_bar["style"] = "width: 100%;"
         except AttributeError:
             pass
 
         # Fix body max width on images tab
-        style = soup.find("style")
-        div = soup.find("div", attrs={"class": f"{GClasses.images_tbm_tab}"})
+        style = self.soup.find('style')
+        div = self.soup.find('div', attrs={
+            'class': f'{GClasses.images_tbm_tab}'})
         if style and div and not self.mobile:
             css = style.string
             css_html_tag = (
@@ -489,7 +500,6 @@ class Filter:
 
         """
         parsed_link = urlparse.urlparse(link["href"])
-        link_netloc = ""
         if "/url?q=" in link["href"]:
             link_netloc = extract_q(parsed_link.query, link["href"])
         else:
@@ -524,7 +534,9 @@ class Filter:
                     if parent.name == "footer" or f"{GClasses.footer}" in p_cls:
                         link.decompose()
                     parent = parent.parent
-            return
+
+            if link.decomposed:
+                return
 
         # Replace href with only the intended destination (no "utm" type tags)
         href = link["href"].replace("https://www.google.com", "")
@@ -589,24 +601,54 @@ class Filter:
             link["target"] = "_blank"
 
         # Replace link location if "alts" config is enabled
-        if self.config.alts:
-            # Search and replace all link descriptions
-            # with alternative location
-            link["href"] = get_site_alt(link["href"])
-            link_desc = link.find_all(
-                text=re.compile("|".join(SITE_ALTS.keys())))
-            if len(link_desc) == 0:
-                return
+    def site_alt_swap(self) -> None:
+        """Replaces link locations and page elements if "alts" config
+        is enabled
+        """
+        for site, alt in SITE_ALTS.items():
+            if site != "medium.com" and alt != "":
+                # Ignore medium.com replacements since these are handled
+                # specifically in the link description replacement, and medium
+                # results are never given their own "card" result where this
+                # replacement would make sense.
+                # Also ignore if the alt is empty, since this is used to indicate
+                # that the alt is not enabled.
+                for div in self.soup.find_all('div', text=re.compile(site)):
+                    # Use the number of words in the div string to determine if the
+                    # string is a result description (shouldn't replace domains used
+                    # in desc text).
+                    if len(div.string.split(' ')) == 1:
+                        div.string = div.string.replace(site, alt)
 
-            # Replace link description
-            link_desc = link_desc[0]
-            for site, alt in SITE_ALTS.items():
+            for link in self.soup.find_all('a', href=True):
+                # Search and replace all link descriptions
+                # with alternative location
+                link['href'] = get_site_alt(link['href'])
+                link_desc = link.find_all(
+                    text=re.compile('|'.join(SITE_ALTS.keys())))
+                if len(link_desc) == 0:
+                    continue
+
+                # Replace link description
+                link_desc = link_desc[0]
                 if site not in link_desc or not alt:
                     continue
+
                 new_desc = BeautifulSoup(features="html.parser").new_tag("div")
-                new_desc.string = str(link_desc).replace(site, alt)
                 link_desc.replace_with(new_desc)
-                break
+
+                link_str = str(link_desc)
+
+                # Medium links should be handled differently, since 'medium.com'
+                # is a common substring of domain names, but shouldn't be
+                # replaced (i.e. 'philomedium.com' should stay as it is).
+                if 'medium.com' in link_str:
+                    if link_str.startswith('medium.com') or '.medium.com' in link_str:
+                        link_str = SITE_ALTS['medium.com'] + \
+                                   link_str[link_str.find('medium.com') + len('medium.com'):]
+                    new_desc.string = link_str
+                else:
+                    new_desc.string = link_str.replace(site, alt)
 
     @staticmethod
     def view_image(soup) -> BeautifulSoup:
@@ -622,13 +664,15 @@ class Filter:
 
         # get some tags that are unchanged between mobile and pc versions
         cor_suggested = soup.find_all("table", attrs={"class": "By0U9"})
-        next_pages = soup.find_all("table", attrs={"class": "uZgmoc"})[0]
+        next_pages = soup.find('table', attrs={'class': "uZgmoc"})
 
         results = []
         # find results div
-        results_div = soup.find_all("div", attrs={"class": "nQvrDb"})[0]
-        # find all the results
-        results_all = results_div.find_all("div", attrs={"class": "lIMUZd"})
+        results_div = soup.find('div', attrs={'class': "nQvrDb"})
+        # find all the results (if any)
+        results_all = []
+        if results_div:
+            results_all = results_div.find_all('div', attrs={'class': "lIMUZd"})
 
         for item in results_all:
             urls = item.find("a")["href"].split("&imgrefurl=")

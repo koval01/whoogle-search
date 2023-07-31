@@ -20,3 +20,7 @@ dist/
 
 # env
 whoogle.env
+
+# vim
+*~
+*.swp

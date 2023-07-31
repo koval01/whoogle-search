@@ -65,6 +65,7 @@ class Search:
         self.config = config
         self.session_key = session_key
         self.query = ""
+        self.widget = ""
         self.cookies_disabled = cookies_disabled
         self.search_type = self.request_params.get(
             "tbm") if "tbm" in self.request_params else ""
@@ -105,6 +106,11 @@ class Search:
         # Strip leading "! " for "feeling lucky" queries
         self.feeling_lucky = q.startswith("! ")
         self.query = q[2:] if self.feeling_lucky else q
+        # Check for possible widgets
+        self.widget = "ip" if re.search("([^a-z0-9]|^)my *[^a-z0-9] *(ip|internet protocol)" +
+                                        "($|( *[^a-z0-9] *(((addres|address|adres|" +
+                                        "adress)|a)? *$)))", self.query.lower()) else self.widget
+        self.widget = 'calculator' if re.search("calculator|calc|calclator|math", self.query.lower()) else self.widget
         return self.query
 
     def generate_response(self) -> str:
@@ -139,10 +145,14 @@ class Search:
                       and not g.user_request.mobile)
 
         get_body = g.user_request.send(query=full_query,
-                                       force_mobile=view_image)
+                                       force_mobile=view_image,
+                                       user_agent=self.user_agent)
 
         # Produce cleanable html soup from response
-        html_soup = bsoup(get_body.text, "html.parser")
+        get_body_safed = get_body.text \
+            .replace("&lt;", "andlt;") \
+            .replace("&gt;", "andgt;")
+        html_soup = bsoup(get_body_safed, 'html.parser')
 
         # Replace current soup if view_image is active
         if view_image:
@@ -170,14 +180,3 @@ class Search:
                 link["href"] += param_str
 
             return str(formatted_results)
-
-    def check_kw_ip(self) -> re.Match:
-        """Checks for keywords related to "my ip" in the query
-
-        Returns:
-            bool
-
-        """
-        return re.search("([^a-z0-9]|^)my *[^a-z0-9] *(ip|internet protocol)" +
-                         "($|( *[^a-z0-9] *(((addres|address|adres|" +
-                         "adress)|a)? *$)))", self.query.lower())

@@ -1,10 +1,10 @@
 from cryptography.fernet import Fernet
 from flask import current_app as app
 
-REQUIRED_SESSION_VALUES = ["uuid", "config", "key"]
+REQUIRED_SESSION_VALUES = ['uuid', 'config', 'key', 'auth']
 
 
-def generate_user_key() -> bytes:
+def generate_key() -> bytes:
     """Generates a key for encrypting searches and element URLs
 
     Args:

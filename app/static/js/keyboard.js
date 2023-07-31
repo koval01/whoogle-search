@@ -26,7 +26,7 @@
         if (typeof keymap[e.key] === 'function') {
             e.preventDefault();
 
-            keymap[`${shift && e.key == 'Tab' ? 'Shift' : ''}${e.key}`]();
+            keymap[`${shift && e.key === 'Tab' ? 'Shift' : ''}${e.key}`]();
         }
     });
 
@@ -52,6 +52,10 @@
     }
 
     function focusSearch () {
+        if (window.usingCalculator) {
+            // if this function exists, it means the calculator widget has been displayed
+            if (usingCalculator()) return;
+        }
         activeIdx = -1;
         searchBar.focus();
     }

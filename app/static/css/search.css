@@ -20,6 +20,10 @@ textarea:focus, input:focus, select:focus {
   outline: none !important;
 }
 
+.idg8be {
+  margin: 1px 0px 1px -7px !important;
+}
+
 .vvjwJb {
   font-size: 16px !important;
 }
@@ -211,6 +215,10 @@ footer {
 #currency_chart_display {
   max-height: 40vh !important;
   min-height: 18vh !important;
+}
+
+#config-type-label {
+  margin-top: 1em;
 }
 
 /*# sourceMappingURL=search.css.map */

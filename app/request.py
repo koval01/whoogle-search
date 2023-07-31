@@ -75,6 +75,14 @@ def send_tor_signal(signal: Signal) -> bool:
 
 
 def gen_user_agent(is_mobile) -> str:
+    user_agent = os.environ.get('WHOOGLE_USER_AGENT', '')
+    user_agent_mobile = os.environ.get('WHOOGLE_USER_AGENT_MOBILE', '')
+    if user_agent and not is_mobile:
+        return user_agent
+
+    if user_agent_mobile and is_mobile:
+        return user_agent_mobile
+
     firefox = random.choice(["Choir", "Squier", "Higher", "Wire"]) + "fox"
     linux = random.choice(["Win", "Sin", "Gin", "Fin", "Kin"]) + "ux"
 
@@ -109,8 +117,8 @@ def gen_query(query, args, config) -> str:
     if ":past" in query and "tbs" not in args:
         time_range = str.strip(query.split(":past", 1)[-1])
         param_dict["tbs"] = "&tbs=" + ("qdr:" + str.lower(time_range[0]))
-    elif "tbs" in args:
-        result_tbs = args.get("tbs")
+    elif 'tbs' in args or 'tbs' in config:
+        result_tbs = args.get('tbs') if 'tbs' in args else config['tbs']
         param_dict["tbs"] = "&tbs=" + result_tbs
 
         # Occasionally the "tbs" param provided by google also contains a
@@ -206,6 +214,8 @@ class Request:
             config.lang_search if config.lang_search else ""
         )
 
+        self.country = config.country if config.country else ''
+
         # For setting Accept-language Header
         self.lang_interface = ""
         if config.accept_language:
@@ -226,19 +236,13 @@ class Request:
             proxy_pass = os.environ.get("WHOOGLE_PROXY_PASS", "")
             auth_str = ""
             if proxy_user:
-                auth_str = proxy_user + ":" + proxy_pass
-            self.proxies = {
-                "https": proxy_type + "://" +
-                         ((auth_str + "@") if auth_str else "") + proxy_path,
-            }
+                auth_str = f'{proxy_user}:{proxy_pass}@'
 
-            # Need to ensure both HTTP and HTTPS are in the proxy dict,
-            # regardless of underlying protocol
-            if proxy_type == "https":
-                self.proxies["http"] = self.proxies["https"].replace(
-                    "https", "http")
-            else:
-                self.proxies["http"] = self.proxies["https"]
+            proxy_str = f'{proxy_type}://{auth_str}{proxy_path}'
+            self.proxies = {
+                'https': proxy_str,
+                'http': proxy_str
+            }
         else:
             self.proxies = {
                 "http": "socks5://127.0.0.1:9050",
@@ -263,7 +267,11 @@ class Request:
         """
         ac_query = dict(q=query)
         if self.language:
-            ac_query["hl"] = self.language
+            ac_query['lr'] = self.language
+        if self.country:
+            ac_query['gl'] = self.country
+        if self.lang_interface:
+            ac_query['hl'] = self.lang_interface
 
         response = self.send(base_url=AUTOCOMPLETE_URL,
                              query=urlparse.urlencode(ac_query)).text
@@ -280,7 +288,7 @@ class Request:
             return []
 
     def send(self, base_url="", query="", attempt=0,
-             force_mobile=False) -> Response:
+             force_mobile=False, user_agent="") -> Response:
         """Sends an outbound request to a URL. Optionally sends the request
         using Tor, if enabled by the user.
 
@@ -296,10 +304,14 @@ class Request:
             Response: The Response object returned by the requests call
 
         """
-        if force_mobile and not self.mobile:
-            modified_user_agent = self.modified_user_agent_mobile
+        use_client_user_agent = int(os.environ.get('WHOOGLE_USE_CLIENT_USER_AGENT', '0'))
+        if user_agent and use_client_user_agent == 1:
+            modified_user_agent = user_agent
         else:
-            modified_user_agent = self.modified_user_agent
+            if force_mobile and not self.mobile:
+                modified_user_agent = self.modified_user_agent_mobile
+            else:
+                modified_user_agent = self.modified_user_agent
 
         headers = {
             "User-Agent": modified_user_agent
