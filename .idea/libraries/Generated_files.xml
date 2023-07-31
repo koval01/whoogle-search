@@ -8,6 +8,7 @@
         <item url="file://$PROJECT_DIR$/app/static/build/controller.min.1b060e94.min.js" />
         <item url="file://$PROJECT_DIR$/app/static/build/controller.min.5377937a.min.js" />
         <item url="file://$PROJECT_DIR$/app/static/build/controller.min.8d4d872c.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/currency.11a64156.min.js" />
         <item url="file://$PROJECT_DIR$/app/static/build/header.363d8363.min.js" />
         <item url="file://$PROJECT_DIR$/app/static/build/header.43211710.min.js" />
         <item url="file://$PROJECT_DIR$/app/static/build/header.45c26479.min.js" />
@@ -26,6 +27,7 @@
         <item url="file://$PROJECT_DIR$/app/static/build/utils.min.979a461a.min.js" />
         <item url="file://$PROJECT_DIR$/app/static/build/utils.min.f278ae7e.min.js" />
         <item url="file://$PROJECT_DIR$/app/static/js/controller.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/js/currency.min.js" />
         <item url="file://$PROJECT_DIR$/app/static/js/header.min.js" />
         <item url="file://$PROJECT_DIR$/app/static/js/keyboard.min.js" />
         <item url="file://$PROJECT_DIR$/app/static/js/utils.min.js" />
@@ -38,6 +40,7 @@
       <root url="file://$PROJECT_DIR$/app/static/build/controller.min.1b060e94.min.js" />
       <root url="file://$PROJECT_DIR$/app/static/build/controller.min.5377937a.min.js" />
       <root url="file://$PROJECT_DIR$/app/static/build/controller.min.8d4d872c.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/currency.11a64156.min.js" />
       <root url="file://$PROJECT_DIR$/app/static/build/header.363d8363.min.js" />
       <root url="file://$PROJECT_DIR$/app/static/build/header.43211710.min.js" />
       <root url="file://$PROJECT_DIR$/app/static/build/header.45c26479.min.js" />
@@ -56,6 +59,7 @@
       <root url="file://$PROJECT_DIR$/app/static/build/utils.min.979a461a.min.js" />
       <root url="file://$PROJECT_DIR$/app/static/build/utils.min.f278ae7e.min.js" />
       <root url="file://$PROJECT_DIR$/app/static/js/controller.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/js/currency.min.js" />
       <root url="file://$PROJECT_DIR$/app/static/js/header.min.js" />
       <root url="file://$PROJECT_DIR$/app/static/js/keyboard.min.js" />
       <root url="file://$PROJECT_DIR$/app/static/js/utils.min.js" />
