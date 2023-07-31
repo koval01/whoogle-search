@@ -21,7 +21,7 @@ textarea:focus, input:focus, select:focus {
 }
 
 .idg8be {
-  margin: 1px 0 1px -7px !important;
+  margin: 1px 0 1px 0 !important;
   padding: 0 !important;
 }
 
@@ -221,5 +221,3 @@ footer {
 #config-type-label {
   margin-top: 1em;
 }
-
-
