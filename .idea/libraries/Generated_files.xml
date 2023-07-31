@@ -9,6 +9,8 @@
         <item url="file://$PROJECT_DIR$/app/static/build/controller.min.5377937a.min.js" />
         <item url="file://$PROJECT_DIR$/app/static/build/controller.min.8d4d872c.min.js" />
         <item url="file://$PROJECT_DIR$/app/static/build/currency.11a64156.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/currency.min.a200e5de.min.js" />
+        <item url="file://$PROJECT_DIR$/app/static/build/currency.min.ab92c11f.min.js" />
         <item url="file://$PROJECT_DIR$/app/static/build/header.363d8363.min.js" />
         <item url="file://$PROJECT_DIR$/app/static/build/header.43211710.min.js" />
         <item url="file://$PROJECT_DIR$/app/static/build/header.45c26479.min.js" />
@@ -41,6 +43,8 @@
       <root url="file://$PROJECT_DIR$/app/static/build/controller.min.5377937a.min.js" />
       <root url="file://$PROJECT_DIR$/app/static/build/controller.min.8d4d872c.min.js" />
       <root url="file://$PROJECT_DIR$/app/static/build/currency.11a64156.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/currency.min.a200e5de.min.js" />
+      <root url="file://$PROJECT_DIR$/app/static/build/currency.min.ab92c11f.min.js" />
       <root url="file://$PROJECT_DIR$/app/static/build/header.363d8363.min.js" />
       <root url="file://$PROJECT_DIR$/app/static/build/header.43211710.min.js" />
       <root url="file://$PROJECT_DIR$/app/static/build/header.45c26479.min.js" />
