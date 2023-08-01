@@ -552,7 +552,7 @@
         "dark": "අඳුරු",
         "system": "පද්ධතිය",
         "ratelimit": "සේවාදායකය අනුපාතනය කර ඇත",
-        "moderated": "මෙම ඉල්ලීම මධ්\u200Dයස්ථ කර නොමැත",
+        "moderated": "මෙම ඉල්ලීම මධ්‍යස්ථ කර නොමැත",
         "continue-search": "Farside සමඟ ඔබගේ සෙවුම කරගෙන යන්න",
         "all": "සියල්ල",
         "images": "රූප",
@@ -1082,7 +1082,7 @@
         "qdr:y": "Sala borî",
         "config-time-period": "Dem Period"
     },
-     "lang_th": {
+    "lang_th": {
         "search": "ค้นหา",
         "config": "กำหนดค่า",
         "config-country": "ประเทศ",
