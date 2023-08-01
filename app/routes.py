@@ -26,6 +26,7 @@ from app.models.config import Config
 from app.models.endpoint import Endpoint
 from app.request import Request, TorError
 from app.utils.bangs import resolve_bang
+from app.utils.filter import Question
 from app.utils.misc import read_config_bool, get_client_ip, get_request_url, \
     check_for_update
 from app.utils.widgets import *
@@ -314,6 +315,25 @@ def search():
     if not query:
         return redirect(url_for(".index"))
 
+    # If the user is attempting to translate a string, determine the correct
+    # string for formatting the lingva.ml url
+    localization_lang = g.user_config.get_localization_lang()
+    translation = app.config.get("TRANSLATIONS")[localization_lang]
+    translate_to = localization_lang.replace("lang_", "")
+
+    # Return 400 if question has not been moderated
+    if Question().open_ai_moderation(query):
+        app.logger.error('400 (MODERATION)')
+        return render_template(
+            "error.html",
+            blocked=True,
+            error_message=translation["moderated"],
+            translation=translation,
+            farside="https://farside.link",
+            config=g.user_config,
+            query=urlparse.unquote(query),
+            params=g.user_config.to_params(keys=['preferences'])), 400
+
     # Generate response and number of external elements from the page
     try:
         response = search_util.generate_response()
@@ -327,14 +347,8 @@ def search():
     if search_util.feeling_lucky:
         return redirect(response, code=303)
 
-    # If the user is attempting to translate a string, determine the correct
-    # string for formatting the lingva.ml url
-    localization_lang = g.user_config.get_localization_lang()
-    translation = app.config.get("TRANSLATIONS")[localization_lang]
-    translate_to = localization_lang.replace("lang_", "")
-
     # removing st-card to only use whoogle time selector
-    soup = bsoup(response, "html.parser");
+    soup = bsoup(response, "html.parser")
     for x in soup.find_all(attrs={"id": "st-card"}):
         x.replace_with("")
     response = str(soup)
@@ -351,6 +365,7 @@ def search():
             config=g.user_config,
             query=urlparse.unquote(query),
             params=g.user_config.to_params(keys=['preferences'])), 503
+
     response = bold_search_terms(response, query)
 
     # check for widgets and add if requested

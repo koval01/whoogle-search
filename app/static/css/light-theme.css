@@ -20,7 +20,7 @@ li a {
 }
 
 a {
-  color: #1b73e8 !important;
+  color: #2ca5f3 !important;
 }
 
 .anon-view {
@@ -222,5 +222,3 @@ path {
 .xpd, .result-config, .search-div, .p-search-settings > #st-card, .header-tab {
   border: 1px solid var(--whoogle-border-color) !important;
 }
-
-

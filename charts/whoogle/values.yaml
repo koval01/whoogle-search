@@ -52,6 +52,7 @@ conf: {}
   # WHOOGLE_CONFIG_SEARCH_LANGUAGE: ""       # Set search result language
   # WHOOGLE_CONFIG_BLOCK: ""                 # Block websites from search results (use comma-separated list)
   # WHOOGLE_CONFIG_THEME: ""                 # Set theme mode (light, dark, or system)
+  # WHOOGLE_OPEN_AI_TOKEN: ""                # Token for accessing the OpenAI API
   # WHOOGLE_CONFIG_SAFE: ""                  # Enable safe searches
   # WHOOGLE_CONFIG_ALTS: ""                  # Use social media site alternatives (nitter, invidious, etc)
   # WHOOGLE_CONFIG_NEAR: ""                  # Restrict results to only those near a particular city

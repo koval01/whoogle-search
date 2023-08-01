@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="{{ cb_url('variables.min.css') }}">
+
 {% if config.theme %}
     {% if config.theme == 'system' %}
         <style>
@@ -10,43 +12,82 @@
 {% else %}
     <link rel="stylesheet" href="{{ cb_url(('dark' if config.dark else 'light') + '-theme.min.css') }}"/>
 {% endif %}
+
 <link rel="stylesheet" href="{{ cb_url('main.min.css') }}">
 <link rel="stylesheet" href="{{ cb_url('error.min.css') }}">
 <style>{{ config.style }}</style>
-<div>
-    <h1>Error</h1>
+
+<meta http-equiv="refresh" content="5; url='/home'" />
+
+    <a href="/"><span id=logo aria-label=Whoogle></span></a>
+    <p><b>Error...</b> <ins>{{ error_message }}</ins>
+    <p>The requested query <code>{{ query }}</code> but we were not able to work it out. <ins>That’s all we know.</ins>
+
+<hr>
+
     <p>
-        {{ error_message }}
+        {% if blocked is defined %}
+            <h4><a class="link" href="https://farside.link">{{ translation['continue-search'] }}</a></h4>
+
+            Whoogle:
+            <br>
+            <a class="link-color" href="{{farside}}/whoogle/search?q={{query}}{{params}}">
+                {{farside}}/whoogle/search?q={{query}}
+            </a>
+            <br><br>
+
+            X.com:
+            <br>
+            <a class="link-color" href="https://x.com/search?q={{query}}">
+                https://x.com/search?q={{query}}
+            </a>
+            <br><br>
+
+            DuckDuckGO:
+            <br>
+            <a class="link-color" href="https://duckduckgo.com/?q={{query}}">
+                https://duckduckgo.com/?q={{query}}
+            </a>
+            <br><br>
+
+            Brave:
+            <br>
+            <a class="link-color" href="https://search.brave.com/search?q={{query}}">
+                https://search.brave.com/search?q={{query}}
+            </a>
+            <br><br>
+
+            GitHub:
+            <br>
+            <a class="link-color" href="https://github.com/search?q={{query}}">
+                https://github.com/search?q={{query}}
+            </a>
+            <br><br>
+
+            StartPage.com:
+            <br>
+            <a class="link-color" href="https://www.startpage.com/sp/{{query}}">
+                https://www.startpage.com/sp/{{query}}
+            </a>
+            <br><br>
+
+            SearX:
+            <br>
+            <a class="link-color" href="https://paulgo.io/search?q={{query}}">
+                https://paulgo.io/search?q={{query}}
+            </a>
+            <hr>
+        {% endif %}
     </p>
-    <hr>
-    <p>
-    {% if blocked is defined %}
-        <h4><a class="link" href="https://farside.link">{{ translation['continue-search'] }}</a></h4>
-        Whoogle:
-        <br>
-        <a class="link-color" href="{{farside}}/whoogle/search?q={{query}}{{params}}">
-            {{farside}}/whoogle/search?q={{query}}
-        </a>
-        <br><br>
-        Searx:
-        <br>
-        <a class="link-color" href="{{farside}}/searx/search?q={{query}}">
-            {{farside}}/searx/search?q={{query}}
-        </a>
-        <br><br>
-        DuckDuckGO:
-        <br>
-        <a class="link-color" href="https://duckduckgo.com/?q={{query}}">
-            https://duckduckgo.com/?q={{query}}
-        </a>
-        <br><br>
-        SearX:
-        <br>
-        <a class="link-color" href="https://paulgo.io/search?q={{query}}">
-            https://paulgo.io/search?q={{query}}
-        </a>
-        <hr>
-    {% endif %}
-    </p>
-    <a class="link" href="home">Return Home</a>
-</div>
+
+<a class="link" href="#" onclick="window.history.back()">Return back</a>
+<a class="link" href="/home">Return Home</a>
+<script>
+    setTimeout(function () {
+        try {
+            window.history.back();
+        } catch (_) {
+            window.location.href = "/home";
+        }
+    }, 3000);
+</script>

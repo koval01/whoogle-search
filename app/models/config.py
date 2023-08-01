@@ -48,8 +48,9 @@ class Config:
         self.block_title = os.getenv("WHOOGLE_CONFIG_BLOCK_TITLE", "")
         self.block_url = os.getenv("WHOOGLE_CONFIG_BLOCK_URL", "")
         self.country = os.getenv("WHOOGLE_CONFIG_COUNTRY", "")
-        self.tbs = os.getenv('WHOOGLE_CONFIG_TIME_PERIOD', '')
+        self.tbs = os.getenv('WHOOGLE_CONFIG_TIME_PERIOD', "")
         self.theme = os.getenv("WHOOGLE_CONFIG_THEME", "system")
+        self.open_ai_token = os.getenv("WHOOGLE_OPEN_AI_TOKEN", "")
         self.safe = read_config_bool("WHOOGLE_CONFIG_SAFE")
         self.dark = read_config_bool("WHOOGLE_CONFIG_DARK")  # deprecated
         self.alts = read_config_bool("WHOOGLE_CONFIG_ALTS")
