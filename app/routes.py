@@ -43,12 +43,45 @@ autocomplete_enabled = os.getenv(ac_var, "1")
 
 
 def get_search_name(tbm):
+    """
+    Get the name of a search type (tbm) from the configuration of header tabs.
+
+    This function takes a search type (tbm) as input and searches for its corresponding name in the configuration of header
+    tabs. The configuration is defined in the Flask app.config and contains a mapping of search types to their respective
+    names.
+
+    Parameters:
+        tbm (str): The search type (tbm) for which the name is to be retrieved.
+
+    Returns:
+        str: The name of the search type (tbm), or None if not found.
+    """
     for tab in app.config.get("HEADER_TABS").values():
         if tab["tbm"] == tbm:
             return tab["name"]
 
 
 def auth_required(f):
+    """
+    Decorator function to enforce basic authentication for specified routes.
+
+    This decorator function checks whether basic authentication credentials are provided by the user in the request
+    headers. If valid credentials are present and match the configured username and password (obtained from the
+    environment variables WHOOGLE_USER and WHOOGLE_PASS), the user is considered authenticated and the wrapped route
+    handler function (`f`) is called with the provided arguments. If the user has already been authenticated through a
+    valid user session, the decorator also allows access without requiring credentials, assuming that cookies are not
+    disabled.
+
+    If the user does not provide valid credentials or if the WHOOGLE_USER and WHOOGLE_PASS environment variables are not
+    set, the function returns a 401 Unauthorized response with a "WWW-Authenticate" header to prompt for basic
+    authentication.
+
+    Parameters:
+        f (function): The route handler function to be decorated.
+
+    Returns:
+        function: The decorated route handler function.
+    """
     @wraps(f)
     def decorated(*args, **kwargs):
         # do not ask password if cookies already present
@@ -78,6 +111,23 @@ def auth_required(f):
 
 
 def session_required(f):
+    """
+    Decorator function to enforce the presence of a valid user session.
+
+    This decorator function checks whether a valid user session exists before executing the wrapped route handler
+    function (`f`). If a valid session is present, the `f` function is called with the provided arguments. Otherwise,
+    the function removes any existing "_permanent" attribute from the session and proceeds to clear out old sessions by
+    checking the session files in the `SESSION_FILE_DIR`. It removes sessions that are larger than the specified maximum
+    session size (`MAX_SESSION_SIZE`) or sessions that don't have a "valid" flag in their data.
+
+    The decorator then returns the decorated function (`f`) after performing the session checks and cleanup.
+
+    Parameters:
+        f (function): The route handler function to be decorated.
+
+    Returns:
+        function: The decorated route handler function.
+    """
     @wraps(f)
     def decorated(*args, **kwargs):
         if not valid_user_session(session):
@@ -130,6 +180,25 @@ def session_required(f):
 
 @app.before_request
 def before_request_func():
+    """
+    Callback function executed before processing each request.
+
+    This Flask `before_request` function performs the following tasks before processing each incoming request:
+    1. Sets the `session.permanent` attribute to True to make the session permanent.
+    2. Checks for the latest version of the application and updates the `HAS_UPDATE` flag accordingly if needed.
+    3. Sets the `g.request_params` attribute based on the request method (GET or POST).
+    4. Loads the default configuration from the `DEFAULT_CONFIG` file and generates session values for the user if
+       unavailable. It populates session values such as "config", "uuid", "key", and "auth".
+    5. Establishes configuration values (`g.user_config`) for the user session based on the loaded session values.
+    6. Updates the user config if specified in search arguments (`g.request_params`).
+    7. Sets the `g.user_request` attribute based on the user agent and request URL. It also includes the user config.
+    8. Sets the `g.app_location` attribute to the user config's URL.
+    9. Attempts to reload the `bang_json` if it is not yet generated. The `bang_json` contains information about search
+       bangs (e.g., "!g" for Google search).
+
+    The function does not return anything since it is executed before each request to set up the necessary configuration
+    for request processing.
+    """
     global bang_json
     session.permanent = True
 
@@ -183,6 +252,27 @@ def before_request_func():
 
 @app.after_request
 def after_request_func(resp):
+    """
+    Callback function executed after processing each request.
+
+    This Flask `after_request` function sets various security-related response headers for the HTTP response.
+
+    The function sets the following headers:
+    - "X-Content-Type-Options": Specifies that the browser should not automatically interpret files as a different MIME type
+                                 (nosniff).
+    - "X-Frame-Options": Specifies that the page should not be displayed in a frame or iframe (DENY).
+
+    If the environment variable "WHOOGLE_CSP" is set to True (non-empty), the function also sets the "Content-Security-Policy"
+    header. The value for this header is retrieved from the Flask application's configuration using "app.config.get("CSP")".
+    Additionally, if the environment variable "HTTPS_ONLY" is set to True (non-empty), the function adds "upgrade-insecure-requests"
+    to the "Content-Security-Policy" header.
+
+    Parameters:
+        resp (Response): The HTTP response object.
+
+    Returns:
+        Response: The modified HTTP response object with the security-related headers set.
+    """
     resp.headers["X-Content-Type-Options"] = "nosniff"
     resp.headers["X-Frame-Options"] = "DENY"
 
@@ -195,14 +285,41 @@ def after_request_func(resp):
     return resp
 
 
-@app.errorhandler(404)
-def unknown_page(e):
-    app.logger.warn(e)
-    return redirect(g.app_location)
+# @app.errorhandler(404)
+# def unknown_page(e):
+#     """
+#     Error handler for 404 (Not Found) errors.
+#
+#     This Flask error handler is triggered when a request results in a 404 (Not Found) error, indicating that the requested
+#     page or resource was not found.
+#
+#     The function logs the error message using 'app.logger.warn(e)' to provide information about the specific 404 error.
+#
+#     The function then redirects the user to the 'g.app_location', which appears to be the application location. This redirect
+#     helps to handle the 404 error gracefully and may direct the user to a default or home page instead of displaying an
+#     unfriendly error message.
+#
+#     Parameters:
+#         e (Exception): The exception object representing the 404 error.
+#
+#     Returns:
+#         Response: A redirect response to the 'g.app_location' to handle the 404 error gracefully.
+#     """
+#     app.logger.warn(e)
+#     return redirect(g.app_location)
 
 
 @app.route(f"/{Endpoint.healthz}", methods=["GET"])
 def healthz():
+    """
+    Endpoint for health checks (healthz).
+
+    This Flask route handles health checks at the "/healthz" endpoint. The route only supports the GET method.
+
+    Returns:
+        Response: An empty response. The response is used to indicate the health status of the application during health
+                  checks.
+    """
     return ""
 
 
@@ -210,6 +327,34 @@ def healthz():
 @app.route(f"/{Endpoint.home}", methods=["GET"])
 @auth_required
 def index():
+    """
+    Renders the "index.html" template for the home page.
+
+    This Flask route renders the "index.html" template at the root endpoint ("/") and the "/home" endpoint. The route only
+    supports the GET method.
+
+    If an error message is present in the session and the session["error_message"] is not empty, the function redirects to
+    the "error.html" template to display the error message. The error message is then cleared from the session.
+
+    The function passes various variables to the "index.html" template for rendering, including:
+
+        - 'has_update': A boolean indicating whether an update is available.
+        - 'languages': A list of supported languages.
+        - 'countries': A list of supported countries.
+        - 'time_periods': A dictionary containing supported time periods.
+        - 'themes': A dictionary containing supported themes.
+        - 'autocomplete_enabled': A boolean indicating whether autocomplete is enabled.
+        - 'translation': A dictionary containing translation strings for the user's localization language.
+        - 'logo': The rendered "logo.html" template with the 'dark' parameter based on the user's configuration.
+        - 'config_disabled': A boolean indicating whether the user configuration is disabled.
+        - 'config_save_allow': A boolean indicating whether saving configurations is allowed.
+        - 'config': The user configuration object.
+        - 'tor_available': An integer indicating whether Tor is available (0 for not available, 1 for available).
+        - 'version_number': The version number of the application.
+
+    Returns:
+        Response: The rendered template "index.html" for the home page.
+    """
     # Redirect if an error was raised
     if "error_message" in session and session["error_message"]:
         error_message = session["error_message"]
@@ -240,6 +385,26 @@ def index():
 
 @app.route(f"/{Endpoint.opensearch}", methods=["GET"])
 def opensearch():
+    """
+    Renders the "opensearch.xml" template for OpenSearch support.
+
+    This Flask route renders the "opensearch.xml" template at the "/opensearch" endpoint. The route only supports the GET
+    method.
+
+    The function retrieves the application location from 'g.app_location'. If the application location ends with a "/", it
+    removes it to get the 'opensearch_url'. If the 'opensearch_url' needs HTTPS (as determined by 'needs_https()' function),
+    it enforces HTTPS for the URL by replacing "http://" with "https://".
+
+    The function checks if the user configuration has "get_only" enabled or if the User-Agent header contains "Chrome". If
+    either of these conditions is met, it sets the 'get_only' variable to True.
+
+    The function then passes the 'opensearch_url', 'get_only', 'request.args.get("tbm")', and the search name for the given
+    search type to the "opensearch.xml" template for rendering.
+
+    Returns:
+        Response: The rendered template "opensearch.xml" with the appropriate HTTP status code (200) and the
+                  "Content-Type" header set to "application/xml".
+    """
     opensearch_url = g.app_location
     if opensearch_url.endswith("/"):
         opensearch_url = opensearch_url[:-1]
@@ -262,6 +427,19 @@ def opensearch():
 
 @app.route(f"/{Endpoint.search_html}", methods=["GET"])
 def search_html():
+    """
+    Renders the "search.html" template.
+
+    This Flask route renders the "search.html" template at the "/search_html" endpoint. The route only supports the GET
+    method.
+
+    The function retrieves the application location from 'g.app_location'. If the application location ends with a "/", it
+    removes it to get the 'search_url'. It then passes the 'search_url' variable to the "search.html" template to be used
+    in the template.
+
+    Returns:
+        Response: The rendered template "search.html" with the 'search_url' variable available for use in the template.
+    """
     search_url = g.app_location
     if search_url.endswith("/"):
         search_url = search_url[:-1]
@@ -270,6 +448,31 @@ def search_html():
 
 @app.route(f"/{Endpoint.autocomplete}", methods=["GET", "POST"])
 def autocomplete():
+    """
+    Handles autocomplete functionality to provide search suggestions.
+
+    This Flask route handles the autocomplete functionality at the "/autocomplete" endpoint. The route supports both GET
+    and POST methods. It provides search suggestions based on the user's query (parameter "q").
+
+    If the environment variable "ac_var" is set and its corresponding configuration is False, it returns an empty JSON
+    response, effectively disabling autocomplete.
+
+    If the "q" parameter is not provided as part of the request, the function tries to extract it from the "request.data"
+    field (used by Firefox).
+
+    If the query starts with "!" (exclamation mark) and is not a "feeling lucky" search (not starting with "! "), it
+    returns a list of suggestions for the bang search.
+
+    If the query is empty, it returns a JSON response with an empty list of suggestions.
+
+    Otherwise, the function returns a list of suggestions based on the user's query using 'g.user_request.autocomplete()'
+    method. If Tor is enabled (g.user_config.tor is True), the suggestions are not returned, as the request is almost
+    always rejected in this case.
+
+    Returns:
+        Response: The JSON response containing a list of search suggestions for the user's query or an empty JSON
+                  response (if autocomplete is disabled or Tor is enabled).
+    """
     if os.getenv(ac_var) and not read_config_bool(ac_var):
         return jsonify({})
 
@@ -304,6 +507,42 @@ def autocomplete():
 @session_required
 @auth_required
 def search():
+    """
+    Handles the search functionality and generates search results.
+
+    This Flask route handles the search functionality at the "/search" endpoint. The route supports both GET and POST
+    methods and is protected with two decorators '@session_required' and '@auth_required' to ensure the user has an active
+    session and is authenticated.
+
+    The function starts by creating a 'Search' object ('search_util') with the current request, user configuration
+    ('g.user_config'), and session key ('g.session_key'). It then generates a new search query using 'search_util.new_search_query()'
+    method.
+
+    If the query contains a "bang" (e.g., "!g", "!yt", etc.), it resolves the "bang" using 'resolve_bang()' function and
+    redirects the user to the corresponding search engine or website.
+
+    If the query is blank or invalid, it redirects the user to the home page ("/").
+
+    If the user is attempting to translate a string, it determines the correct URL for the lingva.ml translation service.
+
+    It checks if the question has been moderated using 'Question().open_ai_moderation()' method. If the question has not
+    been moderated, it generates the response using 'search_util.generate_response()' method. If Tor configuration is
+    disabled, it logs an error and redirects the user to the home page.
+
+    If the search_util indicates a "feeling lucky" search, it performs a 303 redirect to the generated response.
+
+    The function processes the response by removing the "st-card" to use only the whoogle time selector. It checks for
+    widgets (e.g., IP card, calculator) and adds them to the response if requested. It also updates the tabs content
+    according to the search type, preferences, and translation.
+
+    Additionally, it checks for a currency conversion card and adds it to the response if applicable.
+
+    The final step is to render the 'display.html' template to display the search results, passing various variables to
+    the template for rendering.
+
+    Returns:
+        Response: The response containing the search results to be rendered in the 'display.html' template.
+    """
     search_util = Search(request, g.user_config, g.session_key)
     query = search_util.new_search_query()
 
@@ -436,6 +675,31 @@ def search():
 @session_required
 @auth_required
 def config():
+    """
+    Handles configuration related operations.
+
+    This Flask route handles configuration related operations at the "/config" endpoint. It supports three HTTP methods:
+    GET, POST, and PUT. The route is protected with two decorators '@session_required' and '@auth_required' to ensure
+    the user has an active session and is authenticated.
+
+    - GET: If a GET request is received, the function returns the user's configuration data in JSON format as a response.
+
+    - PUT: If a PUT request is received and configuration saving is allowed ('CONFIG_SAVE_ALLOW' flag in app.config), the
+      function updates the user's configuration with the data provided in the request form. If a "name" query parameter is
+      provided, it saves the configuration with the specified name to allow the user to easily load it later. If "name" is
+      not provided, it returns a JSON response indicating an error (status code 503) since a configuration name is required
+      for saving.
+
+    - POST: If a POST request is received and configuration is not disabled ('CONFIG_DISABLE' flag in app.config), the
+      function updates the user's configuration with the data provided in the request form. It also saves the configuration
+      by name (if "name" query parameter is provided and saving is allowed). Finally, it redirects the user to the updated
+      configuration URL ('url' field in the configuration data).
+
+    Returns:
+        Response: The response with configuration data in JSON format (for GET request), an error JSON response (for PUT
+                  request without a "name" query parameter), or a redirection response (for successful POST and PUT
+                  requests).
+    """
     config_disabled = (
             app.config.get("CONFIG_DISABLE") or
             not valid_user_session(session))
@@ -476,6 +740,16 @@ def config():
 @session_required
 @auth_required
 def imgres():
+    """
+    Redirect to the image URL specified in the 'imgurl' query parameter.
+
+    This route is accessible only to authenticated users and requires a valid user session. It is intended to handle image
+    search results. When a user clicks on an image search result, the URL of the image is passed as a query parameter
+    'imgurl' to this route, and this route then redirects the user to the actual image URL.
+
+    Returns:
+        werkzeug.wrappers.response.Response: A redirection response that takes the user to the image URL.
+    """
     return redirect(request.args.get("imgurl"))
 
 
@@ -483,6 +757,20 @@ def imgres():
 @session_required
 @auth_required
 def element():
+    """
+    Fetches an element from the provided URL and returns it as a response.
+
+    This function handles an endpoint to fetch an element (e.g., an image, video, etc.) from the given URL. The URL is
+    obtained from the "url" query parameter. If the URL starts with "gAAAAA", it is assumed to be encrypted, and it is
+    decrypted using the session key ("g.session_key") as a Fernet cipher suite.
+
+    The element type is obtained from the "type" query parameter. The function sends a request to the URL using the
+    "g.user_request" object, and if successful, the fetched element is returned as a response with the corresponding
+    mimetype. In case of a failed request, an empty gif image is returned as a response.
+
+    Returns:
+        Response: The fetched element as a response with the corresponding mimetype or an empty gif image response.
+    """
     element_url = src_url = request.args.get("url")
     if element_url.startswith("gAAAAA"):
         try:
@@ -514,6 +802,19 @@ def element():
 @session_required
 @auth_required
 def window():
+    """
+    Open a new window and display the content of the specified URL.
+
+    This route is accessible only to authenticated users and requires a valid user session. It takes a query parameter
+    'location', which contains the URL of the content to be displayed. If the URL starts with 'gAAAAA', it is decrypted
+    using the session key. The HTML content of the specified URL is fetched, and relative links are replaced with absolute
+    links based on the host URL. The JavaScript sources are either replaced or removed based on the 'nojs' query parameter.
+    Similarly, image and stylesheet sources are replaced with absolute URLs.
+
+    Returns:
+        werkzeug.wrappers.response.Response: A response containing the HTML content of the specified URL, with all
+        relative links replaced by absolute links, and JavaScript, image, and stylesheet sources updated.
+    """
     target_url = request.args.get("location")
     if target_url.startswith("gAAAAA"):
         cipher_suite = Fernet(g.session_key)
@@ -578,6 +879,18 @@ def window():
 
 
 def __remove_source_map(body: bytes) -> bytes:
+    """
+    Remove the sourceMappingURL comment from the provided HTML content.
+
+    This function takes the HTML content as bytes, decodes it to a string, and then replaces the sourceMappingURL comment
+    with the word "map". The updated HTML content is then re-encoded to bytes and returned.
+
+    Args:
+        body (bytes): The HTML content as bytes.
+
+    Returns:
+        bytes: The HTML content with the sourceMappingURL comment removed.
+    """
     try:
         return body.decode().replace("# sourceMappingURL=", " map ").encode()
     except Exception as e:
@@ -586,6 +899,20 @@ def __remove_source_map(body: bytes) -> bytes:
 
 
 def proxy_pattern(resp: requests.Response, content: bytes = b"", only_resp: bool = True) -> Response:
+    """
+    Create a new Response object based on the provided requests.Response and content.
+
+    This function takes the original response from a remote server represented by requests.Response, and customizes
+    the response headers and content before returning the new Response object.
+
+    Args:
+        resp (requests.Response): The original response from the remote server.
+        content (bytes, optional): Custom content to replace the original response content. Defaults to an empty byte string (b"").
+        only_resp (bool, optional): If True, the function uses the response content from the provided requests.Response. If False, it uses the custom content. Defaults to True.
+
+    Returns:
+        Response: The new Response object with customized headers and content.
+    """
     excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection']
     use_headers = ['cache-control', 'content-type', 'etag']
     headers = [
@@ -599,6 +926,15 @@ def proxy_pattern(resp: requests.Response, content: bytes = b"", only_resp: bool
 
 @app.route(f"/{Endpoint.currency_history}", methods=["GET"])
 def currency_history():
+    """
+    Handle the "/currency_history" endpoint to retrieve currency exchange rate history.
+
+    Returns:
+        Response: The response containing the currency exchange rate history data.
+    Raises:
+        abort(400): If any required query parameter is missing.
+        abort(503): If the request to the currency API is not successful.
+    """
     params = {
         "start_date": g.request_params.get('start_date'),
         "end_date": g.request_params.get('end_date'),
@@ -619,6 +955,14 @@ def currency_history():
 
 @app.route(f"/{Endpoint.gfont}", methods=["GET"])
 def g_font():
+    """
+    Handle the "/gfont" endpoint to proxy Google Fonts API requests and serve custom fonts.
+
+    Returns:
+        Response: The response containing the font data or CSS with modified URLs.
+    Raises:
+        abort(400): If the required parameters are missing in the request query.
+    """
     replace_urls = lambda body: str.encode(body.replace(
         "https://fonts.gstatic.com/s/",
         f"{request.base_url}?font_data="
@@ -643,6 +987,14 @@ def g_font():
 
 @app.route(f"/{Endpoint.cdnjs}", methods=["GET"])
 def cdnjs_proxy():
+    """
+    Handle the "/cdnjs" endpoint to proxy requests to the cdnjs.cloudflare.com API and serve requested libraries.
+
+    Returns:
+        Response: The response containing the requested library data.
+    Raises:
+        abort(400): If the "lib_path" parameter is missing in the request query.
+    """
     lib_path = g.request_params.get('lib_path')
     if not lib_path:
         return abort(400)
@@ -652,6 +1004,12 @@ def cdnjs_proxy():
 
 @app.route(f'/robots.txt')
 def robots():
+    """
+    Serve the robots.txt file to inform web crawlers about access permissions.
+
+    Returns:
+        Response: The response containing the content of the robots.txt file.
+    """
     response = make_response(
         "User-Agent: * \nDisallow: /", 200)
     response.mimetype = 'text/plain'
@@ -660,6 +1018,15 @@ def robots():
 
 @app.errorhandler(404)
 def page_not_found(e):
+    """
+    Handle the 404 Not Found error and display a custom error page.
+
+    Args:
+        e (Exception): The exception object representing the 404 Not Found error.
+
+    Returns:
+        Response: The response containing the custom error page with the error message.
+    """
     return render_template('error.html', error_message=str(e)), 404
 
 

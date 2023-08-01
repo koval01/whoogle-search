@@ -2,6 +2,7 @@ from app.models.config import Config
 from app.models.endpoint import Endpoint
 from app.utils.misc import list_to_dict
 from bs4 import BeautifulSoup, NavigableString
+from bs4.element import Tag
 import copy
 from flask import current_app
 import os
@@ -258,7 +259,7 @@ def append_nojs(result: BeautifulSoup) -> None:
     result.append(nojs_link)
 
 
-def append_anon_view(result: BeautifulSoup, config: Config) -> None:
+def append_anon_view(result: BeautifulSoup | Tag, config: Config) -> None:
     """Appends an "anonymous view" for a search result, where all site
     contents are viewed through Whoogle as a proxy.
 

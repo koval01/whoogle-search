@@ -21,7 +21,12 @@
 
     <a href="/"><span id=logo aria-label=Whoogle></span></a>
     <p><b>Error...</b> <ins>{{ error_message }}</ins>
-    <p>The requested query <code>{{ query }}</code> but we were not able to work it out. <ins>That’s all we know.</ins>
+    {% if query %}
+        <p>The requested query <code>{{ query }}</code> but we were not able to work it out.
+    {% else %}
+        <p>It seems that our developers messed something up.
+    {% endif %}
+        <ins>That’s all we know.</ins>
 
 <hr>
 

@@ -11,6 +11,15 @@ class Question:
         self.open_ai_token: str = os.getenv("WHOOGLE_OPEN_AI_TOKEN")
 
     def open_ai_moderation(self, input_text: str) -> bool:
+        """
+        Checks if the input text is flagged as potentially violating OpenAI's moderation policy.
+
+        Args:
+            input_text (str): The text to be checked for moderation.
+
+        Returns:
+            bool: True if the input text is flagged, False otherwise.
+        """
         response = request(
             "POST", "https://api.openai.com/v1/moderations",
             headers={

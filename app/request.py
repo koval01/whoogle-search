@@ -42,6 +42,21 @@ class TorError(Exception):
 
 
 def send_tor_signal(signal: Signal) -> bool:
+    """
+    Sends a signal to the Tor control port to manage Tor processes.
+
+    This function attempts to authenticate and send a signal to the Tor control port (default port 9051) to manage Tor
+    processes. The signal is used to control various aspects of Tor, such as NEWNYM to request a new identity. The
+    function first checks if Tor requires authentication, either using a password or an authentication cookie. If
+    authentication is required, it attempts to authenticate with the Tor controller. If successful, it sends the
+    specified signal and returns True. Otherwise, it sets the environment variable "TOR_AVAILABLE" to "0" and returns False.
+
+    Parameters:
+        signal (Signal): The signal to be sent to the Tor control port (e.g., stem.Signal.NEWNYM to request a new identity).
+
+    Returns:
+        bool: True if the signal was sent successfully, False otherwise.
+    """
     use_pass = read_config_bool("WHOOGLE_TOR_USE_PASS")
 
     confloc = "./misc/tor/control.conf"
@@ -75,6 +90,23 @@ def send_tor_signal(signal: Signal) -> bool:
 
 
 def gen_user_agent(is_mobile) -> str:
+    """
+    Generates a user-agent string based on whether the client is considered mobile or not.
+
+    This function first checks for user-agent strings provided as environment variables 'WHOOGLE_USER_AGENT' and
+    'WHOOGLE_USER_AGENT_MOBILE'. If a custom user-agent is set and the client is not mobile, it returns the desktop
+    user-agent; if it is mobile and a mobile user-agent is set, it returns the mobile user-agent.
+
+    If no custom user-agent is set, the function generates a random user-agent for desktop or mobile clients using a
+    combination of random components for browser names (e.g., "Choirfox", "Squierfox") and operating systems (e.g.,
+    "Winux", "Kinux").
+
+    Parameters:
+        is_mobile (bool): A flag indicating whether the client is considered mobile or not.
+
+    Returns:
+        str: The generated user-agent string.
+    """
     user_agent = os.environ.get('WHOOGLE_USER_AGENT', '')
     user_agent_mobile = os.environ.get('WHOOGLE_USER_AGENT_MOBILE', '')
     if user_agent and not is_mobile:
@@ -93,6 +125,16 @@ def gen_user_agent(is_mobile) -> str:
 
 
 def mobile_mode_enabled() -> bool:
+    """
+    Checks whether mobile mode is enabled.
+
+    This function reads the environment variable "MOBILE_MODE_ENABLED" and attempts to convert its value to an integer.
+    If the variable is not set or cannot be converted to an integer, it returns False. Otherwise, it returns the boolean
+    value obtained after the conversion.
+
+    Returns:
+        bool: True if mobile mode is enabled (the variable is set to a non-zero integer), False otherwise.
+    """
     try:
         var = os.getenv("MOBILE_MODE_ENABLED")
         if not var:
@@ -109,6 +151,23 @@ def mobile_mode_enabled() -> bool:
 
 
 def gen_query(query, args, config) -> str:
+    """
+    Generates a modified query string for performing a search.
+
+    This function processes the input 'query' and its associated arguments ('args') to create the appropriate URL query
+    string to perform the search. It uses a 'param_dict' dictionary to hold various search parameters based on the
+    'VALID_PARAMS' set. It handles time-based search (e.g., :past month) and result type (e.g., news, images, books, etc.)
+    specifications. It also sets the language for search results and includes/excludes specific sites based on user
+    configurations.
+
+    Parameters:
+        query (str): The original search query string.
+        args (dict): A dictionary of arguments associated with the search request.
+        config (dict): A dictionary containing the user configuration settings.
+
+    Returns:
+        str: The modified URL query string for performing the search.
+    """
     param_dict = {key: "" for key in VALID_PARAMS}
 
     # Use :past(hour/day/week/month/year) if available

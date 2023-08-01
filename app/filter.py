@@ -115,21 +115,21 @@ class Filter:
 
     def __init__(
             self,
-            user_key: str,
+            user_key: bytes,
             config: Config,
             root_url="",
             page_url="",
             query="",
             mobile=False) -> None:
-        self.soup = None
-        self.config = config
-        self.mobile = mobile
-        self.user_key = user_key
-        self.page_url = page_url
-        self.query = query
-        self.main_divs = ResultSet("")
-        self._elements = 0
-        self._av = set()
+        self.soup: BeautifulSoup = BeautifulSoup()
+        self.config: Config = config
+        self.mobile: bool = mobile
+        self.user_key: bytes = user_key
+        self.page_url: str = page_url
+        self.query: str = query
+        self.main_divs: BeautifulSoup = ResultSet("")
+        self._elements: int = 0
+        self._av: set = set()
 
         self.root_url = root_url[:-1] if root_url.endswith("/") else root_url
 
@@ -141,6 +141,21 @@ class Filter:
         return self._elements
 
     def encrypt_path(self, path, is_element=False) -> str:
+        """
+        Encrypts the provided path string to avoid plaintext results in logs.
+
+        This function encrypts the given 'path' string using the Fernet symmetric encryption algorithm to avoid storing
+        sensitive information in plaintext format in logs. If 'is_element' is True, the element paths are encrypted separately
+        from text to allow key regeneration once all items have been served to the user.
+
+        Parameters:
+            self (object): The object containing the user_key used for encryption.
+            path (str): The path string to be encrypted.
+            is_element (bool, optional): A flag indicating if the path corresponds to an element. Defaults to False.
+
+        Returns:
+            str: The encrypted path string.
+        """
         # Encrypts path to avoid plaintext results in logs
         if is_element:
             # Element paths are encrypted separately from text, to allow key
@@ -152,6 +167,22 @@ class Filter:
         return Fernet(self.user_key).encrypt(path.encode()).decode()
 
     def clean(self, soup) -> BeautifulSoup:
+        """
+        Cleans and modifies the HTML content.
+
+        This function applies a series of cleaning and modification operations to the 'soup' object, including removing ads,
+        block titles, block URLs, and block tabs. It also collapses sections, updates CSS and styling, updates parent elements
+        with new classes based on certain criteria, removes specific elements, updates element source attributes for images
+        and audio, updates link attributes, swaps site alts, updates form attributes, removes extra scripts, and updates
+        default footer and header. Finally, it removes search results from blocked sites based on the 'config' attribute.
+
+        Parameters:
+            self (object): The object containing various configurations and preferences for the cleaning process.
+            soup (BeautifulSoup): The BeautifulSoup object representing the parsed HTML content.
+
+        Returns:
+            BeautifulSoup: The cleaned and modified BeautifulSoup object.
+        """
         self.soup = soup
         self.main_divs = self.soup.find('div', {'id': 'main'})
         self.remove_ads()
@@ -161,6 +192,7 @@ class Filter:
         self.update_css()
         self.update_styling()
         self.remove_block_tabs()
+        self.disable_theme_link()
 
         self.updater_parent(soup, [
             {"selector": GClasses.result_class_a,
@@ -223,6 +255,21 @@ class Filter:
         return self.soup
 
     def remove_site_blocks(self, soup) -> None:
+        """
+        Removes search results from the HTML content based on blocked sites specified in the 'config' attribute.
+
+        This function removes specific search results from the 'soup' object based on the blocked sites specified in the
+        'config' attribute of the object. It uses a search string created by joining the blocked sites with "-site:" to
+        exclude those sites from the search results. The function then finds and modifies the selected search results by
+        removing the search string from the text.
+
+        Parameters:
+            self (object): The object containing the 'config' attribute specifying the blocked sites.
+            soup (BeautifulSoup): The BeautifulSoup object representing the parsed HTML content.
+
+        Returns:
+            None: This function does not return any value. It modifies the 'soup' object in place by removing blocked search results.
+        """
         if not self.config.block or not soup.body:
             return
         search_string = " ".join(["-site:" +
@@ -235,6 +282,25 @@ class Filter:
 
     @staticmethod
     def updater_parent(soup: BeautifulSoup, classes: List[dict]) -> None:
+        """
+        Updates the parent elements of HTML elements in the BeautifulSoup object based on given class specifications.
+
+        This static method modifies the parent elements of certain HTML elements in the 'soup' object by adding a new class
+        to the parent elements. The new class is determined based on the specifications provided in the 'classes' list. Each
+        class specification in the list is a dictionary containing 'tag', 'selector', 's_id', and 'class' keys. 'tag' and
+        'selector' represent the HTML tag and class attributes of the elements to update their parent, respectively. 's_id'
+        is an optional key representing the 'id' attribute of the elements to further refine the selection. 'class' is the
+        new class to be added to the parent elements.
+
+        Parameters:
+            soup (BeautifulSoup): The BeautifulSoup object representing the parsed HTML content.
+            classes (List[dict]): A list of dictionaries containing class specifications, where each dictionary has 'tag',
+                                  'selector', 's_id', and 'class' keys representing the HTML tag, class attributes, optional
+                                  'id' attribute, and the new class to be added to the parent elements.
+
+        Returns:
+            None: This method does not return any value. It modifies the 'soup' object in place by updating parent elements.
+        """
         for cl in classes:
             if "s_id" not in cl.keys():
                 cl["s_id"] = ""
@@ -250,7 +316,21 @@ class Filter:
 
     @staticmethod
     def remove_element(soup: BeautifulSoup, elements: List[dict]) -> None:
-        """Remove tag by params"""
+        """
+        Removes HTML elements from the BeautifulSoup object based on given element specifications.
+
+        This static method removes specific HTML elements from the 'soup' object based on the element specifications provided
+        in the 'elements' list. Each element specification in the list is a dictionary containing 'tag' and 'cls' keys, which
+        represent the HTML tag and class attributes of the element to be removed.
+
+        Parameters:
+            soup (BeautifulSoup): The BeautifulSoup object representing the parsed HTML content.
+            elements (List[dict]): A list of dictionaries containing element specifications, where each dictionary has 'tag'
+                                   and 'cls' keys representing the HTML tag and class attributes of the element to remove.
+
+        Returns:
+            None: This method does not return any value. It modifies the 'soup' object in place by removing specified elements.
+        """
         for el in elements:
             selector = soup.find(
                 el["tag"],
@@ -261,47 +341,124 @@ class Filter:
                 selector.decompose()
 
     def remove_ads(self) -> None:
-        """Removes ads found in the list of search result divs"""
+        """
+        Removes advertisements from the list of search result divs in the HTML content.
+
+        This function scans through the 'main_divs' of the object and attempts to remove ads based on the 'has_ad_content'
+        function. If 'main_divs' is not available, it simply returns without performing any action.
+
+        Parameters:
+            self (object): The object containing the HTML content in 'main_divs'.
+
+        Returns:
+            None: This function does not return any value. It modifies the HTML content in place by removing ads.
+        """
         if not self.main_divs:
             return
 
         for div in [_ for _ in self.main_divs.find_all("div", recursive=True)]:
             div_ads = [_ for _ in div.find_all("span", recursive=True)
                        if has_ad_content(_.text)]
-            _ = div.decompose() if len(div_ads) else None
+            div.decompose() if len(div_ads) else None
 
     def remove_block_titles(self) -> None:
+        """
+        Removes block titles from the HTML content based on a regular expression.
+
+        This function removes specific HTML titles from the 'main_divs' of the object based on the regular expression provided
+        in the 'block_title' attribute of the 'config' object. It first checks if 'main_divs' and 'config.block_title' are
+        both available. If not, it simply returns without performing any action.
+
+        Parameters:
+            self (object): The object containing the HTML content in 'main_divs' and the 'config' object with the
+                           'block_title' attribute containing the regular expression to match titles.
+
+        Returns:
+            None: This function does not return any value. It modifies the HTML content in place by removing block titles.
+        """
         if not self.main_divs or not self.config.block_title:
             return
         block_title = re.compile(self.config.block_title)
         for div in [_ for _ in self.main_divs.find_all("div", recursive=True)]:
             block_divs = [_ for _ in div.find_all("h3", recursive=True)
                           if block_title.search(_.text) is not None]
-            _ = div.decompose() if len(block_divs) else None
+            div.decompose() if len(block_divs) else None
 
     def remove_block_url(self) -> None:
+        """
+        Removes block URLs from the HTML content based on a regular expression.
+
+        This function removes specific URLs from the HTML content based on the regular expression provided in the 'block_url'
+        attribute of the 'config' object. It first checks if 'main_divs' and 'config.block_url' are both available, and if
+        not, it simply returns without performing any action.
+
+        Parameters:
+            self (object): The object containing the HTML content in 'main_divs' and the 'config' object with the
+                           'block_url' attribute containing the regular expression to match URLs.
+
+        Returns:
+            None: This function does not return any value. It modifies the HTML content in place by removing block URLs.
+        """
         if not self.main_divs or not self.config.block_url:
             return
         block_url = re.compile(self.config.block_url)
         for div in [_ for _ in self.main_divs.find_all("div", recursive=True)]:
             block_divs = [_ for _ in div.find_all("a", recursive=True)
                           if block_url.search(_.attrs["href"]) is not None]
-            _ = div.decompose() if len(block_divs) else None
+            div.decompose() if len(block_divs) else None
+
+    def disable_theme_link(self) -> None:
+        """
+        Disables the theme link in the HTML content.
+
+        This function finds the last occurrence of a link with the class "xeDNfc" within the "main_divs" HTML content.
+        If such a link is found, it will be converted into a paragraph tag ("<p>") and the 'href' and 'rel' attributes
+        will be removed, effectively disabling the link.
+
+        Parameters:
+            self (object): The object containing the HTML content in the 'main_divs' attribute.
+
+        Returns:
+            None: This function does not return any value. It modifies the HTML content in place.
+        """
+        __tag = self.main_divs.find_all("a", {"class": "xeDNfc"})[-1:]
+
+        # change if found tag
+        if __tag:
+            t = __tag[0]
+            t.name = "p"
+            del t['href']
+            del t["rel"]
 
     def remove_block_tabs(self) -> None:
+        """
+        Removes block tabs from the HTML content.
+
+        This function finds and removes specific block tabs with the corresponding class names. It looks for block tabs
+        with class '{GClasses.main_tbm_tab}' in the 'main_divs' of the object. If found, those block tabs will be removed.
+        If 'main_divs' is not available (indicating being in the 'images' tab), it will look for block tabs with class
+        '{GClasses.images_tbm_tab}' in the overall soup object, and then remove them.
+
+        Parameters:
+            self (object): The object containing the HTML content and the class attributes '{GClasses.main_tbm_tab}' and
+                           '{GClasses.images_tbm_tab}'.
+
+        Returns:
+            None: This function does not return any value. It modifies the HTML content in place by removing block tabs.
+        """
         if self.main_divs:
             for div in self.main_divs.find_all(
                     'div',
                     attrs={'class': f'{GClasses.main_tbm_tab}'}
             ):
-                _ = div.decompose()
+                div.decompose()
         else:
             # when in images tab
             for div in self.soup.find_all(
                 'div',
                 attrs={'class': f'{GClasses.images_tbm_tab}'}
             ):
-                _ = div.decompose()
+                div.decompose()
 
     def collapse_sections(self) -> None:
         """Collapses long result sections ("people also asked", "related
@@ -336,7 +493,7 @@ class Filter:
                     result.decompose()
                     continue
                 for s in result_children:
-                    if ("Twitter ›" in str(s)):
+                    if "Twitter ›" in str(s):
                         result.decompose()
                         continue
                 if len(result_children) < self.RESULT_CHILD_LIMIT:
