@@ -10,7 +10,7 @@ primary_region = "ams"
   image = "koval01/whoogle-search-kdev:latest"
 
 [http_service]
-  internal_port = 8080
+  internal_port = 5000
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true
