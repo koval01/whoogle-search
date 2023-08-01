@@ -20,6 +20,9 @@ class Question:
         Returns:
             bool: True if the input text is flagged, False otherwise.
         """
+        if not self.open_ai_token:
+            return False
+
         response = request(
             "POST", "https://api.openai.com/v1/moderations",
             headers={
