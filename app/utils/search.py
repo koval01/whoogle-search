@@ -152,7 +152,7 @@ class Search:
         get_body_safed = get_body.text \
             .replace("&lt;", "andlt;") \
             .replace("&gt;", "andgt;")
-        html_soup = bsoup(get_body_safed, 'html.parser')
+        html_soup = bsoup(get_body_safed, 'lxml')
 
         # Replace current soup if view_image is active
         if view_image:
@@ -160,7 +160,7 @@ class Search:
 
         # Indicate whether or not a Tor connection is active
         if g.user_request.tor_valid:
-            html_soup.insert(0, bsoup(TOR_BANNER, "html.parser"))
+            html_soup.insert(0, bsoup(TOR_BANNER, "lxml"))
 
         if self.feeling_lucky:
             return get_first_link(html_soup)

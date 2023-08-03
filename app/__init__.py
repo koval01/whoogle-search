@@ -8,6 +8,7 @@ from bs4 import MarkupResemblesLocatorWarning
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from flask import Flask
+from flask_minify import Minify
 import json
 import logging.config
 import os
@@ -22,6 +23,7 @@ from app.version import __version__
 
 app = Flask(__name__, static_folder=os.path.dirname(
     os.path.abspath(__file__)) + "/static")
+Minify(app=app, html=True, js=True, cssless=True)
 
 app.wsgi_app = ProxyFix(app.wsgi_app)
 

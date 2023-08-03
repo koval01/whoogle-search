@@ -150,7 +150,7 @@ def check_for_update(version_url: str, current: str) -> int:
         int: The latest version number if an update is available, otherwise an empty string.
     """
     try:
-        update = bsoup(get(version_url).text, "html.parser")
+        update = bsoup(get(version_url).text, "lxml")
         latest = update.select_one("[class=\"Link--primary\"]").string[1:]
         current = int("".join(filter(str.isdigit, current)))
         latest = int("".join(filter(str.isdigit, latest)))

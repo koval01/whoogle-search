@@ -77,7 +77,7 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
     Returns:
         BeautifulSoup: modified soup object with bold items
     """
-    response = BeautifulSoup(response, "html.parser")
+    response = BeautifulSoup(response, "lxml")
 
     def replace_any_case(element: NavigableString, target_word: str) -> None:
         # Replace all instances of the word, but maintaining the same case in
@@ -102,7 +102,7 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
             re.sub(reg_pattern,
                    r"<b>\1</b>",
                    element,
-                   flags=re.I), "html.parser")
+                   flags=re.I), "lxml")
         )
 
     # Split all words out of query, grouping the ones wrapped in quotes
@@ -253,7 +253,7 @@ def append_nojs(result: BeautifulSoup) -> None:
         None
 
     """
-    nojs_link = BeautifulSoup(features="html.parser").new_tag("a")
+    nojs_link = BeautifulSoup(features="lxml").new_tag("a")
     nojs_link["href"] = f"{Endpoint.window}?nojs=1&location=" + result["href"]
     nojs_link.string = " NoJS Link"
     result.append(nojs_link)
@@ -271,7 +271,7 @@ def append_anon_view(result: BeautifulSoup | Tag, config: Config) -> None:
         None
 
     """
-    av_link = BeautifulSoup(features="html.parser").new_tag("a")
+    av_link = BeautifulSoup(features="lxml").new_tag("a")
     nojs = "nojs=1" if config.nojs else "nojs=0"
     location = f'location={result["href"]}'
     av_link["href"] = f"{Endpoint.window}?{nojs}&{location}"
@@ -293,7 +293,7 @@ def check_currency(response: str) -> dict:
         dict: Consists of currency names and values
 
     """
-    soup = BeautifulSoup(response, "html.parser")
+    soup = BeautifulSoup(response, "lxml")
     currency_link = soup.find("a", {"href": "https://g.co/gfd"})
     if currency_link:
         while "class" not in currency_link.attrs or \
