@@ -7,7 +7,7 @@ import cssutils
 from bs4 import BeautifulSoup
 from bs4.element import ResultSet, Tag
 from cryptography.fernet import Fernet
-from flask import render_template
+from flask import render_template, request
 
 from app.models.config import Config
 from app.models.endpoint import Endpoint
@@ -213,7 +213,8 @@ class Filter:
 
         self.remove_element(soup, [
             {"tag": "title", "cls": None},
-            {"tag": "table", "cls": "bookcf"}
+            {"tag": "table", "cls": "bookcf"},
+            {"tag": "span", "cls": "unknown_loc"}
         ])
 
         for img in [_ for _ in self.soup.find_all('img') if 'src' in _.attrs]:
@@ -421,6 +422,8 @@ class Filter:
         Returns:
             None: This function does not return any value. It modifies the HTML content in place.
         """
+        if not self.main_divs or not self.config.block_url:
+            return
         __tag = self.main_divs.find_all("a", {"class": "xeDNfc"})[-1:]
 
         # change if found tag
