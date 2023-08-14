@@ -12,6 +12,7 @@ from flask_minify import Minify
 import json
 import logging.config
 import os
+import fnmatch
 from stem import Signal
 import threading
 import warnings
@@ -154,22 +155,23 @@ cache_busting_dirs = ["css", "js"]
 for cb_dir in cache_busting_dirs:
     full_cb_dir = os.path.join(app.config["STATIC_FOLDER"], cb_dir)
     for cb_file in os.listdir(full_cb_dir):
-        # Create hash from current file state
-        full_cb_path = os.path.join(full_cb_dir, cb_file)
-        cb_file_link = gen_file_hash(full_cb_dir, cb_file)
-        build_path = os.path.join(app.config["BUILD_FOLDER"], cb_file_link)
+        if any(cb_file.endswith(".min.%s" % extension) for extension in cache_busting_dirs):
+            # Create hash from current file state
+            full_cb_path = os.path.join(full_cb_dir, cb_file)
+            cb_file_link = gen_file_hash(full_cb_dir, cb_file)
+            build_path = os.path.join(app.config["BUILD_FOLDER"], cb_file_link)
 
-        try:
-            os.symlink(full_cb_path, build_path)
-        except FileExistsError:
-            # Symlink hasn"t changed, ignore
-            pass
+            try:
+                os.symlink(full_cb_path, build_path)
+            except FileExistsError:
+                # Symlink hasn"t changed, ignore
+                pass
 
-        # Create mapping for relative path urls
-        map_path = build_path.replace(app.config["APP_ROOT"], "")
-        if map_path.startswith("/"):
-            map_path = map_path[1:]
-        app.config["CACHE_BUSTING_MAP"][cb_file] = map_path
+            # Create mapping for relative path urls
+            map_path = build_path.replace(app.config["APP_ROOT"], "")
+            if map_path.startswith("/"):
+                map_path = map_path[1:]
+            app.config["CACHE_BUSTING_MAP"][cb_file] = map_path
 
 # Templating functions
 app.jinja_env.globals.update(clean_query=clean_query)
