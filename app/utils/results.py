@@ -1,14 +1,16 @@
+import copy
+import os
+import re
+import urllib.parse as urlparse
+from urllib.parse import parse_qs
+
+from bs4 import BeautifulSoup, NavigableString
+from bs4.element import Tag
+from flask import current_app
+
 from app.models.config import Config
 from app.models.endpoint import Endpoint
 from app.utils.misc import list_to_dict
-from bs4 import BeautifulSoup, NavigableString
-from bs4.element import Tag
-import copy
-from flask import current_app
-import os
-import urllib.parse as urlparse
-from urllib.parse import parse_qs
-import re
 
 SKIP_ARGS = ["ref_src", "utm"]
 SKIP_PREFIX = ['//www.', '//mobile.', '//m.', 'www.', 'mobile.', 'm.']

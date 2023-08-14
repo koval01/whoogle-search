@@ -3,14 +3,15 @@ import base64
 import io
 import json
 import logging
+import multiprocessing
 import os
 import pickle
 import urllib.parse as urlparse
 import uuid
-import multiprocessing
 from datetime import datetime, timedelta
 from functools import wraps
 
+import requests
 import waitress
 from bs4 import BeautifulSoup as bsoup
 from cryptography.exceptions import InvalidSignature
@@ -18,7 +19,6 @@ from cryptography.fernet import Fernet, InvalidToken
 from flask import jsonify, make_response, request, redirect, render_template, \
     send_file, session, url_for, g, Response, abort
 from requests import exceptions, get as http_get
-import requests
 
 from app import app
 from app.filter import Filter
@@ -29,11 +29,11 @@ from app.utils.bangs import resolve_bang
 from app.utils.filter import Question
 from app.utils.misc import read_config_bool, get_client_ip, get_request_url, \
     check_for_update
-from app.utils.widgets import *
 from app.utils.results import bold_search_terms, \
     add_currency_card, check_currency, get_tabs_content
 from app.utils.search import Search, needs_https, has_captcha
 from app.utils.session import valid_user_session
+from app.utils.widgets import *
 
 # Load DDG bang json files only on init
 bang_json = json.load(open(app.config.get("BANG_FILE"))) or {}

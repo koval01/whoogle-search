@@ -1,10 +1,11 @@
-from bs4 import BeautifulSoup as bsoup
-from flask import Request
 import hashlib
 import os
 import re
-from requests import exceptions, get
 from urllib.parse import urlparse
+
+from bs4 import BeautifulSoup as bsoup
+from flask import Request
+from requests import exceptions, get
 
 
 def gen_file_hash(path: str, static_file: str) -> str:

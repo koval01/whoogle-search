@@ -1,25 +1,24 @@
-from app.filter import clean_query
-from app.request import send_tor_signal
-from app.utils.session import generate_key
-from app.utils.bangs import gen_bangs_json
-from app.utils.misc import gen_file_hash, read_config_bool
-from base64 import b64encode
-from bs4 import MarkupResemblesLocatorWarning
-from datetime import datetime, timedelta
-from dotenv import load_dotenv
-from flask import Flask
-from flask_minify import Minify
 import json
 import logging.config
 import os
-import fnmatch
-from stem import Signal
 import threading
 import warnings
+from base64 import b64encode
+from datetime import datetime, timedelta
 
+from bs4 import MarkupResemblesLocatorWarning
+from dotenv import load_dotenv
+from flask import Flask
+from flask_minify import Minify
+from stem import Signal
 from werkzeug.middleware.proxy_fix import ProxyFix
 
+from app.filter import clean_query
+from app.request import send_tor_signal
+from app.utils.bangs import gen_bangs_json
+from app.utils.misc import gen_file_hash, read_config_bool
 from app.utils.misc import read_config_bool
+from app.utils.session import generate_key
 from app.version import __version__
 
 app = Flask(__name__, static_folder=os.path.dirname(

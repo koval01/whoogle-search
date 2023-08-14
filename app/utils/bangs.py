@@ -1,6 +1,7 @@
 import json
-import requests
 import urllib.parse as urlparse
+
+import requests
 
 DDG_BANGS = "https://duckduckgo.com/bang.v255.js"
 

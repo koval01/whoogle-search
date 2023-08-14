@@ -7,7 +7,7 @@ import cssutils
 from bs4 import BeautifulSoup
 from bs4.element import ResultSet, Tag
 from cryptography.fernet import Fernet
-from flask import render_template, request
+from flask import render_template
 
 from app.models.config import Config
 from app.models.endpoint import Endpoint
