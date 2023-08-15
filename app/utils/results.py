@@ -96,7 +96,7 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
         else:
             reg_pattern = fr'\b((?![{{}}<>-]){target_word}(?![{{}}<>-]))\b'
 
-        if re.match('.*[@_!#$%^&*()<>?/\|}{~:].*', target_word) or (
+        if re.match('.*[@_!#$%^&*()<>?/|}{~:].*', target_word) or (
                 element.parent and element.parent.name == "style"):
             return
 
@@ -109,7 +109,7 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
 
     # Split all words out of query, grouping the ones wrapped in quotes
     for word in re.split(r'\s+(?=[^"]*(?:"[^"]*"[^"]*)*$)', query):
-        word = re.sub(r'[@_!#$%^&*()<>?/\|}{~:]+', '', word)
+        word = re.sub(r'[@_!#$%^&*()<>?/|}{~:]+', '', word)
         target = response.find_all(
             string=re.compile(r"" + re.escape(word), re.I))  # Use string argument instead of text
         for nav_str in target:
