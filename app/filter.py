@@ -422,7 +422,7 @@ class Filter:
         Returns:
             None: This function does not return any value. It modifies the HTML content in place.
         """
-        if not self.main_divs or not self.config.block_url:
+        if not self.main_divs:
             return
         __tag = self.main_divs.find_all("a", {"class": "xeDNfc"})[-1:]
 
