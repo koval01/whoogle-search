@@ -1,6 +1,7 @@
 import json
 import logging.config
 import os
+import shutil
 import threading
 import warnings
 from base64 import b64encode
@@ -149,10 +150,26 @@ if not os.path.exists(app.config["BANG_FILE"]):
         args=(app.config["BANG_FILE"],))
     bangs_thread.start()
 
+# Define the build directory path
+build_dir = os.path.join(app.config["STATIC_FOLDER"], "build")
+
+# Check if the build directory exists
+if os.path.exists(build_dir) and os.path.isdir(build_dir):
+    # Remove all files and directories in the build directory
+    for item in os.listdir(build_dir):
+        item_path = os.path.join(build_dir, item)
+        if os.path.isfile(item_path) or os.path.islink(item_path):
+            # Exclude .gitignore file from deletion
+            if item != ".gitignore":
+                os.remove(item_path)
+        elif os.path.isdir(item_path):
+            shutil.rmtree(item_path)
+
 # Build new mapping of static files for cache busting
 cache_busting_dirs = ["css", "js"]
 for cb_dir in cache_busting_dirs:
     full_cb_dir = os.path.join(app.config["STATIC_FOLDER"], cb_dir)
+
     for cb_file in os.listdir(full_cb_dir):
         if any(cb_file.endswith(".min.%s" % extension) for extension in cache_busting_dirs):
             # Create hash from current file state
