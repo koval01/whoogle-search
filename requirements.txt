@@ -1,5 +1,5 @@
 attrs==22.2.0
-beautifulsoup4==4.11.2
+beautifulsoup4==4.12.2
 lxml==4.9.3
 brotli==1.0.9
 cachelib==0.10.2
