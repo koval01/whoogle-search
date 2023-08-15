@@ -34,13 +34,13 @@ def test_valid_session(client):
 def test_valid_translation_keys(client):
     valid_lang_keys = [_["value"] for _ in app.config["LANGUAGES"]]
     en_keys = app.config["TRANSLATIONS"]["lang_en"].keys()
+
     for translation_key in app.config["TRANSLATIONS"]:
         # Ensure the translation is using a valid language value
         assert translation_key in valid_lang_keys
 
-        # Ensure all translations match the same size/content of the original
-        # English translation
-        assert app.config["TRANSLATIONS"][translation_key].keys() == en_keys
+        # Ensure each translation has the same set of keys
+        assert set(app.config["TRANSLATIONS"][translation_key].keys()) == set(en_keys)
 
 
 def test_query_decryption(client):
