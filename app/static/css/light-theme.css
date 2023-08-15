@@ -43,7 +43,7 @@ textarea, select {
 }
 
 .TwVfHd {
-  border: thin solid rgba(0, 0, 0, 0.2) !important;
+  border: thin solid rgb(180, 180, 180) !important;
   border-radius: 0.5em !important;
   color: #000 !important;
 }
