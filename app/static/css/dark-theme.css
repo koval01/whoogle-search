@@ -75,6 +75,12 @@ select {
   background-color: var(--whoogle-dark-page-bg) !important;
 }
 
+.TwVfHd {
+  border: thin solid rgba(0, 0, 0, 0.2) !important;
+  border-radius: 0.5em !important;
+  color: #fff !important;
+}
+
 .ZINbbc {
   overflow: hidden;
   box-shadow: 0 0 0 0 !important;

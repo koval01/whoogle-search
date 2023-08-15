@@ -37,10 +37,8 @@ textarea:focus, input:focus, select:focus {
   color: #65a7f6 !important;
 }
 
-.TwVfHd {
-  border: thin solid rgba(255, 255, 255, 0.2) !important;
-  border-radius: 0.5em !important;
-  color: #fff !important;
+.TwVfHd > p {
+  margin-bottom: 0 !important;
 }
 
 .sa1toc {
