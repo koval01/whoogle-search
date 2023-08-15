@@ -1,4 +1,5 @@
 import copy
+import logging
 import os
 import re
 import urllib.parse as urlparse
@@ -100,12 +101,18 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
                 element.parent and element.parent.name == "style"):
             return
 
-        element.replace_with(BeautifulSoup(
-            re.sub(reg_pattern,
-                   r"<b>\1</b>",
-                   str(element),  # Convert element to string
-                   flags=re.I), "lxml")
-        )
+        # Check if the element is a NavigableString
+        if isinstance(element, NavigableString):
+            # Convert element to string before creating a BeautifulSoup object
+            element_str = str(element)
+            element.replace_with(BeautifulSoup(
+                re.sub(reg_pattern,
+                       r"<b>\1</b>",
+                       element_str,  # Use the string representation
+                       flags=re.I), "lxml")
+            )
+        else:
+            logging.warning(f"Invalid element type: {type(element)}")
 
     # Split all words out of query, grouping the ones wrapped in quotes
     for word in re.split(r'\s+(?=[^"]*(?:"[^"]*"[^"]*)*$)', query):
