@@ -561,7 +561,7 @@ def search():
     translate_to = localization_lang.replace("lang_", "")
 
     # Return 400 if question has not been moderated
-    if Question().open_ai_moderation(query):
+    if Question(query).open_ai_moderation:
         app.logger.error('400 (MODERATION)')
         return render_template(
             "error.html",

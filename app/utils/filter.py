@@ -7,15 +7,14 @@ from requests import request
 
 class Question:
 
-    def __init__(self) -> None:
+    def __init__(self, input_text: str) -> None:
+        self.input_text: str = input_text
         self.open_ai_token: str = os.getenv("WHOOGLE_OPEN_AI_TOKEN")
 
-    def open_ai_moderation(self, input_text: str) -> bool:
+    @property
+    def open_ai_moderation(self) -> bool:
         """
         Checks if the input text is flagged as potentially violating OpenAI's moderation policy.
-
-        Args:
-            input_text (str): The text to be checked for moderation.
 
         Returns:
             bool: True if the input text is flagged, False otherwise.
@@ -29,7 +28,7 @@ class Question:
                 "Authorization": "Bearer %s" % self.open_ai_token
             },
             data=json.dumps({
-                "input": input_text
+                "input": self.input_text
             })
         )
         if response.status_code != 200:
