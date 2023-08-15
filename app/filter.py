@@ -275,7 +275,7 @@ class Filter:
             return
         search_string = " ".join(["-site:" +
                                   _ for _ in self.config.block.split(",")])
-        selected = soup.body.findAll(text=re.compile(search_string))
+        selected = soup.body.findAll(string=re.compile(search_string))
 
         for result in selected:
             result.string.replace_with(result.string.replace(

@@ -103,7 +103,7 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
         element.replace_with(BeautifulSoup(
             re.sub(reg_pattern,
                    r"<b>\1</b>",
-                   element,
+                   str(element),  # Convert element to string
                    flags=re.I), "lxml")
         )
 
@@ -111,7 +111,7 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
     for word in re.split(r'\s+(?=[^"]*(?:"[^"]*"[^"]*)*$)', query):
         word = re.sub(r'[@_!#$%^&*()<>?/\|}{~:]+', '', word)
         target = response.find_all(
-            text=re.compile(r"" + re.escape(word), re.I))
+            string=re.compile(r"" + re.escape(word), re.I))  # Use string argument instead of text
         for nav_str in target:
             replace_any_case(nav_str, word)
 
