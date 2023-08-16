@@ -193,7 +193,6 @@ class Filter:
         self.update_css()
         self.update_styling()
         self.remove_block_tabs()
-        self.disable_theme_link()
 
         self.updater_parent(soup, [
             {"selector": GClasses.result_class_a,
@@ -215,7 +214,7 @@ class Filter:
         self.remove_element(soup, [
             {"tag": "title", "cls": None},
             {"tag": "table", "cls": "bookcf"},
-            {"tag": "span", "cls": "unknown_loc"}
+            {"tag": "div", "cls": "EOlPnc", "id": True}
         ])
 
         for img in [_ for _ in self.soup.find_all('img') if 'src' in _.attrs]:
@@ -253,9 +252,8 @@ class Filter:
         if header:
             header.decompose()
 
-        self.updater_images_grid(self.soup)
         self.remove_site_blocks(self.soup)
-        self.updater_sender_location(self.soup)
+        self.updater_images_grid(self.soup)
 
         return self.soup
 
@@ -311,43 +309,12 @@ class Filter:
             None.
         """
         images_container = soup.find("table", class_="GpQGbf")
-
         if not images_container:
             return
 
         gallery_generator = ImageGalleryGenerator(images_container.prettify())
         updated_soup = BeautifulSoup(gallery_generator.generate_gallery(),"lxml")
-
         images_container.contents = updated_soup.contents
-
-    @staticmethod
-    def updater_sender_location(soup: BeautifulSoup) -> None:
-        """
-        Update sender location information within given BeautifulSoup object.
-
-        This static method modifies the provided BeautifulSoup object in-place to
-        update sender location information. It searches for div containers with the class 'Srfpq'
-        and retains only the <span> elements with the class 'dfB0uf' within those containers,
-        effectively removing other content.
-
-        Args:
-            soup (BeautifulSoup): A BeautifulSoup object containing the HTML content.
-
-        Returns:
-            None: The method modifies the input BeautifulSoup object directly.
-
-        Example:
-            >>> html = '<div class="Srfpq">...</div>'
-            >>> soup = BeautifulSoup(html, 'html.parser')
-            >>> YourClass.updater_sender_location(soup)
-            >>> # Now 'soup' contains updated sender location information.
-        """
-        srfpq_containers = soup.find_all('div', class_='Srfpq')
-
-        for container in srfpq_containers:
-            spans_to_keep = container.find_all('span', class_='dfB0uf')
-            container.clear()
-            container.extend(spans_to_keep)
 
     @staticmethod
     def updater_parent(soup: BeautifulSoup, classes: List[dict]) -> None:
@@ -403,7 +370,7 @@ class Filter:
         for el in elements:
             selector = soup.find(
                 el["tag"],
-                attrs={"class": el["cls"]}
+                attrs={"id" if ("id" in el.keys()) else "class": el["cls"]}
             )
 
             if selector:
@@ -475,31 +442,6 @@ class Filter:
             block_divs = [_ for _ in div.find_all("a", recursive=True)
                           if block_url.search(_.attrs["href"]) is not None]
             div.decompose() if len(block_divs) else None
-
-    def disable_theme_link(self) -> None:
-        """
-        Disables the theme link in the HTML content.
-
-        This function finds the last occurrence of a link with the class "xeDNfc" within the "main_divs" HTML content.
-        If such a link is found, it will be converted into a paragraph tag ("<p>") and the 'href' and 'rel' attributes
-        will be removed, effectively disabling the link.
-
-        Parameters:
-            self (object): The object containing the HTML content in the 'main_divs' attribute.
-
-        Returns:
-            None: This function does not return any value. It modifies the HTML content in place.
-        """
-        if not self.main_divs:
-            return
-        __tag = self.main_divs.find_all("a", {"class": "xeDNfc"})[-1:]
-
-        # change if found tag
-        if __tag:
-            t = __tag[0]
-            t.name = "p"
-            del t['href']
-            del t["rel"]
 
     def remove_block_tabs(self) -> None:
         """
