@@ -195,7 +195,7 @@ select {
 }
 
 .footer {
-  color: var(--whoogle-dark-text);
+  color: rgba(255, 255, 255, 0.4);
 }
 
 path {

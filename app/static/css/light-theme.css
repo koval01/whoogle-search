@@ -161,7 +161,7 @@ input {
 }
 
 .footer {
-  color: var(--whoogle-text);
+  color: rgba(0, 0, 0, 0.4);
 }
 
 path {
