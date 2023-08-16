@@ -208,16 +208,6 @@ footer {
     max-width: 630px !important;
   }
 }
-.currency_chart_box {
-  display: inline-flex;
-  width: 100%;
-}
-
-#currency_chart_display {
-  max-height: 40vh !important;
-  min-height: 18vh !important;
-}
-
 #config-type-label {
   margin-top: 1em;
 }
