@@ -192,6 +192,7 @@ path {
 
 .cb {
   color: var(--whoogle-secondary-text) !important;
+  background: rgba(212, 212, 212, 0.2) !important;
 }
 .cb:focus {
   color: var(--whoogle-text) !important;

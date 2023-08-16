@@ -24,10 +24,11 @@ from app import app
 from app.filter import Filter
 from app.models.config import Config
 from app.models.endpoint import Endpoint
-from app.utils.external_api import get_currency_history
 from app.request import Request, TorError
 from app.utils.bangs import resolve_bang
+from app.utils.external_api import get_currency_history
 from app.utils.filter import Question
+from app.utils.matplotlib import CurrencyGraph
 from app.utils.misc import read_config_bool, get_client_ip, get_request_url, \
     check_for_update
 from app.utils.results import bold_search_terms, \
@@ -602,7 +603,7 @@ def search():
     # Feature to display currency_card
     # Since this is determined by more than just the
     # query is it not defined as a standard widget
-    conversion = check_currency(str(response))
+    conversion = check_currency(str(response), query=query)
     if conversion:
         html_soup = bsoup(str(response), "lxml")
         response = add_currency_card(html_soup, conversion)
@@ -905,6 +906,24 @@ def proxy_pattern(resp: requests.Response, content: bytes = b"", only_resp: bool
     content = resp.content if only_resp else content
     content = __remove_source_map(content)
     return Response(content, resp.status_code, headers)
+
+
+@app.route(f"/{Endpoint.currency_graph}", methods=["GET"])
+def currency_graph():
+    """
+    Generate a currency exchange rate graph and return it as an image.
+
+    This route fetches currency history data from an external API using Flask's g object.
+    It then creates a graph using the CurrencyGraph class and returns the graph as an image.
+
+    Returns:
+        Response: Response containing the generated graph as a PNG image.
+    Raises:
+        abort(503): If the request to the currency API is not successful.
+    """
+    graph = CurrencyGraph(g)
+    resp = graph.get_graph_as_image()
+    return Response(resp, mimetype='image/png') if resp else abort(503)
 
 
 @app.route(f"/{Endpoint.currency_history}", methods=["GET"])

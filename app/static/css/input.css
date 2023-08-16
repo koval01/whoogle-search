@@ -23,13 +23,13 @@
   overflow: hidden;
   text-align: left;
   line-height: 28px;
-  background: transparent;
   border-radius: 6px;
   border: 1px solid #5f6368;
   font-size: 14px !important;
   height: 36px;
   padding: 0 0 0 12px;
   margin: 10px 10px 10px 0;
+  backdrop-filter: blur(12px);
 }
 
 .conversion_box {

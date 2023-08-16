@@ -3,11 +3,14 @@ import logging
 import os
 import re
 import urllib.parse as urlparse
+from datetime import datetime, timedelta
 from urllib.parse import parse_qs
 
+import pytz
 from bs4 import BeautifulSoup, NavigableString
 from bs4.element import Tag
 from flask import current_app
+from requests import get as http_get
 
 from app.models.config import Config
 from app.models.endpoint import Endpoint
@@ -219,6 +222,42 @@ def get_site_alt(link: str) -> str:
     return link
 
 
+def get_modern_google(search_q: str) -> str:
+    resp = http_get(
+        "https://www.google.com/search",
+        params={
+            "q": search_q
+        },
+        headers={
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,"
+                      "*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+            "accept-language": "en,uk;q=0.9",
+            "cache-control": "no-cache",
+            "pragma": "no-cache",
+            "sec-ch-ua": "\"Not/A)Brand\";v=\"99\", \"Google Chrome\";v=\"115\", \"Chromium\";v=\"115\"",
+            "sec-ch-ua-arch": "\"arm\"",
+            "sec-ch-ua-bitness": "\"64\"",
+            "sec-ch-ua-full-version": "\"115.0.5790.170\"",
+            "sec-ch-ua-full-version-list": "\"Not/A)Brand\";v=\"99.0.0.0\", \"Google Chrome\";"
+                                           "v=\"115.0.5790.170\", \"Chromium\";v=\"115.0.5790.170\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-model": "\"\"",
+            "sec-ch-ua-platform": "\"macOS\"",
+            "sec-ch-ua-platform-version": "\"13.4.1\"",
+            "sec-ch-ua-wow64": "?0",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "same-origin",
+            "sec-fetch-user": "?1",
+            "upgrade-insecure-requests": "1",
+            "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                          "AppleWebKit/537.36 (KHTML, like Gecko) "
+                          "Chrome/115.0.0.0 Safari/537.36"
+        }
+    )
+    return resp.text if (200 <= resp.status_code < 400) else ""
+
+
 def filter_link_args(link: str) -> str:
     """Filters out unnecessary URL args from a result link
 
@@ -292,16 +331,30 @@ def append_anon_view(result: BeautifulSoup | Tag, config: Config) -> None:
     result.append(av_link)
 
 
-def check_currency(response: str) -> dict:
+def check_currency(response: str, query: str) -> dict:
     """Check whether the results have currency conversion
 
     Args:
+        query: Query for this request
         response: Search query Result
 
     Returns:
         dict: Consists of currency names and values
 
     """
+    # get currency pair
+    currency_info = None
+    g_resp = get_modern_google(query)
+    if g_resp:
+        modern_body = BeautifulSoup(g_resp, "lxml")
+
+        tag_about_container = modern_body.find("a", {"class": "jRKCUd"}) if modern_body else None
+        tag_about = tag_about_container.find("span", {"class": "LGwnxb"}) if tag_about_container else None
+
+        if tag_about:
+            c = re.search(r"(?P<base>[A-Z]{3})/(?P<symbol>[A-Z]{3})", str(tag_about)).groupdict()
+            currency_info = c if c else None
+
     soup = BeautifulSoup(response, "lxml")
     currency_link = soup.find("a", {"href": "https://g.co/gfd"})
     if currency_link:
@@ -311,6 +364,7 @@ def check_currency(response: str) -> dict:
                 currency_link = currency_link.parent
             else:
                 return {}
+
         currency_link = currency_link.find_all(class_="BNeawe")
         currency1 = currency_link[0].text
         currency2 = currency_link[1].text
@@ -337,7 +391,8 @@ def check_currency(response: str) -> dict:
         return {"currencyValue1": currency1_value,
                 "currencyLabel1": currency1_label,
                 "currencyValue2": currency2_value,
-                "currencyLabel2": currency2_label
+                "currencyLabel2": currency2_label,
+                "ISO": currency_info if currency_info else None
                 }
     return {}
 
@@ -358,6 +413,22 @@ def add_currency_card(soup: BeautifulSoup,
     # Element before which the code will be changed
     # (This is the "disclaimer" link)
     element1 = soup.find("a", {"href": "https://g.co/gfd"})
+
+    ancestor_div = element1.find_parents("div", class_="ZINbbc xpd EtOod pkphOe")[0]
+
+    iso = conversion_details['ISO']
+    utc_timezone = pytz.timezone('UTC')
+    current_utc_time = datetime.now(utc_timezone)
+    current_date = current_utc_time.strftime("%Y-%m-%d")
+    thirty_days_ago = (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
+
+    # Modify the style attribute
+    # ancestor_div["class"] = ancestor_div.get("class", []) + ["animated-bg"]
+    ancestor_div["style"] = \
+        ("background-image:url("
+         f"currency_graph?symbols={iso['symbol']}&amp;base={iso['base']}&amp;"
+         f"start_date={thirty_days_ago}&amp;end_date={current_date});"
+         "background-size:cover;background-position-y:-45px")
 
     while "class" not in element1.attrs or \
             "nXE3Ob" not in element1.attrs["class"]:

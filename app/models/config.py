@@ -1,19 +1,16 @@
 import hashlib
+import logging
 import os
 import pickle
 from base64 import urlsafe_b64encode, urlsafe_b64decode
-
-import brotli
-from cryptography.fernet import Fernet
-from flask import current_app
-
 from typing import Optional
 
-import logging
-
+import brotli
 import cssutils
-from cssutils.css.cssstylesheet import CSSStyleSheet
+from cryptography.fernet import Fernet
 from cssutils.css.cssstylerule import CSSStyleRule
+from cssutils.css.cssstylesheet import CSSStyleSheet
+from flask import current_app
 
 from app.utils.misc import read_config_bool
 

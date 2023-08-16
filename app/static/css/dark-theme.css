@@ -224,6 +224,7 @@ path {
 
 .cb {
   color: var(--whoogle-dark-secondary-text) !important;
+  background: rgba(32, 33, 36, 0.2) !important;
 }
 .cb:focus {
   color: var(--whoogle-dark-contrast-text) !important;

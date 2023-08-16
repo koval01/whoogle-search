@@ -16,6 +16,7 @@ class Endpoint(Enum):
     gfont = "gfont"
     cdnjs = "cdnjs"
     currency_history = "currency_history"
+    currency_graph = "currency_graph"
 
     def __str__(self):
         return self.value
