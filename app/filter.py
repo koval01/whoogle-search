@@ -323,30 +323,31 @@ class Filter:
     @staticmethod
     def updater_sender_location(soup: BeautifulSoup) -> None:
         """
-        Update the sender location in the given BeautifulSoup object.
+        Update sender location information within given BeautifulSoup object.
 
-        This method searches for a <span> element with the class 'VYM29' within the provided
-        BeautifulSoup object and retains only the content of this specific span element,
-        removing all other tags and contents from its parent container.
+        This static method modifies the provided BeautifulSoup object in-place to
+        update sender location information. It searches for div containers with the class 'Srfpq'
+        and retains only the <span> elements with the class 'dfB0uf' within those containers,
+        effectively removing other content.
 
         Args:
-            soup (BeautifulSoup): The BeautifulSoup object representing the HTML content.
+            soup (BeautifulSoup): A BeautifulSoup object containing the HTML content.
 
         Returns:
-            None: The method modifies the provided BeautifulSoup object in place.
+            None: The method modifies the input BeautifulSoup object directly.
 
         Example:
-            html = '<div align="center" class="HddGcc"><span class="VYM29">...</span>...</div>'
-            soup = BeautifulSoup(html, 'html.parser')
-            HtmlParser.updater_sender_location(soup)
-            updated_html = str(soup)
+            >>> html = '<div class="Srfpq">...</div>'
+            >>> soup = BeautifulSoup(html, 'html.parser')
+            >>> YourClass.updater_sender_location(soup)
+            >>> # Now 'soup' contains updated sender location information.
         """
-        target_span = soup.find('span', class_='VYM29')
+        srfpq_containers = soup.find_all('div', class_='Srfpq')
 
-        if target_span:
-            container = target_span.find_parent()
+        for container in srfpq_containers:
+            spans_to_keep = container.find_all('span', class_='dfB0uf')
             container.clear()
-            container.append(target_span)
+            container.extend(spans_to_keep)
 
     @staticmethod
     def updater_parent(soup: BeautifulSoup, classes: List[dict]) -> None:
