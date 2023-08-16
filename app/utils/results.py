@@ -428,7 +428,7 @@ def add_currency_card(soup: BeautifulSoup,
         ("background-image:url("
          f"currency_graph?symbols={iso['symbol']}&amp;base={iso['base']}&amp;"
          f"start_date={thirty_days_ago}&amp;end_date={current_date});"
-         "background-size:cover;background-position-y:-45px")
+         "background-size:cover;background-position-y:center")
 
     while "class" not in element1.attrs or \
             "nXE3Ob" not in element1.attrs["class"]:
