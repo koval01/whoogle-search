@@ -53,7 +53,7 @@ textarea, select {
   background-color: var(--whoogle-result-bg) !important;
   margin-bottom: 10px !important;
   border-radius: 8px !important;
-  box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28) !important;
+  box-shadow: 0 1px 6px rgba(32, 33, 36, 0.3) !important;
 }
 
 .BVG0Nb {
@@ -211,7 +211,7 @@ path {
 }
 
 #config-load, #config-submit, #config-save {
-  box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+  box-shadow: 0 1px 6px rgba(32, 33, 36, 0.3);
 }
 
 .config-buttons {
