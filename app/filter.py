@@ -255,6 +255,7 @@ class Filter:
 
         self.updater_images_grid(self.soup)
         self.remove_site_blocks(self.soup)
+        self.updater_sender_location(self.soup)
 
         return self.soup
 
@@ -318,6 +319,34 @@ class Filter:
         updated_soup = BeautifulSoup(gallery_generator.generate_gallery(),"lxml")
 
         images_container.contents = updated_soup.contents
+
+    @staticmethod
+    def updater_sender_location(soup: BeautifulSoup) -> None:
+        """
+        Update the sender location in the given BeautifulSoup object.
+
+        This method searches for a <span> element with the class 'VYM29' within the provided
+        BeautifulSoup object and retains only the content of this specific span element,
+        removing all other tags and contents from its parent container.
+
+        Args:
+            soup (BeautifulSoup): The BeautifulSoup object representing the HTML content.
+
+        Returns:
+            None: The method modifies the provided BeautifulSoup object in place.
+
+        Example:
+            html = '<div align="center" class="HddGcc"><span class="VYM29">...</span>...</div>'
+            soup = BeautifulSoup(html, 'html.parser')
+            HtmlParser.updater_sender_location(soup)
+            updated_html = str(soup)
+        """
+        target_span = soup.find('span', class_='VYM29')
+
+        if target_span:
+            container = target_span.find_parent()
+            container.clear()
+            container.append(target_span)
 
     @staticmethod
     def updater_parent(soup: BeautifulSoup, classes: List[dict]) -> None:
