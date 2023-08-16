@@ -587,7 +587,7 @@ def search():
         return redirect(response, code=303)
 
     # removing st-card to only use whoogle time selector
-    soup = bsoup(response, "html.parser")
+    soup = bsoup(response, "lxml")
     for x in soup.find_all(attrs={"id": "st-card"}):
         x.replace_with("")
     response = str(soup)
@@ -609,7 +609,7 @@ def search():
 
     # check for widgets and add if requested
     if search_util.widget != '':
-        html_soup = bsoup(str(response), "html.parser")
+        html_soup = bsoup(str(response), "lxml")
         if search_util.widget == 'ip':
             response = add_ip_card(html_soup, get_client_ip(request))
         elif search_util.widget == 'calculator' and not ('nojs' in request.args):
@@ -627,7 +627,7 @@ def search():
     # query is it not defined as a standard widget
     conversion = check_currency(str(response))
     if conversion:
-        html_soup = bsoup(str(response), "html.parser")
+        html_soup = bsoup(str(response), "lxml")
         response = add_currency_card(html_soup, conversion)
 
     preferences = g.user_config.preferences
@@ -829,7 +829,7 @@ def window():
 
     get_body = g.user_request.send(base_url=target_url).text
 
-    results = bsoup(get_body, "html.parser")
+    results = bsoup(get_body, "lxml")
     src_attrs = ["src", "href", "srcset", "data-srcset", "data-src"]
 
     # Parse HTML response and replace relative links w/ absolute

@@ -13,7 +13,7 @@ from test.conftest import demo_config
 def get_search_results(data):
     secret_key = generate_key()
     soup = Filter(user_key=secret_key, config=Config(**demo_config)).clean(
-        BeautifulSoup(data, "html.parser"))
+        BeautifulSoup(data, "lxml"))
 
     main_divs = soup.find("div", {"id": "main"})
     assert len(main_divs) > 1
@@ -68,7 +68,7 @@ def test_block_results(client):
     assert rv._status_code == 200
 
     has_pinterest = False
-    for link in BeautifulSoup(rv.data, "html.parser").find_all("a", href=True):
+    for link in BeautifulSoup(rv.data, "lxml").find_all("a", href=True):
         if "pinterest.com" in urlparse(link["href"]).netloc:
             has_pinterest = True
             break
@@ -82,7 +82,7 @@ def test_block_results(client):
     rv = client.post(f"/{Endpoint.search}", data=dict(q="pinterest"))
     assert rv._status_code == 200
 
-    for link in BeautifulSoup(rv.data, "html.parser").find_all("a", href=True):
+    for link in BeautifulSoup(rv.data, "lxml").find_all("a", href=True):
         result_site = urlparse(link["href"]).netloc
         if not result_site:
             continue
@@ -135,7 +135,7 @@ def test_leading_slash_search(client):
         user_key=generate_key(),
         config=Config(**demo_config),
         query=q
-    ).clean(BeautifulSoup(rv.data, "html.parser"))
+    ).clean(BeautifulSoup(rv.data, "lxml"))
 
     for link in soup.find_all("a", href=True):
         if "start=" not in link["href"]:

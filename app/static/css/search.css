@@ -205,11 +205,6 @@ footer {
     max-width: 630px !important;
   }
 }
-@media (min-width: 576px) {
-  .container, .container-sm {
-    max-width: 600px !important;
-  }
-}
 .currency_chart_box {
   display: inline-flex;
   width: 100%;

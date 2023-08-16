@@ -14,6 +14,7 @@ from app.models.endpoint import Endpoint
 from app.models.g_classes import GClasses
 from app.request import VALID_PARAMS, MAPS_URL
 from app.utils.misc import get_abs_url, read_config_bool
+from app.utils.rebuild import ImageGalleryGenerator
 from app.utils.results import (
     BLANK_B64, GOOG_IMG, GOOG_STATIC, G_M_LOGO_URL, LOGO_URL, SITE_ALTS,
     has_ad_content, filter_link_args, append_anon_view, get_site_alt,
@@ -133,14 +134,14 @@ class Filter:
 
         self.root_url = root_url[:-1] if root_url.endswith("/") else root_url
 
-    def __getitem__(self, name):
+    def __getitem__(self, name: str) -> any:
         return getattr(self, name)
 
     @property
-    def elements(self):
+    def elements(self) -> int:
         return self._elements
 
-    def encrypt_path(self, path, is_element=False) -> str:
+    def encrypt_path(self, path: str, is_element: bool = False) -> str:
         """
         Encrypts the provided path string to avoid plaintext results in logs.
 
@@ -166,7 +167,7 @@ class Filter:
 
         return Fernet(self.user_key).encrypt(path.encode()).decode()
 
-    def clean(self, soup) -> BeautifulSoup:
+    def clean(self, soup: BeautifulSoup) -> BeautifulSoup:
         """
         Cleans and modifies the HTML content.
 
@@ -252,10 +253,12 @@ class Filter:
         if header:
             header.decompose()
 
+        self.updater_images_grid(self.soup)
         self.remove_site_blocks(self.soup)
+
         return self.soup
 
-    def remove_site_blocks(self, soup) -> None:
+    def remove_site_blocks(self, soup: BeautifulSoup) -> None:
         """
         Removes search results from the HTML content based on blocked sites specified in the 'config' attribute.
 
@@ -280,6 +283,41 @@ class Filter:
         for result in selected:
             result.string.replace_with(result.string.replace(
                 search_string, ""))
+
+    @staticmethod
+    def updater_images_grid(soup: BeautifulSoup) -> None:
+        """
+        Update the images grid in the provided BeautifulSoup object.
+
+        This static method updates the images grid within the provided BeautifulSoup object by replacing the contents
+        of the existing images container table with a new gallery generated using the ImageGalleryGenerator class.
+
+        Args:
+            soup (BeautifulSoup): The BeautifulSoup object representing the HTML content to be updated.
+
+        Returns:
+            None: The original BeautifulSoup object is modified in-place.
+
+        Example:
+            Given a BeautifulSoup object 'soup' containing an images container table, this method generates a new
+            gallery using ImageGalleryGenerator and replaces the contents of the images container with the new gallery.
+
+        Note:
+            This method assumes that the provided BeautifulSoup object has been created and contains the necessary
+            structure with an images container table.
+
+        Raises:
+            None.
+        """
+        images_container = soup.find("table", class_="GpQGbf")
+
+        if not images_container:
+            return
+
+        gallery_generator = ImageGalleryGenerator(images_container.prettify())
+        updated_soup = BeautifulSoup(gallery_generator.generate_gallery(),"lxml")
+
+        images_container.contents = updated_soup.contents
 
     @staticmethod
     def updater_parent(soup: BeautifulSoup, classes: List[dict]) -> None:
@@ -530,12 +568,12 @@ class Filter:
                 parent = result_children[idx].parent
                 idx += 1
 
-            details = BeautifulSoup(features="html.parser").new_tag("details")
-            summary = BeautifulSoup(features="html.parser").new_tag("summary")
+            details = BeautifulSoup(features="lxml").new_tag("details")
+            summary = BeautifulSoup(features="lxml").new_tag("summary")
             summary.string = label
 
             if subtitle:
-                soup = BeautifulSoup(subtitle, "html.parser")
+                soup = BeautifulSoup(subtitle, "lxml")
                 summary.append(soup)
 
             details.append(summary)
@@ -566,7 +604,7 @@ class Filter:
             # Re-brand with Whoogle logo
             element.replace_with(BeautifulSoup(
                 render_template("logo.html"),
-                features="html.parser"))
+                features="lxml"))
             return
         elif src.startswith(G_M_LOGO_URL):
             # Re-brand with single-letter Whoogle logo
@@ -794,7 +832,7 @@ class Filter:
                 if site not in link_desc or not alt:
                     continue
 
-                new_desc = BeautifulSoup(features="html.parser").new_tag("div")
+                new_desc = BeautifulSoup(features="lxml").new_tag("div")
                 link_desc.replace_with(new_desc)
 
                 link_str = str(link_desc)
@@ -863,7 +901,7 @@ class Filter:
                                              length=len(results),
                                              results=results,
                                              view_label="View Image"),
-                             features="html.parser")
+                             features="lxml")
 
         # replace correction suggested by google object if exists
         if len(cor_suggested):
