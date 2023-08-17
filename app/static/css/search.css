@@ -58,6 +58,10 @@ textarea:focus, input:focus, select:focus {
   padding: 0.5rem 1rem !important;
 }
 
+.lcJF1d {
+  border-radius: 3px !important;
+}
+
 @media (min-width: 350px) {
   .UykT9d {
     max-width: 100px !important;
@@ -162,6 +166,7 @@ details summary span {
 @media (min-width: 1200px) {
   #main {
     max-width: 50%;
+    min-width: 600px;
   }
 }
 @media (max-width: 575px) {
