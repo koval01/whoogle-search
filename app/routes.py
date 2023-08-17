@@ -909,6 +909,8 @@ def proxy_pattern(resp: requests.Response, content: bytes = b"", only_resp: bool
 
 
 @app.route(f"/{Endpoint.currency_graph}", methods=["GET"])
+@session_required
+@auth_required
 def currency_graph():
     """
     Generate a currency exchange rate graph and return it as an image.
@@ -927,6 +929,8 @@ def currency_graph():
 
 
 @app.route(f"/{Endpoint.currency_history}", methods=["GET"])
+@session_required
+@auth_required
 def currency_history():
     """
     Handle the "/currency_history" endpoint to retrieve currency exchange rate history.
