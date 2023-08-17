@@ -29,7 +29,7 @@ class ImageGalleryGenerator:
         """
         self.html = html
         self.image_cells = []
-        self.bootstrap_grid = "<div class=\"container\"><div class=\"row w-100\">"
+        self.bootstrap_grid = "<div class=\"container\"><div class=\"row w-100 m-0\">"
 
     def extract_image_cells(self):
         """
@@ -64,18 +64,6 @@ class ImageGalleryGenerator:
         Note:
             This method assumes that image cells have been extracted before calling it.
 
-        Example:
-            Generated HTML structure for a single image cell:
-            <div class="col-6 col-md-3 col-lg-2 mb-4">
-                <a href="image_link" target="_blank">
-                    <img src="image_src" class="img-fluid m-auto d-block">
-                    <div class="m-auto d-block">
-                        <div class="caption text-center">Image Caption</div>
-                        <div class="source text-center">Image Source</div>
-                    </div>
-                </a>
-            </div>
-
         Raises:
             AttributeError: If required HTML elements are not found in the image cell structure.
         """
@@ -89,12 +77,12 @@ class ImageGalleryGenerator:
                 source = caption_div.find("span", class_="qXLe6d F9iS2e").text.strip()
 
                 image_html = f"""
-                    <div class="col-6 col-md-3 col-lg-2 mb-4">
-                        <a href="{link}" target="_blank">
-                            <img src="{image_src}" class="img-fluid m-auto d-block">
-                            <div class="m-auto d-block">
-                                <div class="caption text-center">{caption}</div>
-                                <div class="source text-center">{source}</div>
+                    <div class="col-6 col-md-4 col-xl-3 mb-4">
+                        <a href="{link}" target="_blank" class="card">
+                            <img src="{image_src}" class="card-img-top img-fluid rounded-top" alt="Image">
+                            <div class="card-body text-center">
+                                <div class="card-text">{caption}</div>
+                                <p class="card-text source">{source}</p>
                             </div>
                         </a>
                     </div>
