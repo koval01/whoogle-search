@@ -18,7 +18,6 @@ from app.filter import clean_query
 from app.request import send_tor_signal
 from app.utils.bangs import gen_bangs_json
 from app.utils.misc import gen_file_hash, read_config_bool
-from app.utils.misc import read_config_bool
 from app.utils.session import generate_key
 from app.version import __version__
 
@@ -166,7 +165,7 @@ if os.path.exists(build_dir) and os.path.isdir(build_dir):
             shutil.rmtree(item_path)
 
 # Build new mapping of static files for cache busting
-cache_busting_dirs = ["css", "js", "map"]
+cache_busting_dirs = ["css", "js"]
 for cb_dir in cache_busting_dirs:
     full_cb_dir = os.path.join(app.config["STATIC_FOLDER"], cb_dir)
 
