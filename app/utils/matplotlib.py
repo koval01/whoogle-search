@@ -73,7 +73,7 @@ class CurrencyGraph:
         plt.ylim(bottom=threshold)
 
         # Add a small top margin
-        plt.subplots_adjust(top=.75)
+        plt.subplots_adjust(top=.7)
 
         return fig
 
