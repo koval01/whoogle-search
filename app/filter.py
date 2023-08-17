@@ -313,8 +313,10 @@ class Filter:
             return
 
         gallery_generator = ImageGalleryGenerator(images_container.prettify())
-        updated_soup = BeautifulSoup(gallery_generator.generate_gallery(),"lxml")
-        images_container.contents = updated_soup.contents
+        updated_gallery_html = gallery_generator.generate_gallery()
+
+        # Replace the contents of the images_container with the updated_gallery_html
+        images_container.replace_with(BeautifulSoup(updated_gallery_html, "lxml"))
 
     @staticmethod
     def updater_parent(soup: BeautifulSoup, classes: List[dict]) -> None:
