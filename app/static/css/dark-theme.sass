@@ -2,6 +2,19 @@ html, body
   background: var(--whoogle-dark-page-bg) !important
   color: var(--whoogle-dark-text) !important
 
+body
+  &::-webkit-scrollbar
+    background-color: #202124
+    width: 16px
+
+  &::-webkit-scrollbar-track
+    background-color: #202124
+
+  &::-webkit-scrollbar-thumb
+    background-color: #4a4a4d
+    border-radius: 16px
+    border: 4px solid #202124
+
 div
   color: var(--whoogle-dark-text) !important
   overflow: hidden
