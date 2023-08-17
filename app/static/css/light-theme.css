@@ -37,7 +37,7 @@ a {
 }
 
 .card {
-  background-color: var(--whoogle-result-bg) !important;
+  background-color: var(--whoogle-page-bg) !important;
 }
 
 .anon-view {
