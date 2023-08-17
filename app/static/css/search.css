@@ -159,6 +159,11 @@ details summary span {
     padding: 0 !important;
   }
 }
+@media (min-width: 1200px) {
+  #main {
+    max-width: 50%;
+  }
+}
 @media (max-width: 575px) {
   .header-tab-div {
     padding: 0 !important;
