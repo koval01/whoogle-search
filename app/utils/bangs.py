@@ -51,11 +51,11 @@ def resolve_bang(query: str, bangs_dict: dict) -> str:
 
     Returns:
         str: A formatted redirect for a bang search, or an empty str if there
-             wasn"t a match or didn"t contain a bang operator
+             wasn't a match or didn't contain a bang operator
 
     """
 
-    #if ! not in query simply return (speed up processing)
+    # if ! not in query simply return (speed up processing)
     if "!" not in query:
         return ""
 

@@ -135,12 +135,12 @@ def session_required(f):
         if not valid_user_session(session):
             session.pop("_permanent", None)
 
-        # Note: This sets all requests to use the encryption key determined per
-        # instance on app init. This can be updated in the future to use a key
-        # that is unique for their session (session['key']) but this should use
-        # a config setting to enable the session based key. Otherwise there can
-        # be problems with searches performed by users with cookies blocked if
-        # a session based key is always used.
+        # Note: This sets all requests to use the encryption key defined by
+        # instance when the program starts. This can be updated in the future to use the key
+        # unique to their session (session['key']), but this should be used
+        # configuration settings to enable session-based keying. Otherwise, you can
+        # have problems with searches performed by users with blocked cookies if
+        # a session-based key is always used.
         g.session_key = app.enc_key
 
         # Clear out old sessions
@@ -449,7 +449,7 @@ def autocomplete():
 
     Returns:
         Response: The JSON response containing a list of search suggestions for the user's query or an empty JSON
-                  response (if autocomplete is disabled or Tor is enabled).
+                  response (if autocomplete is disabled or Tor enabled).
     """
     if os.getenv(ac_var) and not read_config_bool(ac_var):
         return jsonify({})
@@ -845,7 +845,7 @@ def window():
         a["href"] = f"{Endpoint.window}?location=" + a["href"] + (
             "&nojs=1" if "nojs" in request.args else "")
 
-    # Remove all iframes -- these are commonly used inside of <noscript> tags
+    # Remove all iframes - these are usually used inside <noscript> tags
     # to enforce loading Google Analytics
     for iframe in results.find_all("iframe"):
         iframe.decompose()

@@ -36,7 +36,7 @@ def add_ip_card(html_soup: BeautifulSoup, ip: str) -> BeautifulSoup:
 
 
 def add_calculator_card(html_soup: BeautifulSoup) -> BeautifulSoup:
-    """Adds the a calculator widget to the search results
+    """Adds a calculator widget to search results
         if query contains keywords
     Args:
         html_soup: The parsed search result containing the keywords
@@ -53,7 +53,7 @@ def add_calculator_card(html_soup: BeautifulSoup) -> BeautifulSoup:
         calculator_text['class'] = 'kCrYT ip-address-div'
         calculator_text.string = 'Calculator'
         calculator_widget = html_soup.new_tag('div')
-        calculator_widget.append(BeautifulSoup(widget_file, 'lxml'));
+        calculator_widget.append(BeautifulSoup(widget_file, 'lxml'))
         calculator_widget['class'] = 'kCrYT ip-text-div'
         widget_tag.append(calculator_text)
         widget_tag.append(calculator_widget)

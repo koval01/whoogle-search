@@ -58,6 +58,7 @@ class Search:
         session_key: the flask user fernet key
     """
     def __init__(self, request, config, session_key, cookies_disabled=False):
+        self.full_query: str | None = None
         method = request.method
         self.request = request
         self.request_params = request.args if method == "GET" else request.form
@@ -159,7 +160,7 @@ class Search:
         if view_image:
             html_soup = content_filter.view_image(html_soup)
 
-        # Indicate whether or not a Tor connection is active
+        # Specify whether the Tor connection is active
         if g.user_request.tor_valid:
             html_soup.insert(0, bsoup(TOR_BANNER, "lxml"))
 

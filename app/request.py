@@ -49,10 +49,12 @@ def send_tor_signal(signal: Signal) -> bool:
     processes. The signal is used to control various aspects of Tor, such as NEWNYM to request a new identity. The
     function first checks if Tor requires authentication, either using a password or an authentication cookie. If
     authentication is required, it attempts to authenticate with the Tor controller. If successful, it sends the
-    specified signal and returns True. Otherwise, it sets the environment variable "TOR_AVAILABLE" to "0" and returns False.
+    specified signal and returns True. Otherwise, it sets the environment variable "TOR_AVAILABLE" to "0"
+    and returns False.
 
     Parameters:
-        signal (Signal): The signal to be sent to the Tor control port (e.g., stem.Signal.NEWNYM to request a new identity).
+        signal (Signal): The signal to be sent to the Tor control port (e.g., stem.Signal.NEWNYM
+        to request a new identity).
 
     Returns:
         bool: True if the signal was sent successfully, False otherwise.
@@ -156,7 +158,8 @@ def gen_query(query, args, config) -> str:
 
     This function processes the input 'query' and its associated arguments ('args') to create the appropriate URL query
     string to perform the search. It uses a 'param_dict' dictionary to hold various search parameters based on the
-    'VALID_PARAMS' set. It handles time-based search (e.g., :past month) and result type (e.g., news, images, books, etc.)
+    'VALID_PARAMS' set. It handles time-based search (e.g., :past month) and result type
+    (e.g., news, images, books, etc.)
     specifications. It also sets the language for search results and includes/excludes specific sites based on user
     configurations.
 
@@ -195,7 +198,7 @@ def gen_query(query, args, config) -> str:
     # Ensure search query is parsable
     query = urlparse.quote(query)
 
-    # Pass along type of results (news, images, books, etc)
+    # Pass along type of results (news, images, books, etc.)
     if "tbm" in args:
         param_dict["tbm"] = "&tbm=" + args.get("tbm")
 
@@ -207,7 +210,7 @@ def gen_query(query, args, config) -> str:
     if config.near:
         param_dict["near"] = "&near=" + urlparse.quote(config.near)
 
-    # Set language for results (lr) if source isn"t set, otherwise use the
+    # Set language for results (lr) if source isn't set, otherwise use the
     # result language param provided in the results
     if "source" in args:
         param_dict["source"] = "&source=" + args.get("source")
@@ -219,7 +222,7 @@ def gen_query(query, args, config) -> str:
                 "&lr=" + config.lang_search
         ) if config.lang_search else ""
 
-    # "nfpr" defines the exclusion of results from an auto-corrected query
+    # "nfpr" defines the exclusion of results from an autocorrected query
     if "nfpr" in args:
         param_dict["nfpr"] = "&nfpr=" + args.get("nfpr")
 
@@ -254,7 +257,7 @@ def gen_query(query, args, config) -> str:
 
 class Request:
     """Class used for handling all outbound requests, including search queries,
-    search suggestions, and loading of external content (images, audio, etc).
+    search suggestions, and loading of external content (images, audio, etc.)
 
     Attributes:
         normal_ua: the user"s current user agent
@@ -315,7 +318,7 @@ class Request:
         return getattr(self, name)
 
     def autocomplete(self, query) -> list:
-        """Sends a query to Google"s search suggestion service
+        """Sends a query to Google's search suggestion service
 
         Args:
             query: The in-progress query to send
@@ -358,6 +361,7 @@ class Request:
                 (used for cycling through Tor identities, if enabled)
             force_mobile: Optional flag to enable a mobile user agent
                 (used for fetching full size  in search results)
+            user_agent: Custom user-agent string
 
         Returns:
             Response: The Response object returned by the requests call

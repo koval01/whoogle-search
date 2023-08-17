@@ -50,11 +50,14 @@ SITE_ALTS = {
 }
 
 # Include custom site redirects from WHOOGLE_REDIRECTS
-SITE_ALTS.update(list_to_dict(re.split(',|:', os.getenv('WHOOGLE_REDIRECTS', ''))))
+raw_string = os.getenv('WHOOGLE_REDIRECTS', '')
+split_by_comma = re.split(',', raw_string)
+final_split = [item.split(':') for sublist in split_by_comma for item in sublist]
+SITE_ALTS.update(list_to_dict(final_split))
 
 
 def contains_cjko(s: str) -> bool:
-    """This function check whether or not a string contains Chinese, Japanese,
+    """This function checks whether a string contains Chinese and Japanese,
     or Korean characters. It employs regex and uses the u escape sequence to
     match any character in a set of Unicode ranges.
     Args:
@@ -62,12 +65,12 @@ def contains_cjko(s: str) -> bool:
     Returns:
         bool: True if the input s contains the characters and False otherwise
     """
-    unicode_ranges = ('\u4e00-\u9fff' # Chinese characters
-                      '\u3040-\u309f' # Japanese hiragana
-                      '\u30a0-\u30ff' # Japanese katakana
-                      '\u4e00-\u9faf' # Japanese kanji
-                      '\uac00-\ud7af' # Korean hangul syllables
-                      '\u1100-\u11ff' # Korean hangul jamo
+    unicode_ranges = ('\u4e00-\u9fff'  # Chinese characters
+                      '\u3040-\u309f'  # Japanese hiragana
+                      '\u30a0-\u30ff'  # Japanese katakana
+                      '\u4e00-\u9faf'  # Japanese kanji
+                      '\uac00-\ud7af'  # Korean hangul syllables
+                      '\u1100-\u11ff'  # Korean hangul jamo
                       )
     return bool(re.search(fr'[{unicode_ranges}]', s))
 
@@ -77,7 +80,7 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
     in quotes, only that exact phrase will be made bold.
 
     Args:
-        response: The initial response body for the query
+        response: The initial response body for the query var
         query: The original search query
 
     Returns:
@@ -313,7 +316,7 @@ def append_anon_view(result: BeautifulSoup | Tag, config: Config) -> None:
 
     Args:
         result: The search result to append an anon view link to
-        nojs: Remove Javascript from Anonymous View
+        config: Configuration data
 
     Returns:
         None
@@ -382,10 +385,10 @@ def check_currency(response: str, query: str) -> dict:
             currency1[0] = currency1[0].replace(",", "")
             currency2[0] = currency2[0].replace(",", "")
 
-        currency1_value = float(re.sub(r'[^\d\.]', "", currency1[0]))
+        currency1_value = float(re.sub(r'[^\d.]', "", currency1[0]))
         currency1_label = currency1[1]
 
-        currency2_value = float(re.sub(r'[^\d\.]', "", currency2[0]))
+        currency2_value = float(re.sub(r'[^\d.]', "", currency2[0]))
         currency2_label = currency2[1]
 
         return {"currencyValue1": currency1_value,
@@ -491,6 +494,7 @@ def get_tabs_content(tabs: dict,
         tabs: The default content for the tabs
         full_query: The original search query
         search_type: The current search_type
+        preferences: The search params
         translation: The translation to get the names of the tabs
 
     Returns:

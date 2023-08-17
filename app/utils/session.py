@@ -1,15 +1,11 @@
 from cryptography.fernet import Fernet
+from flask.sessions import SessionMixin
 
 REQUIRED_SESSION_VALUES = ['uuid', 'config', 'key', 'auth']
 
 
 def generate_key() -> bytes:
     """Generates a key for encrypting searches and element URLs
-
-    Args:
-        cookies_disabled: Flag for whether or not cookies are disabled by the
-                          user. If so, the user can only use the default key
-                          generated on app init for queries.
 
     Returns:
         str: A unique Fernet key
@@ -19,7 +15,7 @@ def generate_key() -> bytes:
     return Fernet.generate_key()
 
 
-def valid_user_session(session: dict) -> bool:
+def valid_user_session(session: dict | SessionMixin) -> bool:
     """Validates the current user session
 
     Args:

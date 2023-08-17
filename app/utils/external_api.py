@@ -12,22 +12,7 @@ def get_currency_history(start_date: str, end_date: str, symbols: str, base: str
         base (str): The base currency for the exchange rates (e.g., 'USD').
 
     Returns:
-        dict: A dictionary containing historical exchange rate data. The structure of the dictionary is as follows:
-            {
-                "success": True or False,
-                "timeseries": True or False,
-                "base": "BaseCurrencyCode",
-                "start_date": "YYYY-MM-DD",
-                "end_date": "YYYY-MM-DD",
-                "rates": {
-                    "YYYY-MM-DD": {
-                        "CurrencyCode1": ExchangeRate1,
-                        "CurrencyCode2": ExchangeRate2,
-                        ...
-                    },
-                    ...
-                }
-            }
+        dict: A dictionary containing historical exchange rate data. The structure of the dictionary
             If the request was not successful or the data is unavailable, an empty dictionary is returned.
     """
     params = {

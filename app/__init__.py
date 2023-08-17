@@ -29,8 +29,8 @@ Minify(app=app, html=True, js=True, cssless=True)
 app.wsgi_app = ProxyFix(app.wsgi_app)
 
 dot_env_path = (
-    os.path.join(os.path.dirname(os.path.abspath(__file__)),
-    "../whoogle.env"))
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "../whoogle.env")
+)
 
 # Load .env file if enabled
 if os.path.exists(dot_env_path):
@@ -180,7 +180,7 @@ for cb_dir in cache_busting_dirs:
             try:
                 os.symlink(full_cb_path, build_path)
             except FileExistsError:
-                # Symlink hasn"t changed, ignore
+                # Symlink hasn't changed, ignore
                 pass
 
             # Create mapping for relative path urls

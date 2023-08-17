@@ -191,14 +191,16 @@ def list_to_dict(lst: list) -> dict:
     Convert a list into a dictionary.
 
     This function takes a list as input and returns a dictionary by pairing adjacent elements of the list.
-    Each even-indexed element of the list becomes the key, and the next odd-indexed element becomes its corresponding value.
+    Each even-indexed element of the list becomes the key, and the next odd-indexed element becomes
+    its corresponding value.
     The function assumes that the list contains an even number of elements.
 
     Args:
         lst (list): The list to be converted into a dictionary.
 
     Returns:
-        dict: A dictionary created from the list elements, where each even-indexed element is a key and the next odd-indexed element is its corresponding value.
+        dict: A dictionary created from the list elements, where each even-indexed element is a key and the next
+        odd-indexed element is its corresponding value.
         If the input list has fewer than two elements, an empty dictionary is returned.
     """
     if len(lst) < 2:
