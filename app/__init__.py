@@ -166,7 +166,7 @@ if os.path.exists(build_dir) and os.path.isdir(build_dir):
             shutil.rmtree(item_path)
 
 # Build new mapping of static files for cache busting
-cache_busting_dirs = ["css", "js"]
+cache_busting_dirs = ["css", "js", "map"]
 for cb_dir in cache_busting_dirs:
     full_cb_dir = os.path.join(app.config["STATIC_FOLDER"], cb_dir)
 
