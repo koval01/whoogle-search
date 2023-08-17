@@ -355,8 +355,8 @@ def check_currency(response: str, query: str) -> dict:
         tag_about = tag_about_container.find("span", {"class": "LGwnxb"}) if tag_about_container else None
 
         if tag_about:
-            c = re.search(r"(?P<base>[A-Z]{3})/(?P<symbol>[A-Z]{3})", str(tag_about)).groupdict()
-            currency_info = c if c else None
+            c = re.search(r"(?P<base>[A-Z]{3})/(?P<symbol>[A-Z]{3})", str(tag_about))
+            currency_info = c.groupdict() if c else None
 
     soup = BeautifulSoup(response, "lxml")
     currency_link = soup.find("a", {"href": "https://g.co/gfd"})
