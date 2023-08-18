@@ -1,4 +1,4 @@
-FROM python:3.11.4-alpine3.18 as builder
+FROM python:3.10.12-alpine3.18 as builder
 
 RUN apk --update add \
     build-base \
