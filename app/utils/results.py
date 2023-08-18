@@ -115,7 +115,7 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
                 re.sub(reg_pattern,
                        r"<b>\1</b>",
                        element_str,  # Use the string representation
-                       flags=re.I), "lxml")
+                       flags=re.I), "html.parser")
             )
         else:
             logging.warning(f"Invalid element type: {type(element)}")
