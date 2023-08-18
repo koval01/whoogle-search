@@ -120,6 +120,9 @@ def bold_search_terms(response: str, query: str) -> BeautifulSoup:
         else:
             logging.warning(f"Invalid element type: {type(element)}")
 
+    if len(query) > 8192:
+        return response
+
     # Split all words out of query, grouping the ones wrapped in quotes
     for word in re.split(r'\s+(?=[^"]*(?:"[^"]*"[^"]*)*$)', query):
         word = re.sub(r'[@_!#$%^&*()<>?/|}{~:]+', '', word)
