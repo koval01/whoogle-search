@@ -6,7 +6,7 @@ cachelib==0.10.2
 certifi==2023.7.22
 cffi==1.15.1
 chardet==5.2.0
-click==8.1.6
+click==8.1.7
 cryptography==3.3.2; platform_machine == 'armv7l'
 cryptography==41.0.3; platform_machine != 'armv7l'
 cssutils==2.7.1
