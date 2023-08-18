@@ -77,7 +77,7 @@ class ImageGalleryGenerator:
                 source = caption_div.find("span", class_="qXLe6d F9iS2e").text.strip()
 
                 image_html = f"""
-                    <div class="col-6 col-md-4 col-xl-3 mb-4">
+                    <div class="col-6 col-md-4 col-xl-3 mb-4 pb-2 pt-2">
                         <a href="{link}" target="_blank" class="card">
                             <img src="{image_src}" class="card-img-top img-fluid rounded-top" alt="Image">
                             <div class="card-body text-center">
