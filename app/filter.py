@@ -186,9 +186,7 @@ class Filter:
         """
         self.soup = soup
         self.main_divs = self.soup.find('div', {'id': 'main'})
-        self.remove_ads()
-        self.remove_block_titles()
-        self.remove_block_url()
+        self.remove_bad_content()
         self.collapse_sections()
         self.update_css()
         self.update_styling()
@@ -378,72 +376,38 @@ class Filter:
             if selector:
                 selector.decompose()
 
-    def remove_ads(self) -> None:
+    def remove_bad_content(self) -> None:
         """
-        Removes advertisements from the list of search result divs in the HTML content.
+        Removes specific content from the HTML based on regular expressions.
 
-        This function scans through the 'main_divs' of the object and attempts to remove ads based on the 'has_ad_content'
-        function. If 'main_divs' is not available, it simply returns without performing any action.
+        This function removes content (e.g., ads, block titles, block URLs) from the 'main_divs' of the object based
+        on the regular expressions provided in the 'config' object. If 'main_divs' or any of the config attributes
+        is not available, it simply returns without performing any action.
 
         Parameters:
-            self (object): The object containing the HTML content in 'main_divs'.
+            self (object): The object containing the HTML content in 'main_divs' and the 'config' object with the
+                           corresponding regular expressions.
 
         Returns:
-            None: This function does not return any value. It modifies the HTML content in place by removing ads.
+            None: This function does not return any value. It modifies the HTML content in place by
+            removing the specified content.
         """
         if not self.main_divs:
             return
 
+        block_title = re.compile(self.config.block_title) if self.config.block_title else None
+        block_url = re.compile(self.config.block_url) if self.config.block_url else None
+        d = lambda tb, tf: tb.find_all(tf, recursive=True)
+
         for div in [_ for _ in self.main_divs.find_all("div", recursive=True)]:
-            div_ads = [_ for _ in div.find_all("span", recursive=True)
-                       if has_ad_content(_.text)]
-            div.decompose() if len(div_ads) else None
-
-    def remove_block_titles(self) -> None:
-        """
-        Removes block titles from the HTML content based on a regular expression.
-
-        This function removes specific HTML titles from the 'main_divs' of the object based on the regular expression provided
-        in the 'block_title' attribute of the 'config' object. It first checks if 'main_divs' and 'config.block_title' are
-        both available. If not, it simply returns without performing any action.
-
-        Parameters:
-            self (object): The object containing the HTML content in 'main_divs' and the 'config' object with the
-                           'block_title' attribute containing the regular expression to match titles.
-
-        Returns:
-            None: This function does not return any value. It modifies the HTML content in place by removing block titles.
-        """
-        if not self.main_divs or not self.config.block_title:
-            return
-        block_title = re.compile(self.config.block_title)
-        for div in [_ for _ in self.main_divs.find_all("div", recursive=True)]:
-            block_divs = [_ for _ in div.find_all("h3", recursive=True)
-                          if block_title.search(_.text) is not None]
-            div.decompose() if len(block_divs) else None
-
-    def remove_block_url(self) -> None:
-        """
-        Removes block URLs from the HTML content based on a regular expression.
-
-        This function removes specific URLs from the HTML content based on the regular expression provided in the 'block_url'
-        attribute of the 'config' object. It first checks if 'main_divs' and 'config.block_url' are both available, and if
-        not, it simply returns without performing any action.
-
-        Parameters:
-            self (object): The object containing the HTML content in 'main_divs' and the 'config' object with the
-                           'block_url' attribute containing the regular expression to match URLs.
-
-        Returns:
-            None: This function does not return any value. It modifies the HTML content in place by removing block URLs.
-        """
-        if not self.main_divs or not self.config.block_url:
-            return
-        block_url = re.compile(self.config.block_url)
-        for div in [_ for _ in self.main_divs.find_all("div", recursive=True)]:
-            block_divs = [_ for _ in div.find_all("a", recursive=True)
-                          if block_url.search(_.attrs["href"]) is not None]
-            div.decompose() if len(block_divs) else None
+            if any(has_ad_content(span.text) for span in d(div, "span")):
+                div.decompose()
+            elif block_title and any(
+                    block_title.search(h3.text) is not None for h3 in d(div, "h3")):
+                div.decompose()
+            elif block_url and any(
+                    block_url.search(a.attrs["href"]) is not None for a in d(div, "a")):
+                div.decompose()
 
     def remove_block_tabs(self) -> None:
         """
