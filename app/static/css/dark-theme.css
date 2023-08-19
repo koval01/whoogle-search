@@ -38,7 +38,7 @@ li a {
 }
 
 a {
-  color: #2d9ce7 !important;
+  color: var(--whoogle-link-color) !important;
 }
 
 .card {
@@ -260,7 +260,7 @@ path {
 }
 
 #adv-search-label {
-  filter: invert(68%) sepia(14%) saturate(1233%) hue-rotate(180deg) brightness(100%) contrast(94%);
+  background-color: var(--whoogle-dark-link-color) !important;
 }
 
 .xpd, .result-config, .search-div, .p-search-settings > #st-card, .header-tab {

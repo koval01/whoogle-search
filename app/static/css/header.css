@@ -222,15 +222,17 @@ a.header-tab-a:visited {
 }
 
 #adv-search-label {
-  background-image: url(../img/setting.svg);
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-  background-color: rgba(0, 0, 0, 0) !important;
-  filter: invert(68%) sepia(14%) saturate(1233%) hue-rotate(180deg) brightness(100%) contrast(94%);
+  mask-image: url(../img/setting.svg);
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
   width: 1.4rem;
   flex: none;
   margin-right: 0.6rem;
+  -webkit-mask-image: url(../img/setting.svg);
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  -webkit-mask-position: center;
 }
 #adv-search-label > font {
   display: none !important;
