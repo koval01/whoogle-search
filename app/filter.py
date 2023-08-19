@@ -112,7 +112,7 @@ def clean_css(css: str, page_url: str) -> str:
 class Filter:
     # Limit used for determining if a result is a "regular" result or a list
     # type result (such as "people also asked", "related searches", etc)
-    RESULT_CHILD_LIMIT = 7
+    RESULT_CHILD_LIMIT = 14
 
     def __init__(
             self,
