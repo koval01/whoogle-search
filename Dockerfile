@@ -1,4 +1,4 @@
-FROM python:3.11.4-alpine3.18 as builder
+FROM python:3.11.4-slim as builder
 
 RUN apk --update add \
     cmake \
@@ -13,7 +13,7 @@ COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --prefix /install --no-warn-script-location --no-cache-dir -r requirements.txt
 
-FROM python:3.11.4-alpine3.18
+FROM python:3.11.4-slim
 
 RUN apk add --update --no-cache tor curl openrc libstdc++
 # libcurl4-openssl-dev
