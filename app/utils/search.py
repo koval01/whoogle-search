@@ -156,10 +156,6 @@ class Search:
             .replace("&gt;", "andgt;")
         html_soup = bsoup(get_body_safed, 'lxml')
 
-        # Replace current soup if view_image is active
-        if view_image:
-            html_soup = content_filter.view_image(html_soup)
-
         # Specify whether the Tor connection is active
         if g.user_request.tor_valid:
             html_soup.insert(0, bsoup(TOR_BANNER, "lxml"))
