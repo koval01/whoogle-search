@@ -547,7 +547,7 @@ class Filter:
             return
         elif src.startswith(G_M_LOGO_URL):
             # Re-brand with single-letter Whoogle logo
-            element["src"] = "static/img/favicon/apple-icon.png"
+            element["src"] = "static/img/favicon/apple-touch-icon.png"
             element.parent["href"] = "home"
             return
         elif src.startswith(GOOG_IMG) or GOOG_STATIC in src:
