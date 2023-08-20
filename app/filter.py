@@ -212,6 +212,7 @@ class Filter:
         self.remove_element(soup, [
             {"tag": "title", "cls": None},
             {"tag": "table", "cls": "bookcf"},
+            {"tag": "div", "cls": "TuS8Ad"},
             {"tag": "div", "cls": "EOlPnc", "id": True}
         ])
 
