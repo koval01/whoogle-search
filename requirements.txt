@@ -11,7 +11,7 @@ cryptography==3.3.2; platform_machine == 'armv7l'
 cryptography==41.0.3; platform_machine != 'armv7l'
 cssutils==2.7.1
 defusedxml==0.7.1
-Flask==2.3.2
+Flask==3.0.0
 Flask-Minify==0.42
 idna==3.4
 itsdangerous==2.1.2
