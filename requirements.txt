@@ -37,5 +37,5 @@ waitress==2.1.2
 wcwidth==0.2.6
 Werkzeug==2.3.3
 python-dotenv==1.0.0
-matplotlib==3.7.2
+matplotlib==3.8.2
 seaborn==0.12.2
