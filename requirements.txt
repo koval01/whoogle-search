@@ -3,7 +3,7 @@ beautifulsoup4==4.12.2
 lxml==4.9.3
 brotli==1.0.9
 cachelib==0.10.2
-certifi==2023.7.22
+certifi==2024.7.4
 cffi==1.15.1
 chardet==5.2.0
 click==8.1.7
