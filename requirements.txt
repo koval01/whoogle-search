@@ -29,7 +29,7 @@ PySocks==1.7.1
 pytest==7.4.2
 pytz==2023.3
 python-dateutil==2.8.2
-requests==2.31.0
+requests==2.32.3
 soupsieve==2.4.1
 stem==1.8.2
 urllib3==2.0.6
