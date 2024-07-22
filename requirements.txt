@@ -13,7 +13,7 @@ cssutils==2.7.1
 defusedxml==0.7.1
 Flask==2.3.2
 Flask-Minify==0.42
-idna==3.4
+idna==3.7
 itsdangerous==2.1.2
 Jinja2==3.1.4
 MarkupSafe==2.1.3
