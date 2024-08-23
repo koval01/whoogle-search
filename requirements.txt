@@ -14,7 +14,7 @@ defusedxml==0.7.1
 Flask==2.3.2
 Flask-Minify==0.42
 idna==3.7
-itsdangerous==2.1.2
+itsdangerous==2.2.0
 Jinja2==3.1.4
 MarkupSafe==2.1.3
 more-itertools==10.1.0
