@@ -9,7 +9,7 @@ chardet==5.2.0
 click==8.1.7
 cryptography==3.3.2; platform_machine == 'armv7l'
 cryptography==41.0.3; platform_machine != 'armv7l'
-cssutils==2.7.1
+cssutils==2.11.1
 defusedxml==0.7.1
 Flask==2.3.2
 Flask-Minify==0.42
